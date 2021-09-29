@@ -1,12 +1,10 @@
 //Sign up student
 var studentSignup = (username, email, password, fullName, birthdate, gender, tags) => {
     //Check if email or username already exists in database
-    //Hash password first
     let student = {
-        uid: "PlaceHolder", //Implement a random uid generator
         username: username,
         email: email,
-        password: password,
+        password: password, //hash the password
         fullName: fullName,
         birthdate: birthdate, //Possibly convert it to date object
         gender: gender, 
@@ -24,7 +22,7 @@ var studentSignup = (username, email, password, fullName, birthdate, gender, tag
 };
 
 var retreiveStudentInfo = (uid, socket) => {
-    //Get data from database using uid
+
 };
 
 var getRecommendations = (uid, socket) => {
