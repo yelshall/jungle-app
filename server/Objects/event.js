@@ -17,7 +17,7 @@ var createEvent = (
         interestedStudents: [],
         confirmedStudents: [],
         maxStudents: maxStudents,
-        eventHzost: eventHost,
+        eventHost: eventHost,
         description: description,
         updates: []
     };
@@ -26,7 +26,7 @@ var createEvent = (
         if (err) {
             sendClientMessage('err', 'Could not create new event');
             return;
-        }
+        }   
 
         sendClientMessage('success', 'Created event successfully');
     });
