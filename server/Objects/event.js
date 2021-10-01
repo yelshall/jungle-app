@@ -1,45 +1,88 @@
-const db =  require('./database.js');
+const schemas = require('../schemas/schemas');
 
-var createEvent = (
-  eventName,
-  location,
-  tags,
-  maxStudents,
-  eventHost,
-  description
-) => {
+var createEvent = (newEvent, callback) => {
     //Possibly connect location to google maps
     let event = {
-        eventName: eventName,
-        dateTime: new Date(),
-        location: location,
-        tags: tags,
-        interestedStudents: [],
-        confirmedStudents: [],
-        maxStudents: maxStudents,
-        eventHost: eventHost,
-        description: description,
-        updates: []
+        eventName: newEvent.eventName,
+        dateTime: newEvent.dateTime,
+        location: newEvent.location,
+        tags: newEvent.tags,
+        eventHost: newEvent.eventHost,
+        description: newEvent.description,
     };
 
-    db.createEvent(event, (err, response) => {
-        if (err) {
-            sendClientMessage('err', 'Could not create new event');
-            return;
-        }   
+    if(newEvent.maxStudents) event.maxStudents = newEvent.maxStudents;
 
-        sendClientMessage('success', 'Created event successfully');
+    let eventSave = new schemas.Event(event);
+    
+    eventSave.save()
+    .then(data => {
+        console.log('(SUCCESS) In createEvent: Event saved successfully');
+        if (callback) callback(null, data);
+    })
+    .catch(err => {
+        console.log('(ERROR) In createEvent: Failed to save event');
+        if (callback) callback(err, null);
     });
 };
 
-//Add interested student
-var addInterestedStudent = (eid, sid) => {
-    
+var deleteEvent = (eid, callback) => {
+    schemas.Event.remove({_id: eid}, function(err) {
+        if(err) {
+            if (callback) callback(err, null);
+        } else {
+            if (callback) callback(null, null);
+        }
+    });
 };
-//Add confirmed student
 
-//Remove interested student
+var addInterestedStudent = (eid, sid, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {$push: {interestedStudents: sid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            if(callback) callback(null, res);
+        }
+    });
+};
 
-//Remove confirmed student
+var addConfirmedStudent = (eid, sid, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {$push: {confirmedStudents: sid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            if(callback) callback(null, res);
+        }
+    });
+};
 
-//Update event
+var removeInterestedStudent = (eid, sid, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {$pull: {interestedStudents: sid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            if(callback) callback(null, res);
+        }
+    });
+};
+
+var removeConfirmedStudent = (eid, sid, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {$pull: {confirmedStudents: sid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            if(callback) callback(null, res);
+        }
+    });
+};
+
+//Write functions to update event for all fields
+
+module.exports = {
+    createEvent: createEvent,
+    deleteEvent: deleteEvent,
+    addConfirmedStudent: addConfirmedStudent,
+    addInterestedStudent: addInterestedStudent,
+    removeConfirmedStudent: removeConfirmedStudent,
+    removeInterestedStudent: removeInterestedStudent
+};
