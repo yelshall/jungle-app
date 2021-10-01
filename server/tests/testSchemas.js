@@ -6,6 +6,7 @@
  */
 const mongoose = require('mongoose');
 const schemas = require('../schemas/schemas');
+const verify = require('../utils/verify');
 require('dotenv').config({path: '../config/.env'});
 
 mongoose.connect(process.env.DATABASE_ACCESS, () => {
@@ -125,3 +126,5 @@ eventSave();
 tagSave();
 updateSave();
 notificationSave();
+verify.checkEmailExists('tevfdkjbdfbjvkdfbst@mail.net', (res) => {console.log(res)});
+verify.checkUsernameExists('test', (res) => {console.log(res)});

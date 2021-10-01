@@ -1,33 +1,82 @@
-//Sign up student
-var hostSignup = (email, password, hostName, description, phoneNumber, website,tags) => {
-    //Check if email or username already exists in database
+const schemas = require("../schemas/schemas");
+const event_functions = require("../Objects/event");
+
+var hostSignup = (newHost, callback) => {
     //Hash password first
     let host = {
-        hid: "PlaceHolder", //Implement a random uid generator
-        email: email,
-        password: password,
-        hostName: hostName,
-        description: description,
-        phoneNumber: phoneNumber,
-        website: website,
-        tags: tags,
-        eventsList: [], 
-        followerCount: 0
+        email: newHost.email,
+        password: newHost.password,
+        hostName: newHost.hostName,
+        description: newHost.description,
+        tags: newHost.tags
     };
 
-    //Send to database the information
+    if(newHost.phoneNumber) host.phoneNumber = newHost.phoneNumber;
+    if(newHost.website) host.website = newHost.website;
 
-    //Send to app that it was successfully stored
+    let hostSave = new schemas.Host(host);
+    
+    hostSave.save()
+    .then(data => {
+        console.log('(SUCCESS) In hostSignup: Host saved successfully');
+        if (callback) callback(null, data);
+    })
+    .catch(err => {
+        console.log('(ERROR) In hostSignup: Failed to save host');
+        if (callback) callback(err, null);
+    });
 };
 
-//Create Event
+var hostLogin = (loginInfo, callback) => {
+    //Implement Later
+};
 
-//Update Event
+var createEventHost = (newEvent) => {
+    event_functions.createEvent(newEvent);
+};
 
-//Delete Event
+var updateEvent = (hid, eid) => {
+    //Implement Later
+    //Possibly have a switch statement and call the
+    //relevant function from event script
+};
 
-//Add follower
+var deleteEvent = (hid, eid) => {
+    schemas.Host.findByIdAndUpdate(hid, {$pull: {events: eid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            event_functions.deleteEvent(eid);
+        }
+    });
+};
 
-//Remove follower
+var addFollower = (hid) => {
+    schemas.Host.findByIdAndUpdate(hid, {$inc: {followerCount: 1}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            if(callback) callback(null, res);
+        }
+    });
+};
 
-//Send message back to client
+var removeFollower = (hid) => {
+    schemas.Host.findByIdAndUpdate(hid, {$inc: {followerCount: -1}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            if(callback) callback(null, res);
+        }
+    });
+};
+
+module.exports = {
+    hostSignup: hostSignup,
+    hostLogin: hostLogin,
+    createEventHost: createEventHost,
+    updateEvent: updateEvent,
+    deleteEvent: deleteEvent,
+    addFollower: addFollower,
+    removeFollower: removeFollower
+};

@@ -56,7 +56,7 @@ const studentSchema = new mongoose.Schema({
         ref: 'Host'
     }],
     metadata: {
-        date: {
+        dateCreated: {
             type: Date,
             default: Date.now
         }
@@ -96,8 +96,12 @@ const hostSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    events: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Event'
+    }],
     metadata: {
-        date: {
+        dateCreated: {
             type: Date,
             default: Date.now
         }
@@ -111,7 +115,7 @@ const eventSchema = new mongoose.Schema({
     },
     dateTime: {
         type: Date,
-        default: Date.now
+        required: true
     },
     location: {
         type: String,
@@ -145,7 +149,13 @@ const eventSchema = new mongoose.Schema({
     updates: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Update'
-    }]
+    }],
+    metadata: {
+        dateCreated: {
+            type: Date,
+            default: Date.now
+        }
+    }
 });
 
 const TagSchema = new mongoose.Schema({
@@ -160,7 +170,13 @@ const TagSchema = new mongoose.Schema({
     Host: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Host'
-    }]
+    }],
+    metadata: {
+        dateCreated: {
+            type: Date,
+            default: Date.now
+        }
+    }
 });
 
 const updateSchema = new mongoose.Schema({
@@ -179,6 +195,12 @@ const updateSchema = new mongoose.Schema({
     notifyAll: {
         type: Boolean,
         required: true
+    },
+    metadata: {
+        dateCreated: {
+            type: Date,
+            default: Date.now
+        }
     }
 });
 
@@ -194,6 +216,12 @@ const notificationSchema = new mongoose.Schema({
     triggerTime: {
         type: Date,
         required: true
+    },
+    metadata: {
+        dateCreated: {
+            type: Date,
+            default: Date.now
+        }
     }
 });
 
