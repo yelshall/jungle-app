@@ -1,0 +1,1 @@
+animated assets from Lottie
