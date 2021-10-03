@@ -9,6 +9,7 @@ var checkUsernameExists = async (username, callback) => {
     else
         return check;
 };
+
 //Check if email exists
 var checkEmailExists = async (email, callback) => {
     let check = (await schemas.Student.exists({email: email})) && (await schemas.Host.exists({email: email}));

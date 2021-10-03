@@ -1,5 +1,6 @@
 const schemas = require('../schemas/schemas');
 const host_functions = require('./host');
+const event_functions = require('./event');
 
 var studentSignup = (newStudent, callback) => {
     //Hash the password
@@ -18,11 +19,9 @@ var studentSignup = (newStudent, callback) => {
 
     student.save()
     .then(data => {
-        console.log('(SUCCESS) In studentSignup: Student saved successfully');
         if (callback) callback(null, data);
     })
     .catch(err => {
-        console.log('(ERROR) In studentSignup: Failed to save student');
         if (callback) callback(err, null);
     });
 };
@@ -32,9 +31,9 @@ var studentLogin = (loginInfo, callback) => {
 };
 
 var retreiveStudentInfo = (sid, callback) => {
+    //Maybe remove password
     schemas.Student.findById(sid, (err, res) => {
         if (err) {
-            console.log('(ERROR) In retreiveStudentInfo: Could not find the student');
             if(callback) callback(err, null);
         } else {
             if(callback) callback(null, res);
@@ -42,75 +41,69 @@ var retreiveStudentInfo = (sid, callback) => {
     });
 };
 
-var addInterestedEvent = (uid, eid, callback) => {
-    schemas.Student.findByIdAndUpdate(uid, {$push: {interestedEvents: eid}}, (err, res) => {
+var addInterestedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$push: {interestedEvents: eid}}, (err, res) => {
         if(err) {
-            console.log('(ERROR) In addIneterestedEvent: Could not add event');
             if(callback) callback(err, null);
         } else {
-            if(callback) callback(null, res);
+            event_functions.addInterestedStudent(eid, sid, callback);
         }
     });
 };
 
-var addConfirmedEvent = (uid, eid, callback) => {
-    schemas.Student.findByIdAndUpdate(uid, {$push: {confirmedEvents: eid}}, (err, res) => {
+var addConfirmedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$push: {confirmedEvents: eid}}, (err, res) => {
         if(err) {
-            console.log('(ERROR) In addConfirmedEvent: Could not add event');
             if(callback) callback(err, null);
         } else {
-            if(callback) callback(null, res);
+            event_functions.addConfirmedStudent(eid, sid, callback);
         }
     });
 };
 
-var removeInterestedEvent = (uid, eid, callback) => {
-    schemas.Student.findByIdAndUpdate(uid, {$pull: {interestedEvents: eid}}, (err, res) => {
+var removeInterestedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$pull: {interestedEvents: eid}}, (err, res) => {
         if(err) {
-            console.log('(ERROR) In removeInterestedEvent: Could not remove event');
             if(callback) callback(err, null);
         } else {
-            if(callback) callback(null, res);
+            event_functions.removeInterestedStudent(eid, sid, callback);
         }
     });
 };
 
-var removeConfirmedEvent = (uid, eid, callback) => {
-    schemas.Student.findByIdAndUpdate(uid, {$pull: {confirmedEvents: eid}}, (err, res) => {
+var removeConfirmedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$pull: {confirmedEvents: eid}}, (err, res) => {
         if(err) {
-            console.log('(ERROR) In removeConfirmedEvent: Could not remove event');
             if(callback) callback(err, null);
         } else {
-            if(callback) callback(null, res);
+            event_functions.removeConfirmedStudent(eid, sid, callback);
         }
     });
 };
 
-var followHost = (uid, hid, callback) => {
-    schemas.Student.findByIdAndUpdate(uid, {$push: {following: hid}}, (err, res) => {
+var followHost = (sid, hid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$push: {following: hid}}, (err, res) => {
         if(err) {
-            console.log('(ERROR) In followHost: Could not follow host');
             if(callback) callback(err, null);
         } else {
-            host_functions.addFollower(hid);
+            host_functions.addFollower(hid, callback);
             if(callback) callback(null, res);
         }
     });
 };
 
-var unfollowHost = (uid, hid, callback) => {
-    schemas.Student.findByIdAndUpdate(uid, {$pull: {following: hid}}, (err, res) => {
+var unfollowHost = (sid, hid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$pull: {following: hid}}, (err, res) => {
         if(err) {
-            console.log('(ERROR) In unfollowHost: Could not follow host');
             if(callback) callback(err, null);
         } else {
-            host_functions.removeFollower(hid);
+            host_functions.removeFollower(hid, callback);
             if(callback) callback(null, res);
         }
     });
 };
 
-var getRecommendations = (uid, callback) => {
+var getRecommendations = (sid, callback) => {
     //Call recommendation algorithm to get recommendations for events
 };
 

@@ -31,8 +31,8 @@ var hostLogin = (loginInfo, callback) => {
     //Implement Later
 };
 
-var createEventHost = (newEvent) => {
-    event_functions.createEvent(newEvent);
+var createEventHost = (newEvent, callback) => {
+    event_functions.createEvent(newEvent, callback);
 };
 
 var updateEvent = (hid, eid) => {
@@ -41,17 +41,17 @@ var updateEvent = (hid, eid) => {
     //relevant function from event script
 };
 
-var deleteEvent = (hid, eid) => {
+var deleteEventHost = (hid, eid, callback) => {
     schemas.Host.findByIdAndUpdate(hid, {$pull: {events: eid}}, (err, res) => {
         if(err) {
             if(callback) callback(err, null);
         } else {
-            event_functions.deleteEvent(eid);
+            event_functions.deleteEvent(eid, callback);
         }
     });
 };
 
-var addFollower = (hid) => {
+var addFollower = (hid, callback) => {
     schemas.Host.findByIdAndUpdate(hid, {$inc: {followerCount: 1}}, (err, res) => {
         if(err) {
             if(callback) callback(err, null);
@@ -61,7 +61,7 @@ var addFollower = (hid) => {
     });
 };
 
-var removeFollower = (hid) => {
+var removeFollower = (hid, callback) => {
     schemas.Host.findByIdAndUpdate(hid, {$inc: {followerCount: -1}}, (err, res) => {
         if(err) {
             if(callback) callback(err, null);
@@ -76,7 +76,7 @@ module.exports = {
     hostLogin: hostLogin,
     createEventHost: createEventHost,
     updateEvent: updateEvent,
-    deleteEvent: deleteEvent,
+    deleteEventHost: deleteEventHost,
     addFollower: addFollower,
     removeFollower: removeFollower
 };
