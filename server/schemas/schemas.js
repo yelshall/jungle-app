@@ -167,7 +167,7 @@ const TagSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
     }],
-    Host: [{
+    hosts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Host'
     }],
@@ -188,12 +188,13 @@ const updateSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    dateTime: {
-        type: Date,
-        default: Date.now
-    }, 
     notifyAll: {
         type: Boolean,
+        required: true
+    },
+    event: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Event',
         required: true
     },
     metadata: {

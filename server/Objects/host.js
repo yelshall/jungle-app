@@ -1,5 +1,6 @@
 const schemas = require("../schemas/schemas");
 const event_functions = require("../Objects/event");
+const tag_functions = require("../Objects/tag");
 
 var hostSignup = (newHost, callback) => {
     //Hash password first
@@ -18,11 +19,13 @@ var hostSignup = (newHost, callback) => {
     
     hostSave.save()
     .then(data => {
-        console.log('(SUCCESS) In hostSignup: Host saved successfully');
+        for (tag in tags) {
+            tag_functions.addHost(tag, data._id);
+        }
+
         if (callback) callback(null, data);
     })
     .catch(err => {
-        console.log('(ERROR) In hostSignup: Failed to save host');
         if (callback) callback(err, null);
     });
 };
@@ -35,10 +38,8 @@ var createEventHost = (newEvent, callback) => {
     event_functions.createEvent(newEvent, callback);
 };
 
-var updateEvent = (hid, eid) => {
-    //Implement Later
-    //Possibly have a switch statement and call the
-    //relevant function from event script
+var updateEventHost = (eid, update, callback) => {
+    event_functions.updateEvent(eid, update, callback);
 };
 
 var deleteEventHost = (hid, eid, callback) => {
@@ -75,7 +76,7 @@ module.exports = {
     hostSignup: hostSignup,
     hostLogin: hostLogin,
     createEventHost: createEventHost,
-    updateEvent: updateEvent,
+    updateEventHost: updateEventHost,
     deleteEventHost: deleteEventHost,
     addFollower: addFollower,
     removeFollower: removeFollower

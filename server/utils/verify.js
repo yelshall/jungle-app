@@ -5,7 +5,7 @@ const schemas = require('../schemas/schemas');
 var checkUsernameExists = async (username, callback) => {
     let check = await schemas.Student.exists({username: username});
     if(callback)
-        callback(check)
+        callback(check);
     else
         return check;
 };
@@ -14,12 +14,21 @@ var checkUsernameExists = async (username, callback) => {
 var checkEmailExists = async (email, callback) => {
     let check = (await schemas.Student.exists({email: email})) && (await schemas.Host.exists({email: email}));
     if(callback)
-        callback(check)
+        callback(check);
+    else
+        return check;
+};
+
+var checkTagExists = async (tagName, callback) => {
+    let check = await schemas.Tag.exists({tagName: tagName});
+    if(callback)
+        callback(check);
     else
         return check;
 };
 
 module.exports = {
     checkUsernameExists: checkUsernameExists,
-    checkEmailExists: checkEmailExists
+    checkEmailExists: checkEmailExists,
+    checkTagExists: checkTagExists
 };
