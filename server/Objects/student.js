@@ -12,17 +12,18 @@ var studentSignup = (newStudent, callback) => {
             firstName: newStudent.fullName.firstName,
             lastName: newStudent.fullName.lastName
         },
-        birthdate: newStudent.birthdate,
+        birthDate: newStudent.birthDate,
         gender: newStudent.gender,
         tags: newStudent.tags
     });
 
     student.save()
-    .then(data => {
-        if (callback) callback(null, data);
+    .then(res => {
+        res.password = undefined;
+        if (callback) {callback(null, res);}
     })
     .catch(err => {
-        if (callback) callback(err, null);
+        if (callback) {callback(err, null);}
     });
 };
 
@@ -31,12 +32,41 @@ var studentLogin = (loginInfo, callback) => {
 };
 
 var retreiveStudentInfo = (sid, callback) => {
-    //Maybe remove password
     schemas.Student.findById(sid, (err, res) => {
         if (err) {
-            if(callback) callback(err, null);
+            if(callback) {callback(err, null);}
         } else {
-            if(callback) callback(null, res);
+            res.password = undefined;
+            if(callback) {callback(null, res);}
+        }
+    });
+};
+
+var deleteStudent = (sid, callback) => {
+    retreiveStudentInfo(sid, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+        } else {
+            res.interestedEvents.forEach((interestedEvent, index) => {
+                event_functions.removeInterestedStudent(interestedEvent, sid);
+            });
+
+            res.confirmedEvents.forEach((confirmedEvent, index) => {
+                event_functions.removeConfirmedStudent(confirmedEvent, sid);
+            });
+
+            res.following.forEach((host, index) => {
+                host_functions.removeFollower(host, sid);
+            });
+            
+            schemas.Student.findByIdAndDelete(sid, (err, res2) => {
+                if (err) {
+                    if(callback) {callback(err, null);}
+                } else {
+                    if(res2.password) {res2.password = undefined;}
+                    if(callback) {callback(null, res2);}
+                }
+            });
         }
     });
 };
@@ -44,9 +74,16 @@ var retreiveStudentInfo = (sid, callback) => {
 var addInterestedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, {$push: {interestedEvents: eid}}, (err, res) => {
         if(err) {
-            if(callback) callback(err, null);
+            if(callback) {callback(err, null);}
         } else {
-            event_functions.addInterestedStudent(eid, sid, callback);
+            event_functions.addInterestedStudent(eid, sid, (err, res2) => {
+                if(err) {
+                    if(callback) {callback(err, null);}
+                } else {
+                    if(res.password) {res.password = undefined;}
+                    if(callback) {callback(null, res);}
+                }
+            });
         }
     });
 };
@@ -54,9 +91,16 @@ var addInterestedEvent = (sid, eid, callback) => {
 var addConfirmedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, {$push: {confirmedEvents: eid}}, (err, res) => {
         if(err) {
-            if(callback) callback(err, null);
+            if(callback) {callback(err, null);}
         } else {
-            event_functions.addConfirmedStudent(eid, sid, callback);
+            event_functions.addConfirmedStudent(eid, sid, (err, res2) => {
+                if(err) {
+                    if(callback) {callback(err, null);}
+                } else {
+                    if(res.password) {res.password = undefined;}
+                    if(callback) {callback(null, res);}
+                }
+            });        
         }
     });
 };
@@ -64,9 +108,16 @@ var addConfirmedEvent = (sid, eid, callback) => {
 var removeInterestedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, {$pull: {interestedEvents: eid}}, (err, res) => {
         if(err) {
-            if(callback) callback(err, null);
+            if(callback) {callback(err, null);}
         } else {
-            event_functions.removeInterestedStudent(eid, sid, callback);
+            event_functions.removeInterestedStudent(eid, sid, (err, res2) => {
+                if(err) {
+                    if(callback) {callback(err, null);}
+                } else {
+                    if(res.password) {res.password = undefined;}
+                    if(callback) {callback(null, res);}
+                }
+            });        
         }
     });
 };
@@ -74,9 +125,16 @@ var removeInterestedEvent = (sid, eid, callback) => {
 var removeConfirmedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, {$pull: {confirmedEvents: eid}}, (err, res) => {
         if(err) {
-            if(callback) callback(err, null);
+            if(callback) {callback(err, null);}
         } else {
-            event_functions.removeConfirmedStudent(eid, sid, callback);
+            event_functions.removeConfirmedStudent(eid, sid, (err, res2) => {
+                if(err) {
+                    if(callback) {callback(err, null);}
+                } else {
+                    if(res.password) {res.password = undefined;}
+                    if(callback) {callback(null, res);}
+                }
+            });        
         }
     });
 };
@@ -84,10 +142,16 @@ var removeConfirmedEvent = (sid, eid, callback) => {
 var followHost = (sid, hid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, {$push: {following: hid}}, (err, res) => {
         if(err) {
-            if(callback) callback(err, null);
+            if(callback) {callback(err, null);}
         } else {
-            host_functions.addFollower(hid, callback);
-            if(callback) callback(null, res);
+            host_functions.addFollower(hid, sid, (err, res2) => {
+                if(err) {
+                    if(callback) {callback(err, null);}
+                } else {
+                    if(res.password) {res.password = undefined;}
+                    if(callback) {callback(null, res);}
+                }
+            });
         }
     });
 };
@@ -95,10 +159,16 @@ var followHost = (sid, hid, callback) => {
 var unfollowHost = (sid, hid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, {$pull: {following: hid}}, (err, res) => {
         if(err) {
-            if(callback) callback(err, null);
+            if(callback) {callback(err, null);}
         } else {
-            host_functions.removeFollower(hid, callback);
-            if(callback) callback(null, res);
+            host_functions.removeFollower(hid, sid, (err, res2) => {
+                if(err) {
+                    if(callback) {callback(err, null);}
+                } else {
+                    if(res.password) {res.password = undefined;}
+                    if(callback) {callback(null, res);}
+                }
+            });
         }
     });
 };
@@ -111,6 +181,7 @@ module.exports = {
     studentSignup: studentSignup,
     studentLogin: studentLogin,
     retreiveStudentInfo: retreiveStudentInfo,
+    deleteStudent: deleteStudent,
     addConfirmedEvent: addConfirmedEvent,
     addInterestedEvent: addInterestedEvent,
     removeConfirmedEvent: removeConfirmedEvent,

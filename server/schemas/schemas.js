@@ -92,10 +92,10 @@ const hostSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
     }],
-    followerCount: {
-        type: Number,
-        default: 0
-    },
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'
+    }],
     events: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
@@ -108,12 +108,18 @@ const hostSchema = new mongoose.Schema({
     }
 });
 
+//End dateTime
+//URL Image
 const eventSchema = new mongoose.Schema({
     eventName: {
         type: String,
         required: true
     },
     dateTime: {
+        type: Date,
+        required: true
+    },
+    endDateTime: {
         type: Date,
         required: true
     },

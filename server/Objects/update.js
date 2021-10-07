@@ -10,19 +10,19 @@ var createUpdate = (title, message, notifyAll, eid, callback) => {
 
     update.save()
     .then(data => {
-        if(callback) callback(null, data);
+        if(callback) {callback(null, data);}
     })
     .catch(err => {
-        if(callback) callback(err, null);
+        if(callback) {callback(err, null);}
     });
 };
 
 var deleteUpdate = (uid, callback) => {
-    schemas.Update.findByIdAndDelete(uid, function(err, deletedUpdate) {
+    schemas.Update.findByIdAndDelete(uid, function(err, res) {
         if(err) {
-            if (callback) callback(err, null);
+            if (callback) {callback(err, null);}
         } else {
-            if (callback) callback(null, deletedUpdate);
+            if (callback) {callback(null, res);}
         }
     });
 };
