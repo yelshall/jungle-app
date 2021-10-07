@@ -25,7 +25,7 @@ describe('Insert Documents', () => {
                 lastName: "Last"
             },
             birthDate: new Date(2002, 6, 11),
-            gender: "Male",
+            gender: "Male"
         });
         
         student.save()
