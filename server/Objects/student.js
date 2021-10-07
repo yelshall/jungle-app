@@ -1,72 +1,121 @@
-//Sign up student
-var studentSignup = (username, email, password, fullName, birthdate, gender, tags) => {
-    //Check if email or username already exists in database
-    //Hash password first
-    let student = {
-        uid: "PlaceHolder", //Implement a random uid generator
-        username: username,
-        email: email,
-        password: password,
-        fullName: fullName,
-        birthdate: birthdate, //Possibly convert it to date object
-        gender: gender, 
-        tags: tags,
-        notifications: [],
-        interestedEvents: [],
-        recommendedEvents: [],
-        confirmedEvents: [],
-        following: []
-    };
+const schemas = require('../schemas/schemas');
+const host_functions = require('./host');
+const event_functions = require('./event');
 
-    //Send to database the information
+var studentSignup = (newStudent, callback) => {
+    //Hash the password
+    let student = new schemas.Student({
+        username: newStudent.username,
+        email: newStudent.email,
+        password: newStudent.password,
+        fullName: {
+            firstName: newStudent.fullName.firstName,
+            lastName: newStudent.fullName.lastName
+        },
+        birthdate: newStudent.birthdate,
+        gender: newStudent.gender,
+        tags: newStudent.tags
+    });
 
-    //Send to app that it was successfully stored
+    student.save()
+    .then(data => {
+        if (callback) callback(null, data);
+    })
+    .catch(err => {
+        if (callback) callback(err, null);
+    });
 };
 
-var retreiveStudentInfo = (uid, socket) => {
-    //Get data from database using uid
+var studentLogin = (loginInfo, callback) => {
+    //Implement later
 };
 
-var getRecommendations = (uid, socket) => {
+var retreiveStudentInfo = (sid, callback) => {
+    //Maybe remove password
+    schemas.Student.findById(sid, (err, res) => {
+        if (err) {
+            if(callback) callback(err, null);
+        } else {
+            if(callback) callback(null, res);
+        }
+    });
+};
+
+var addInterestedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$push: {interestedEvents: eid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            event_functions.addInterestedStudent(eid, sid, callback);
+        }
+    });
+};
+
+var addConfirmedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$push: {confirmedEvents: eid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            event_functions.addConfirmedStudent(eid, sid, callback);
+        }
+    });
+};
+
+var removeInterestedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$pull: {interestedEvents: eid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            event_functions.removeInterestedStudent(eid, sid, callback);
+        }
+    });
+};
+
+var removeConfirmedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$pull: {confirmedEvents: eid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            event_functions.removeConfirmedStudent(eid, sid, callback);
+        }
+    });
+};
+
+var followHost = (sid, hid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$push: {following: hid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            host_functions.addFollower(hid, callback);
+            if(callback) callback(null, res);
+        }
+    });
+};
+
+var unfollowHost = (sid, hid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, {$pull: {following: hid}}, (err, res) => {
+        if(err) {
+            if(callback) callback(err, null);
+        } else {
+            host_functions.removeFollower(hid, callback);
+            if(callback) callback(null, res);
+        }
+    });
+};
+
+var getRecommendations = (sid, callback) => {
     //Call recommendation algorithm to get recommendations for events
 };
 
-var addInterestedEvent = (uid, interestedEid, socket) => {
-    //Verify uid
-    //Verify eid
-    //Get student from database and push interestedEvent onto there
-    //Return success to app
-};
-
-var addConfirmedEvent = (uid, confirmedEid, socket) => {
-    //Verify uid
-    //Verify eid
-    //Get student from database and push confirmedEvent onto there by pulling out of interestedEvents
-    //Return success to app
-};
-
-var removeInterestedEvent = (uid, interestedEid, socket) => {
-    //Verify uid
-    //Verify eid
-    //Get student from database and remove interestedEvent
-};
-
-var removeConfirmedEvent = (uid, confirmedEid, socket) => {
-    //Verify uid
-    //Verify eid
-    //Get student from database and remove confirmedEvent
-}
-
-var followHost = (uid, hid, socket) => {
-    //Verify uid and hid
-    //Get student from database and add host to followed hosts
-    //Call host function to add follower
-    //Return success
-};
-
-var unfollowHost = (uid, hid, socket) => {
-    //Verify uid and hid
-    //Get student from database and remove host from followed hosts
-    //Call host function to remove follower
-    //Return success to app
+module.exports = {
+    studentSignup: studentSignup,
+    studentLogin: studentLogin,
+    retreiveStudentInfo: retreiveStudentInfo,
+    addConfirmedEvent: addConfirmedEvent,
+    addInterestedEvent: addInterestedEvent,
+    removeConfirmedEvent: removeConfirmedEvent,
+    removeInterestedEvent: removeInterestedEvent,
+    followHost: followHost,
+    unfollowHost: unfollowHost,
+    getRecommendations: getRecommendations
 };
