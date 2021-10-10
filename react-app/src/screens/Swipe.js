@@ -5,13 +5,6 @@ import React from "react";
 import LottieView from "lottie-react-native";
 
 function Swipe() {
-  //render();
-  //{
-  ///  return renderUsers();
-  /// <View>{this.renderUsers()}</View>;
-  /// }
-
-  //<View>CardSwipe</View>
   return (
     <View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
       <Text style={{ margin: 90, fontSize: 28 }}>Swipe</Text>

@@ -1,17 +1,8 @@
 import React, { Component } from "react";
-import { Text, View, FlatList, StyleSheet, Alert } from "react-native";
+import { Text, View, FlatList, Alert } from "react-native";
 import styles from "../../styles";
-// import {styles} from "../Components/styles";
 
 class Preferences extends Component {
-  // preferenceItems = ({item,index}) =>{
-  //     return(
-  //         <View style={styles.container}>
-  //             <Text>items</Text>
-  //         </View>
-  //     );
-  // }
-
   constructor(props) {
     super(props);
     this.GetGridViewItem = this.GetGridViewItem.bind(this);

@@ -1,15 +1,3 @@
-//import { Text, View, FlatList, Animated } from "react-native";
-
-//import React from "react";
-
-//import LottieView from "lottie-react-native";
-//import eventsData from "../../assets/events-data/eventsData";
-
-//<View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
-//  <Text style={{ margin: 90, fontSize: 28 }}>Swipe</Text>
-//  <LottieView source={require("../../assets/Lottie/Apps.json")} autoPlay />
-//</View>
-
 import {
   LayoutAnimation,
   Animated,

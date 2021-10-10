@@ -10,11 +10,6 @@ import {
 } from "react-native";
 
 class Login extends Component {
-  // userLogin(email,password) {
-  //   this.email = email;
-  //   this.password = password;
-  //   return
-  // }
   userLogin = { email: "email", password: "pass" };
   constructor(props) {
     super(props);
