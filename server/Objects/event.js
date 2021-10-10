@@ -21,8 +21,8 @@ var createEvent = (newEvent, callback) => {
     eventSave.save()
     .then(data => {
         if(newEvent.tags) {
-            tags.forEach((tag, index) => {
-                tag_functions.addEvent(tag, data._id, callback);
+            newEvent.tags.forEach((tag, index) => {
+                tag_functions.addEvent(tag, data._id);
             });
         }
 

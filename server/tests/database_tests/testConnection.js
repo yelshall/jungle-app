@@ -103,6 +103,7 @@ describe('Insert Documents', () => {
         let event = new schemas.Event({
             eventName: "eventTest",
             dateTime: new Date(),
+            endDateTime: new Date(),
             location: "123 Drive, etc.",
             tags: [],
             description: "descriptionTest"
