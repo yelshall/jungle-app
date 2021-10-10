@@ -1,7 +1,5 @@
 const verify = require("../utils/verify");
 const schemas = require("../schemas/schemas");
-const event_functions = require("./event");
-const host_functions = require("./host");
 
 var createTag = (tagName, callback) => {
     verify.checkTagExists(tagName, ret => {
@@ -24,17 +22,34 @@ var createTag = (tagName, callback) => {
     });
 };
 
+var getTag = (tid, callback) => {
+    schemas.Tag.findById(tid, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+            return;
+        }
+        if(callback) {callback(null, res);}
+    });
+};
+
 var deleteTag = (tid, callback) => {
     schemas.Tag.findById(tid, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
+            console.log(res);
             res.events.forEach((event, index) => {
-                event_functions.removeTag(event, tid);
+                console.log('event', event);
+                schemas.Event.findByIdAndUpdate(event, {$pull: {tags: tid}}, (err, res) => {
+                    return;
+                });
             });
 
             res.hosts.forEach((host, index) => {
-                host_functions.removeTag(host, tid);
+                console.log('host', host);
+                schemas.Host.findByIdAndUpdate(host, {$pull: {tags: tid}}, (err, res) => {
+                    return;
+                });
             });
 
             schemas.Tag.findByIdAndDelete(tid, (err, res2) => {
@@ -49,7 +64,11 @@ var deleteTag = (tid, callback) => {
 };
 
 var addEvent = (tid, eid, callback) => {
+    console.log('eid', eid);
+    console.log('tid', tid);
     schemas.Tag.findByIdAndUpdate(tid, {$push: {events: eid}}, (err, res) => {
+        console.log('resss', res);
+        console.log(err);
         if (err) {
             if(callback) {callback(err, null);}
         } else {
@@ -65,7 +84,8 @@ var removeEvent = (tid, eid, callback) => {
         } else {
             if(callback) {callback(null, res);}
         }
-    });};
+    });
+};
 
 var addHost = (tid, hid, callback) => {
     schemas.Tag.findByIdAndUpdate(tid, {$push: {hosts: hid}}, (err, res) => {
@@ -90,6 +110,7 @@ var removeHost = (tid, hid, callback) => {
 module.exports = {
     createTag: createTag,
     deleteTag: deleteTag,
+    getTag: getTag,
     addEvent: addEvent,
     removeEvent: removeEvent,
     addHost: addHost,

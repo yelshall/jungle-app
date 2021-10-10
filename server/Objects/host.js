@@ -1,7 +1,6 @@
 const schemas = require("../schemas/schemas");
 const event_functions = require("./event");
 const tag_functions = require("./tag");
-const student_functions = require("./student");
 
 var hostSignup = (newHost, callback) => {
     //Hash password first
@@ -44,6 +43,7 @@ var deleteHost = (hid, callback) => {
         } else {
             res.followers.forEach((follower, index) => {
                 schemas.Student.findByIdAndUpdate(follower, {$pull: {following: hid}}, (err, res) => {
+                    return;
                 });
             });
 
@@ -168,7 +168,7 @@ var removeTag = (hid, tid, callback) => {
                 } else {
                     if(callback) {callback(null, res);}
                 }
-            })   ;     
+            });     
         }
     });
 };
