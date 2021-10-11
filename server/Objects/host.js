@@ -18,12 +18,11 @@ var hostSignup = (newHost, callback) => {
     let hostSave = new schemas.Host(host);
 
     hostSave.save()
-    .then(data => {
-        if(newHost.tags) {
-            newHost.tags.forEach((tag, index) => {
-                tag_functions.addHost(tag, data._id);
-            });
+    .then(async data => {
+        for(let i = 0; i < newHost.tags.length; i++) {
+            await tag_functions.addHost(newHost.tags[i], data._id);
         }
+
         data.password = undefined;
         if (callback) {callback(null, data);}
     })

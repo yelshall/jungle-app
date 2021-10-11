@@ -64,7 +64,6 @@ describe('Tag Tests', () => {
                 done(err);
                 return;
             }
-            console.log('og', res._id);
             hostEventTag(res._id, (hid, eid) => {
                 tag.deleteTag(res._id, (err, del) => {
                     if(err) {
@@ -76,14 +75,14 @@ describe('Tag Tests', () => {
                             done(err);
                             return;
                         }
-                        //assert.equal(res2.tags.length, 0, 'Make sure the tag is removed from the host.');
+                        assert.equal(res2.tags.length, 0, 'Make sure the tag is removed from the host.');
                         event.retreiveEventInfo(eid, (err, res3) => {
                             if(err) {
                                 done(err);
                                 return;
                             }
-                            //assert.equal(res3.tags.length, 0, 'Make sure the tag is removed from the event.');
-                            /*host.deleteHost(hid, (err, del) => {
+                            assert.equal(res3.tags.length, 0, 'Make sure the tag is removed from the event.');
+                            host.deleteHost(hid, (err, del) => {
                                 if(err) {
                                     done(err);
                                     return;
@@ -95,8 +94,7 @@ describe('Tag Tests', () => {
                                     }
                                     done();
                                 });
-                            });*/
-                            done();
+                            });
                         });
                     });
                 });
@@ -137,5 +135,179 @@ describe('Tag Tests', () => {
                 });
             });
         };
+    });
+
+    it("addEvent - Add an event to a tag.", (done) => {
+        let newEvent = {
+            eventName: "eventTest3",
+            dateTime: new Date(),
+            endDateTime: new Date(),
+            location: "123 Drive, etc.",
+            description: "descriptionTest",
+            tags: []
+        };
+
+        tag.createTag('testTag', (err, res) => {
+            if(err) {
+                done(err);
+                return;
+            }
+            newEvent.tags.push(res._id);
+            event.createEvent(newEvent, (err, res2) => { //addEvent will be called in hostSignup for each tag chosen
+                if(err) {
+                    done(err);
+                    return;
+                }
+
+                assert.equal(res2.tags[0].equals(res._id), true, 'Make sure the tag stored in the event is the same as the actual tag.');
+                tag.deleteTag(res._id, (err, del) => {
+                    if(err){
+                        done(err);
+                        return;
+                    }
+                    event.deleteEvent(res2._id, (err, del) => {
+                        if(err) {
+                            done(err);
+                            return;
+                        }
+                        done();
+                    });
+                })
+            });
+        });
+    });
+    
+    it("addHost - Add a host to a tag.", (done) => {
+        let newHost = {
+            email: "test@mail.net3",
+            password: "testPassword",
+            hostName: "hostNameTest",
+            description: "descriptionTest",
+            phoneNumber: "+1 (999) 1234 567",
+            website: "www.host.com",
+            tags: []
+        };
+
+        tag.createTag('testTag', (err, res) => {
+            if(err) {
+                done(err);
+                return;
+            }
+            newHost.tags.push(res._id);
+            host.hostSignup(newHost, (err, res2) => { //addEvent will be called in hostSignup for each tag chosen
+                if(err) {
+                    done(err);
+                    return;
+                }
+
+                assert.equal(res2.tags[0].equals(res._id), true, 'Make sure the tag stored in the event is the same as the actual tag.');
+                tag.deleteTag(res._id, (err, del) => {
+                    if(err){
+                        done(err);
+                        return;
+                    }
+                    host.deleteHost(res2._id, (err, del) => {
+                        if(err) {
+                            done(err);
+                            return;
+                        }
+                        done();
+                    });
+                })
+            });
+        });
+    });
+
+    it("removeEvent - Remove an event from a tag.", (done) => {
+        let newEvent = {
+            eventName: "eventTest3",
+            dateTime: new Date(),
+            endDateTime: new Date(),
+            location: "123 Drive, etc.",
+            description: "descriptionTest",
+            tags: []
+        };
+
+        tag.createTag('testTag', (err, res) => {
+            if(err) {
+                done(err);
+                return;
+            }
+            newEvent.tags.push(res._id);
+            event.createEvent(newEvent, (err, res2) => {
+                if(err) {
+                    done(err);
+                    return;
+                }
+                event.deleteEvent(res2._id, (err, del) => {
+                    if(err) {
+                        done(err);
+                        return;
+                    }
+                    tag.getTag(res._id, (err, res) => {
+                        if(err) {
+                            done(err);
+                            return;
+                        }
+
+                        assert.equal(res.events.length, 0, 'Make sure that the event is removed.')
+                        tag.deleteTag(res._id, (err, del) => {
+                            if(err) {
+                                done(err);
+                                return;
+                            }
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+    });
+    
+    it("removeHost - Remove a host from a tag.", (done) => {
+        let newHost = {
+            email: "test@mail.net3",
+            password: "testPassword",
+            hostName: "hostNameTest",
+            description: "descriptionTest",
+            phoneNumber: "+1 (999) 1234 567",
+            website: "www.host.com",
+            tags: []
+        };
+
+        tag.createTag('testTag', (err, res) => {
+            if(err) {
+                done(err);
+                return;
+            }
+            newHost.tags.push(res._id);
+            host.hostSignup(newHost, (err, res2) => {
+                if(err) {
+                    done(err);
+                    return;
+                }
+                host.deleteHost(res2._id, (err, del) => {
+                    if(err) {
+                        done(err);
+                        return;
+                    }
+                    tag.getTag(res._id, (err, res) => {
+                        if(err) {
+                            done(err);
+                            return;
+                        }
+
+                        assert.equal(res.hosts.length, 0, 'Make sure that the host is removed.')
+                        tag.deleteTag(res._id, (err, del) => {
+                            if(err) {
+                                done(err);
+                                return;
+                            }
+                            done();
+                        });
+                    });
+                });
+            });
+        });
     });
 });
