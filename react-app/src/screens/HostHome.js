@@ -3,13 +3,10 @@ import { StyleSheet, Image } from "react-native";
 import React from "react";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Explore from "./Explore";
-import Profile from "./Profile";
-import CardSwipe from "../components/CardSwipe/index";
-import eventsData from "../../assets/events-data/eventsData";
 
-import Chat from "./Chat";
 import HostManage from "./HostManage";
+import HostChat from "./HostChat";
+import HostProfile from "./HostProfile";
 
 const Tabs = createBottomTabNavigator();
 
@@ -41,10 +38,10 @@ export default function HostHome() {
             case "HostManage":
               filePath = require("../../assets/menu.png");
               break;
-            case "Chat":
+            case "HostChat":
               filePath = require("../../assets/chat.png");
               break;
-            case "Profile":
+            case "HostProfile":
               filePath = require("../../assets/user.png");
               break;
             default:
@@ -69,8 +66,8 @@ export default function HostHome() {
       })}
     >
       <Tabs.Screen name="HostManage" component={HostManage} />
-      <Tabs.Screen name="Chat" component={Chat} />
-      <Tabs.Screen name="Profile" component={Profile} />
+      <Tabs.Screen name="HostChat" component={HostChat} />
+      <Tabs.Screen name="HostProfile" component={HostProfile} />
     </Tabs.Navigator>
   );
 }
