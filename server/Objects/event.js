@@ -19,11 +19,9 @@ var createEvent = (newEvent, callback) => {
     let eventSave = new schemas.Event(event);
     
     eventSave.save()
-    .then(data => {
-        if(newEvent.tags) {
-            newEvent.tags.forEach((tag, index) => {
-                tag_functions.addEvent(tag, data._id);
-            });
+    .then(async data => {
+        for(let i = 0; i < newEvent.tags.length; i++) {
+            await tag_functions.addEvent(newEvent.tags[i], data._id);
         }
 
         if (callback) {callback(null, data);}
@@ -38,16 +36,12 @@ var deleteEvent = (eid, callback) => {
         if(err) {
             if (callback) {callback(err, null);}
         } else {
-            if(deletedEvent.tags) {
-                deletedEvent.tags.forEach((tag, index) => {
-                    tag_functions.removeEvent(tag, deletedEvent._id, callback);
-                });
+            for(let i = 0; i < deletedEvent.tags.length; i++) {
+                tag_functions.removeEvent(deletedEvent.tags[i], deletedEvent._id);
             }
 
-            if(deletedEvent.updates) {
-                deletedEvent.updates.forEach((update, index) => {
-                    update_functions.deleteUpdate(update, callback);
-                });
+            for(let i = 0; i < deletedEvent.updates.length; i++) {
+                update_functions.deleteUpdate(deletedEvent.update[i]);
             }
 
             if (callback) {callback(null, deletedEvent);}

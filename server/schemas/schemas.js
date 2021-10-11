@@ -108,7 +108,6 @@ const hostSchema = new mongoose.Schema({
     }
 });
 
-//End dateTime
 //URL Image
 const eventSchema = new mongoose.Schema({
     eventName: {

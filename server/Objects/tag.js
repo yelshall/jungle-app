@@ -1,7 +1,7 @@
 const verify = require("../utils/verify");
 const schemas = require("../schemas/schemas");
 
-var createTag = (tagName, callback) => {
+var createTag = async (tagName, callback) => {
     verify.checkTagExists(tagName, ret => {
         if(ret) {
             callback({err: "Tag Exists"}, null);
@@ -32,79 +32,87 @@ var getTag = (tid, callback) => {
     });
 };
 
-var deleteTag = (tid, callback) => {
-    schemas.Tag.findById(tid, (err, res) => {
-        if(err) {
-            if(callback) {callback(err, null);}
-        } else {
-            console.log(res);
-            res.events.forEach((event, index) => {
-                console.log('event', event);
-                schemas.Event.findByIdAndUpdate(event, {$pull: {tags: tid}}, (err, res) => {
-                    return;
-                });
-            });
+var deleteTag = async (tid, callback) => {
+    try {
+        var res = await schemas.Tag.findById(tid);
 
-            res.hosts.forEach((host, index) => {
-                console.log('host', host);
-                schemas.Host.findByIdAndUpdate(host, {$pull: {tags: tid}}, (err, res) => {
-                    return;
-                });
-            });
+        res.events.forEach(async (event, index) => {
+            await schemas.Event.findByIdAndUpdate(event, {$pull: {tags: tid}}).exec();
+        });
 
-            schemas.Tag.findByIdAndDelete(tid, (err, res2) => {
-                if(err) {
-                    if(callback) {callback(err, null);}
-                } else {
-                    if(callback) {callback(null, res2);}
-                }
-            });
-        }
-    });
+        res.hosts.forEach(async (host, index) => {
+            await schemas.Host.findByIdAndUpdate(host, {$pull: {tags: tid}}).exec();
+        });
+        
+        await schemas.Tag.findByIdAndDelete(tid).exec();
+
+        if(callback) {callback(null, res);}
+        return tid;
+    } catch (err) {
+        if(callback) {callback(err, null);}
+        return err;
+    }
 };
 
-var addEvent = (tid, eid, callback) => {
-    console.log('eid', eid);
-    console.log('tid', tid);
-    schemas.Tag.findByIdAndUpdate(tid, {$push: {events: eid}}, (err, res) => {
-        console.log('resss', res);
-        console.log(err);
-        if (err) {
-            if(callback) {callback(err, null);}
-        } else {
-            if(callback) {callback(null, res);}
+var addEvent = async (tid, eid, callback) => {
+    try {
+        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$push: {events: eid}}).exec();
+
+        if(callback) {
+            callback(null, ret);
         }
-    });
+        return ret;
+    } catch (err) {
+        if(callback) {
+            callback(err, null);
+        }
+        return err;
+    }
 };
 
-var removeEvent = (tid, eid, callback) => {
-    schemas.Tag.findByIdAndUpdate(tid, {$pull: {events: eid}}, (err, res) => {
-        if (err) {
-            if(callback) {callback(err, null);}
-        } else {
-            if(callback) {callback(null, res);}
+var removeEvent = async (tid, eid, callback) => {
+    try {
+        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$pull: {events: eid}}).exec();
+        if(callback) {
+            callback(null, ret);
         }
-    });
+        return ret;
+    } catch (err) {
+        if(callback) {
+            callback(err, null);
+        }
+        return err;
+    }
 };
 
-var addHost = (tid, hid, callback) => {
-    schemas.Tag.findByIdAndUpdate(tid, {$push: {hosts: hid}}, (err, res) => {
-        if (err) {
-            if(callback) {callback(err, null);}
-        } else {
-            if(callback) {callback(null, res);}
+var addHost = async (tid, hid, callback) => {
+    try {
+        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$push: {hosts: hid}}).exec();
+        if(callback) {
+            callback(null, ret);
         }
-    });
+        return ret;
+    } catch (err) {
+        if(callback) {
+            callback(err, null);
+        }
+        return err;
+    }
 };
 
-var removeHost = (tid, hid, callback) => {
-    schemas.Tag.findByIdAndUpdate(tid, {$pull: {hosts: hid}}, (err, res) => {
-        if (err) {
-            if(callback) {callback(err, null);}
-        } else {
-            if(callback) {callback(null, res);}
+var removeHost = async (tid, hid, callback) => {
+    try {
+        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$pull: {hosts: hid}}).exec();
+        if(callback) {
+            callback(null, ret);
         }
-    });
+        return ret;
+    } catch (err) {
+        if(callback) {
+            callback(err, null);
+        }
+        return err;
+    }
 };
 
 module.exports = {
