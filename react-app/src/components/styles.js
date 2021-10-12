@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "white",
   },
-
   image: {
     marginBottom: 40,
   },
