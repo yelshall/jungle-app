@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true
-    },
     email: {
         type: String,
         required: true
@@ -69,6 +65,10 @@ const hostSchema = new mongoose.Schema({
         required: true
     },
     password: {
+        type: String,
+        required: true
+    },
+    hostEmail: {
         type: String,
         required: true
     },
