@@ -57,7 +57,7 @@ export default function HostHome() {
                 style={{
                   width: 25,
                   height: 25,
-                  tintColor: focused ? "#e32f45" : "748c94",
+                  tintColor: focused ? "#e32f45" : "#748c94",
                 }}
               />
             </>

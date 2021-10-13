@@ -62,7 +62,7 @@ export default function Home() {
                 style={{
                   width: 25,
                   height: 25,
-                  tintColor: focused ? "#e32f45" : "748c94",
+                  tintColor: focused ? "#e32f45" : "#748c94",
                 }}
               />
             </>

@@ -1,13 +1,16 @@
 const schemas = require('../schemas/schemas');
 const host_functions = require('./host');
 const event_functions = require('./event');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 var studentSignup = (newStudent, callback) => {
-    //Hash the password
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync(newStudent.password, salt);
+
     let student = new schemas.Student({
-        username: newStudent.username,
         email: newStudent.email,
-        password: newStudent.password,
+        password: hash,
         fullName: {
             firstName: newStudent.fullName.firstName,
             lastName: newStudent.fullName.lastName
@@ -27,8 +30,39 @@ var studentSignup = (newStudent, callback) => {
     });
 };
 
+var isStudentLogin = async (loginInfo, callback) => {
+    try {
+        let doc = await schemas.Student.findOne({email: loginInfo.email});
+        if(doc === null) {
+            return false;
+        }
+        return true;
+    } catch (error) {
+        return null;
+    }
+};
+
 var studentLogin = (loginInfo, callback) => {
-    //Implement later
+    schemas.Student.findOne({email: loginInfo.email}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+            return;
+        }
+        
+        if(res === null) {
+            if(callback) {callback({err: 'INCORRECT_EMAIL'}, null);}
+            return;
+        }
+
+        if(!bcrypt.compareSync(loginInfo.password, res.password)) {
+            if(callback) {callback({err: 'INCORRECT_PASSWORD'}, null);}
+        } else {
+            let token = jwt.sign({ email: res.email, signInType: 'STUDENT' }, process.env.APP_SECRET, {
+                expiresIn: 2592000 // 1 month
+            });            
+            if(callback) {callback(null, {email: res.email, token: token, signInType: 'STUDENT'});}
+        }
+    });
 };
 
 var retreiveStudentInfo = (sid, callback) => {
@@ -179,6 +213,7 @@ var getRecommendations = (sid, callback) => {
 
 module.exports = {
     studentSignup: studentSignup,
+    isStudentLogin: isStudentLogin,
     studentLogin: studentLogin,
     retreiveStudentInfo: retreiveStudentInfo,
     deleteStudent: deleteStudent,

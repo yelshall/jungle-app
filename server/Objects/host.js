@@ -1,12 +1,17 @@
 const schemas = require("../schemas/schemas");
 const event_functions = require("./event");
 const tag_functions = require("./tag");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 var hostSignup = (newHost, callback) => {
-    //Hash password first
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync(newHost.password, salt);
+
     let host = {
         email: newHost.email,
-        password: newHost.password,
+        hostEmail: newHost.hostEmail,
+        password: hash,
         hostName: newHost.hostName,
         description: newHost.description,
         tags: newHost.tags
@@ -31,8 +36,39 @@ var hostSignup = (newHost, callback) => {
     });
 };
 
+var isHostLogin = async (loginInfo, callback) => {
+    try {
+        let doc = await schemas.Host.findOne({email: loginInfo.email});
+        if(doc === null) {
+            return false;
+        }
+        return true;
+    } catch (error) {
+        return null;
+    }
+};
+
 var hostLogin = (loginInfo, callback) => {
-    //Implement Later
+    schemas.Host.findOne({email: loginInfo.email}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+            return;
+        }
+        
+        if(res === null) {
+            if(callback) {callback({err: 'INCORRECT_EMAIL'}, null);}
+            return;
+        }
+
+        if(!bcrypt.compareSync(loginInfo.password, res.password)) {
+            if(callback) {callback({err: 'INCORRECT_PASSWORD'}, null);}
+        } else {
+            let token = jwt.sign({ email: res.email, signInType: 'HOST' }, process.env.APP_SECRET, {
+                expiresIn: 2592000 // 1 month
+            });            
+            if(callback) {callback(null, {email: res.email, token: token,  signInType: 'HOST'});}
+        }
+    });
 };
 
 var deleteHost = (hid, callback) => {
@@ -174,6 +210,7 @@ var removeTag = (hid, tid, callback) => {
 
 module.exports = {
     hostSignup: hostSignup,
+    isHostLogin: isHostLogin,
     hostLogin: hostLogin,
     deleteHost: deleteHost,
     retreiveHostInfo: retreiveHostInfo,
