@@ -72,7 +72,6 @@ for link in distinct_links:
 # Open the database client and initialize the events database
 client = MongoClient("mongodb+srv://yelshall:yyForever-53611@auth-test.p4buu.mongodb.net/db?retryWrites=true&w=majority")
 db = client.db
-events = db.events
 
 # Loop through the list of events, store the event info JSON format, and then store to the database
 for i in range(len(event_list)): 
@@ -126,4 +125,3 @@ for i in range(len(event_list)):
   }
 
   # Insert the event dictionary into the database
-  post_id = events.insert_one(event).inserted_id
