@@ -125,3 +125,4 @@ for i in range(len(event_list)):
   }
 
   # Insert the event dictionary into the database
+    db.events.replace_one(event, event, upsert = True)
