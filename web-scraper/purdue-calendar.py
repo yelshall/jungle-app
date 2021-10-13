@@ -65,7 +65,6 @@ for link in distinct_links:
 
   # Grab event information from HTML table <td> and store into its own list
   tds = event.select("td.listheadtext b")
-  
   for td in tds:
     event_titles.append(td.text)
 
