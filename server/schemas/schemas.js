@@ -27,6 +27,9 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    imageURL: {
+        type: String
+    },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
@@ -88,6 +91,9 @@ const hostSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    imageURL: {
+        type: String
+    },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
@@ -123,6 +129,10 @@ const eventSchema = new mongoose.Schema({
         required: true
     },
     location: {
+        type: String,
+        required: true
+    },
+    imageURL: {
         type: String,
         required: true
     },
