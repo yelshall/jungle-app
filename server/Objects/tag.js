@@ -32,6 +32,16 @@ var getTag = (tid, callback) => {
     });
 };
 
+var getTags = (callback) => {
+    schemas.Tag.find({}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+        }
+
+        if(callback) {callback(null, res);}
+    })
+};
+
 var deleteTag = async (tid, callback) => {
     try {
         var res = await schemas.Tag.findById(tid);
@@ -119,6 +129,7 @@ module.exports = {
     createTag: createTag,
     deleteTag: deleteTag,
     getTag: getTag,
+    getTags: getTags,
     addEvent: addEvent,
     removeEvent: removeEvent,
     addHost: addHost,

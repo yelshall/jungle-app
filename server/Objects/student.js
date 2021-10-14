@@ -22,7 +22,12 @@ var studentSignup = (newStudent, callback) => {
 
     student.save()
     .then(res => {
+        let token = jwt.sign({ id: res._id, email: res.email, signInType: 'STUDENT' }, process.env.APP_SECRET, {
+            expiresIn: 2592000 // 1 month
+        });            
+
         res.password = undefined;
+        res.token = {id: res._id, email: res.email, token: token,  signInType: 'STUDENT'};
         if (callback) {callback(null, res);}
     })
     .catch(err => {
@@ -57,10 +62,10 @@ var studentLogin = (loginInfo, callback) => {
         if(!bcrypt.compareSync(loginInfo.password, res.password)) {
             if(callback) {callback({err: 'INCORRECT_PASSWORD'}, null);}
         } else {
-            let token = jwt.sign({ email: res.email, signInType: 'STUDENT' }, process.env.APP_SECRET, {
+            let token = jwt.sign({ id: res._id, email: res.email, signInType: 'STUDENT' }, process.env.APP_SECRET, {
                 expiresIn: 2592000 // 1 month
             });            
-            if(callback) {callback(null, {email: res.email, token: token, signInType: 'STUDENT'});}
+            if(callback) {callback(null, {id: res._id, email: res.email, token: token, signInType: 'STUDENT'});}
         }
     });
 };

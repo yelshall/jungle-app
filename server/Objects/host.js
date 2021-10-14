@@ -28,7 +28,12 @@ var hostSignup = (newHost, callback) => {
             await tag_functions.addHost(newHost.tags[i], data._id);
         }
 
+        let token = jwt.sign({ id: data._id, email: data.email, signInType: 'HOST' }, process.env.APP_SECRET, {
+            expiresIn: 2592000 // 1 month
+        });            
+
         data.password = undefined;
+        data.token = {id: data._id, email: data.email, token: token,  signInType: 'HOST'};
         if (callback) {callback(null, data);}
     })
     .catch(err => {
@@ -63,10 +68,10 @@ var hostLogin = (loginInfo, callback) => {
         if(!bcrypt.compareSync(loginInfo.password, res.password)) {
             if(callback) {callback({err: 'INCORRECT_PASSWORD'}, null);}
         } else {
-            let token = jwt.sign({ email: res.email, signInType: 'HOST' }, process.env.APP_SECRET, {
+            let token = jwt.sign({ id: res._id, email: res.email, signInType: 'HOST' }, process.env.APP_SECRET, {
                 expiresIn: 2592000 // 1 month
             });            
-            if(callback) {callback(null, {email: res.email, token: token,  signInType: 'HOST'});}
+            if(callback) {callback(null, { id: res._id, email: res.email, token: token,  signInType: 'HOST'});}
         }
     });
 };
