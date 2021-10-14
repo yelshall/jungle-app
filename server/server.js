@@ -2,6 +2,7 @@ const PORT = process.env.PORT || 3000;
 const express = require('express');
 const host = require('./Objects/host');
 const student = require('./Objects/student');
+const tag = require('./Objects/tag');
 const verify = require('./utils/verify');
 const app = express();
 const mongoose = require('mongoose');
@@ -45,35 +46,24 @@ let newHost = {
 };
 
 io.on('connection', (socket) => {
-    socket.on('verifySignup', (request, callback) => {
-        if (request.type == 'EMAIL') {
-            verify.checkEmailExists(request.email, (ret) => {
-                if (ret) {
-                    callback({ err: 'Email exists' });
-                    return;
-                }
+    socket.on('verifyEmail', (request, callback) => {
+        verify.checkEmailExists(request.email, (check) => {
+            if (check) {
+                callback({ err: 'Email exists' }, null);
+                return;
+            }
 
-                callback({ ret: 'Email does not exist' });
-            });
-        } else if (request.type == 'USERNAME') {
-            verify.checkUsernameExists(request.username, (ret) => {
-                if (ret) {
-                    callback({ err: 'Username exists' });
-                    return;
-                }
-
-                callback({ ret: 'Username does not exist' });
-            });
-        }
+            callback(null, { res: 'Email does not exist' });
+        });
     });
 
     socket.on('login', async (request, callback) => {
         let isStudentLogin = await student.isStudentLogin(request);
         let isHostLogin = await host.isHostLogin(request);
 
-        if(isStudentLogin) {
+        if (isStudentLogin) {
             student.studentLogin(request, (err, res) => {
-                if(err) {
+                if (err) {
                     callback(err, null);
                     return;
                 }
@@ -81,14 +71,14 @@ io.on('connection', (socket) => {
             });
         } else if (isHostLogin) {
             host.hostLogin(request, (err, res) => {
-                if(err) {
+                if (err) {
                     callback(err, null);
                     return;
                 }
                 callback(null, res);
             });
         } else {
-            callback({err: "INCORRECT_EMAIL"}, null);
+            callback({ err: "INCORRECT_EMAIL" }, null);
         }
     });
 
@@ -98,9 +88,25 @@ io.on('connection', (socket) => {
 
             callback(null, { signInType: decoded.signInType });
         } catch (err) {
-            console.log(err);
             callback(err, null);
         }
+    });
+
+    socket.on('getTags', (request, callback) => {
+        tag.getTags((err, res) => {
+            if(err) {
+                callback(err, null);
+                return;
+            }
+
+            for(let i = 0; i < res.length; i++) {
+                res[i].metadata = undefined;
+                res[i].events = undefined;
+                res[i].hosts = undefined;
+            }
+
+            callback(null, res);
+        })
     });
 
     studentListeners(socket);
@@ -112,13 +118,13 @@ io.on('connection', (socket) => {
 //Retreive list of hosts
 var studentListeners = (socket) => {
     socket.on('studentSignup', (request, callback) => {
-        student.studentSignup(request.newStudent, (err, ret) => {
+        student.studentSignup(request, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                callback(err, null);
                 return;
             }
 
-            callback({ ret: ret });
+            callback(null, { id: ret._id, email: ret.token.email, token: ret.token.token, signInType: 'STUDENT' });
         });
     });
 
@@ -195,11 +201,11 @@ var hostListeners = (socket) => {
     socket.on('hostSignup', (request, callback) => {
         host.hostSignup(request.newHost, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                callback(err, null);
                 return;
             }
 
-            callback({ ret: ret });
+            callback(null, { id: ret._id, email: ret.token.email, token: ret.token.token, signInType: 'HOST' });
         });
     });
 

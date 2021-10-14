@@ -1,272 +1,212 @@
-import React, { Component } from "react";
-import { Text, View, FlatList, Alert } from "react-native";
-import styles from "../../../styles";
+import React from "react";
+import { ScrollView } from "react-native";
+import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { LinearProgress } from 'react-native-elements';
+import { AuthContext } from '../../utils/context';
 
-class Preferences extends Component {
-  constructor(props) {
-    super(props);
-    this.GetGridViewItem = this.GetGridViewItem.bind(this);
-    this.state = {
-      GridListItems: [
-        {
-          name: "Hocname",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Football",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Dance",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Debate",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Classical music",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Java",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Photography",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Bowling",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Fishing",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Scating",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Play write",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Hunting",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Shooting",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Valorin",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Skiing",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Hacking",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Modeling",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Tennis",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Public speaking",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Singing",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Photography",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Bowling",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Fishing",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Scating",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Play write",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Hunting",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Shooting",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Valorin",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-        {
-          name: "Skiing",
-          unselectedColor: "#C8EE90",
-          selectedColor: "grey",
-          isSelected: false,
-        },
-      ],
-    };
-  }
+const Item = ({ item, onPress, backgroundColor, textColor }) => (
+	<TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
+		<Text style={[styles.itemText, textColor]}>{item.title}</Text>
+	</TouchableOpacity>
+);
 
-  GetGridViewItem(item) {
-    Alert.alert(item);
-  }
+const formatData = (data) => {
+	const numberOfFullRows = Math.floor(data.length / 3);
 
-  render() {
-    return (
-      <View style={styles.containerP}>
-        <Text
-          style={{
-            fontSize: 25,
-            fontWeight: "bold",
-            color: "black",
-            letterSpacing: 2,
-            paddingBottom: 10,
-          }}
-        >
-          Pick 5 or more intrests
-        </Text>
-        <FlatList
-          data={this.state.GridListItems}
-          renderItem={({ item }) => (
-            <View style={styles.GridViewContainer}>
-              <Text
-                style={styles.GridViewTextLayout}
-                onPress={this.GetGridViewItem.bind(this, item.name)}
-              >
-                {" "}
-                {item.name}{" "}
-              </Text>
-            </View>
-          )}
-          numColumns={3}
-        />
-      </View>
-    );
-  }
-}
-export default Preferences;
-// const PreferenceScreen = () =>{
+	let numberOfElementsLastRow = data.length - (numberOfFullRows * 3);
+	while (numberOfElementsLastRow !== 3 && numberOfElementsLastRow !== 0) {
+		data.push({ title: `blank-${numberOfElementsLastRow}`, empty: true });
+		numberOfElementsLastRow++;
+	}
 
-//     const [dataSource, setDataSource] = useState([]);
+	return data;
+};
 
-//     useEffect(() => {
-//       let items = Array.apply(null, Array(60)).map((v, i) => {
-//         return {
-//           id: i,
-//           src: 'http://placehold.it/200x200?text=' + (i + 1)
-//         };
-//       });
-//       setDataSource(items);
-//     }, []);
+export default function Preferences({ navigation, route }) {
+	const { signUp } = React.useContext(AuthContext);
+	const socket = route.params.socket;
+	const [selectedIds, setSelectedIds] = React.useState([]);
+	const [tags, setTags] = React.useState([]);
+	const [progress, setProgress] = React.useState(0);
 
-//     return (
-//       <SafeAreaView style={styles.container}>
-//         <FlatList
-//           data={dataSource}
-//           renderItem={({item}) => (
-//             <View
-//               style={{
-//                 flex: 1,
-//                 flexDirection: 'column',
-//                 margin: 1
-//               }}>
-//               <Image
-//                 style={styles.imageThumbnail}
-//                 source={{uri: item.src}}
-//               />
-//             </View>
-//           )}
-//           //Setting the number of column
-//           numColumns={3}
-//           nameExtractor={(item, index) => index}
-//         />
-//       </SafeAreaView>
-//     );
-//   };
+	React.useEffect(() => {
+		socket.emit('getTags', {}, (err, res) => {
+			if (err) {
+				Alert.alert(
+					"Host signup",
+					"Error occurred.",
+					[
+						{
+							text: "OK"
+						}
+					]
+				);
+				navigation.navigate('HomeScreen');
+				return;
+			}
 
-//   const Category = (props) => {
-//     return (
-//       <View style={styles.card}>
-//         <Text> {props.name}!</Text>
-//       </View>
-//     );
-//   }
+			let tag = [];
+
+			for (let i = 0; i < res.length; i++) {
+				tag.push({ title: res[i].tagName, id: res[i]._id });
+			}
+
+			setTags(tag);
+		})
+	}, []);
+
+	const renderItem = ({ item }) => {
+		const backgroundColor = selectedIds.some(i => i.id === item.id) ? "#85ba7f" : "#bfffb8";
+		const color = selectedIds.some(i => i.id === item.id) ? 'white' : 'black';
+
+		if (item.empty === true) {
+			return <View style={[styles.item, styles.itemInvisible]} />;
+		}
+		return (
+			<Item
+				item={item}
+				onPress={() => {
+					if (selectedIds.some(i => i.id === item.id)) {
+						setProgress(progress - 0.2);
+						setSelectedIds(selectedIds.filter(i => i.id !== item.id));
+						return;
+					}
+					setProgress(progress + 0.2);
+					setSelectedIds(oldArr => [...oldArr, item])
+				}}
+				backgroundColor={{ backgroundColor }}
+				textColor={{ color }}
+			/>
+		);
+	};
+
+	const onContinue = () => {
+		let tagsArr = [];
+		for(let i = 0; i < selectedIds.length; i++) {
+			tagsArr.push(selectedIds[i].id);
+		}
+		route.params.newStudent.tags = tagsArr;
+
+		socket.emit('studentSignup', route.params.newStudent, (err, response) => {
+			if (err) {
+                Alert.alert(
+                    "Host sign up",
+                    "Error signing you up.",
+                    [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                );
+                return;
+            }
+
+            signUp(response);
+		});
+	};
+
+	return (
+		<View style={styles.container}>
+			<Text style={styles.text}>Please pick 5 or more interests</Text>
+			<LinearProgress
+				style={styles.progress}
+				color='black'
+				trackColor='white'
+				variant='determinate'
+				value={progress}
+			/>
+
+			{
+				progress >= 1 &&
+				<TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
+					<Text style={styles.continueBtnText}>Finish sign up</Text>
+				</TouchableOpacity>
+			}
+
+			<ScrollView style={styles.listView}>
+				<FlatList
+					numColumns={3}
+					style={styles.list}
+					data={formatData(tags)}
+					renderItem={renderItem}
+					keyExtractor={(item) => item.id}
+					extraData={selectedIds}
+				/>
+			</ScrollView>
+		</View>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		width: "100%",
+		height: "100%",
+		backgroundColor: "#96db8f",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	text: {
+		fontSize: 22,
+		fontWeight: 'bold',
+		alignSelf: 'flex-start',
+		top: 100,
+		left: 30
+	},
+	progress: {
+		top: 120,
+		width: '89%',
+		borderRadius: 5
+	},
+	listView: {
+		top: 130,
+		width: '100%',
+		zIndex: -1,
+	},
+	list: {
+		alignSelf: 'center',
+		width: '90%',
+		flexGrow: 0
+	},
+	continueBtn: {
+		position: 'absolute',
+		shadowColor: 'black',
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.4,
+		shadowRadius: 5,
+		width: '70%',
+		backgroundColor: '#85ba7f',
+		padding: 15,
+		borderRadius: 10,
+		bottom: 70,
+		alignSelf: 'center'
+	},
+	continueBtnText: {
+		alignSelf: 'center',
+		textTransform: 'uppercase',
+		fontWeight: 'bold',
+		fontSize: 18,
+		color: "#2f402d"
+	},
+	item: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		flex: 1,
+		margin: 1,
+		height: (Dimensions.get('window').width - Dimensions.get('window').width * 0.1) / 3,
+		borderRadius: 10,
+		opacity: 0.8,
+		padding: 20,
+		shadowColor: 'black',
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.1,
+		shadowRadius: 2
+	},
+	itemInvisible: {
+		backgroundColor: 'transparent',
+	},
+	itemText: {
+		fontSize: 14,
+		letterSpacing: 0.2
+	}
+});
