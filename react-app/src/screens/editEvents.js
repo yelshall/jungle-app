@@ -9,6 +9,7 @@ import {
   Pressable,
   Dimensions,
   TextInput,
+  Image,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -17,8 +18,12 @@ import React, { Component } from "react";
 
 import eventsData from "../../assets/events-data/eventsData";
 import { Text } from "react-native-elements";
+import { EvilIcons } from "@expo/vector-icons";
 
 import { ListItem, Avatar } from "react-native-elements";
+
+const KHeight = Dimensions.get("window").height;
+const KWidth = Dimensions.get("window").width;
 
 const list = [
   {
@@ -49,6 +54,7 @@ export default function editEvents({ navigation, route }) {
   const [event_time, setEventTime] = React.useState(event_date_time);
   const [event_tag, setEventTags] = React.useState(tag);
   const [event_max, setEventMax] = React.useState(MAX_STUDENTS);
+  const [event_NME, setEventName] = React.useState(event_name);
 
   let onPress = () => {
     if (isEditing) {
@@ -61,205 +67,180 @@ export default function editEvents({ navigation, route }) {
     }
   };
   return (
-    <View>
-      <SafeAreaView style={styles.container}>
-        <Pressable onPress={() => {}}>
-          <ImageBackground
-            style={styles.image}
-            source={{ uri: image }}
-          ></ImageBackground>
-        </Pressable>
-        <TouchableOpacity
-          activeOpacity={0}
-          onPress={() => {
-            Alert.alert("Host");
+    <View style={styles.container}>
+      <View style={styles.header}></View>
+      <Image style={styles.avatar} source={{ uri: image }} />
+
+      <View style={{ height: KHeight * 0.14 }}></View>
+      {isEditing ? (
+        <TextInput
+          style={{
+            fontSize: 25,
+            position: "absolute",
+            alignSelf: "center",
+            marginTop: 50,
+            color: "white",
+            fontWeight: "bold",
+          }}
+          value={event_NME}
+          onChangeText={(value) => setEventName(value)}
+          autoFocus
+        />
+      ) : (
+        <Text
+          style={{
+            fontSize: 25,
+            position: "absolute",
+            alignSelf: "center",
+            marginTop: 50,
+            color: "white",
+            fontWeight: "bold",
           }}
         >
-          <View style={{ height: 50 }}>
-            {list.map((l, i) => (
-              <ListItem key={i} bottomDivider>
-                <Avatar source={{ uri: l.avatar_url }} />
-                <ListItem.Content>
-                  <ListItem.Title>{l.name}</ListItem.Title>
-                  <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
-                </ListItem.Content>
-              </ListItem>
-            ))}
-          </View>
-        </TouchableOpacity>
-      </SafeAreaView>
-      <SafeAreaView style={styles.TextContainer}>
-        <Text h4 style={styles.textInner}>
-          {"\n"}DESCRIPTION:
+          {event_name}
         </Text>
-        <SafeAreaView style={{ height: 60, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            {isEditing ? (
-              <TextInput
-                value={event_des}
-                onChangeText={(value) => setEventDes(value)}
-                autoFocus
-                //onBlur={() => setEdit(!isEditing)}
-              />
-            ) : (
-              <Text h4 style={styles.text}>
-                {event_description}
-              </Text>
-            )}
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.textInner}>
-          LOCATION:
+      )}
+      <TouchableOpacity
+        onPress={() => Alert.alert("host was tapped")}
+        style={{
+          borderWidth: 1,
+          borderColor: "black",
+          borderRadius: 5,
+          width: "60%",
+          alignSelf: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 15,
+            alignSelf: "center",
+            marginVertical: 10,
+            color: "green",
+            fontWeight: "bold",
+            adjustFonScaling: true,
+          }}
+        >
+          {event_host}
         </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            {isEditing ? (
-              <TextInput
-                value={event_loc}
-                onChangeText={(value) => setEventLoc(value)}
-                autoFocus
-                //onBlur={() => setEdit(!isEditing)}
-              />
-            ) : (
-              <Text h4 style={styles.text}>
-                {event_location}
-              </Text>
-            )}
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.text}>
-          TIMES:
+      </TouchableOpacity>
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <EvilIcons name="location" size={24} color="black" />
+        {isEditing ? (
+          <TextInput
+            style={{ alignSelf: "center", marginVertical: 20, width: "50%" }}
+            value={event_loc}
+            onChangeText={(value) => setEventLoc(value)}
+            autoFocus
+          />
+        ) : (
+          <Text
+            style={{ alignSelf: "center", marginVertical: 20, width: "50%" }}
+          >
+            {event_location}
+          </Text>
+        )}
+      </View>
+      {isEditing ? (
+        <TextInput
+          style={{
+            alignSelf: "center",
+            marginVertical: 50,
+            width: "80%",
+            flexWrap: "wrap",
+          }}
+          value={event_des}
+          onChangeText={(value) => setEventDes(value)}
+          autoFocus
+        />
+      ) : (
+        <Text
+          style={{
+            alignSelf: "center",
+            marginVertical: 50,
+            width: "80%",
+            flexWrap: "wrap",
+          }}
+        >
+          {event_description}
         </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            {isEditing ? (
-              <TextInput
-                value={event_time}
-                onChangeText={(value) => setEventTime(value)}
-                autoFocus
-                //onBlur={() => setEdit(!isEditing)}
-              />
-            ) : (
-              <Text h4 style={styles.text}>
-                {event_date_time}
-              </Text>
-            )}
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.text}>
-          TAGS:
+      )}
+
+      {isEditing ? (
+        <TextInput
+          style={{
+            alignSelf: "center",
+            marginVertical: 30,
+            fontWeight: "bold",
+          }}
+          value={event_time}
+          onChangeText={(value) => setEventTime(value)}
+          autoFocus
+        />
+      ) : (
+        <Text
+          style={{
+            alignSelf: "center",
+            marginVertical: 30,
+            fontWeight: "bold",
+          }}
+        >
+          {event_date_time}
         </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            {isEditing ? (
-              <TextInput
-                value={event_tag}
-                onChangeText={(value) => setEventTags(value)}
-                autoFocus
-                //onBlur={() => setEdit(!isEditing)}
-              />
-            ) : (
-              <Text h4 style={styles.text}>
-                {tag}
-              </Text>
-            )}
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.text}>
-          MAX:
-        </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            {isEditing ? (
-              <TextInput
-                value={event_max}
-                onChangeText={(value) => setEventMax(value)}
-                autoFocus
-                //onBlur={() => setEdit(!isEditing)}
-              />
-            ) : (
-              <Text h4 style={styles.text}>
-                {MAX_STUDENTS}
-              </Text>
-            )}
-          </ScrollView>
-        </SafeAreaView>
-        <Pressable style={styles.loginBtn} onPress={onPress}>
-          <Text style={styles.textButton}> {textValue}</Text>
-        </Pressable>
-      </SafeAreaView>
+      )}
+      <Pressable style={styles.signOutBtn} onPress={onPress}>
+        <Text style={styles.signOutBtnText}> {textValue}</Text>
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: 300,
-    //width:410,
-    resizeMode: "contain",
+  header: {
+    backgroundColor: "#96db8f",
+    height: KHeight * 0.28,
   },
-
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 20,
-    overflow: "hidden",
-    justifyContent: "flex-end",
+  avatar: {
+    width: KHeight * 0.4,
+    height: KWidth * 0.5,
+    borderRadius: KHeight * 0.25,
+    borderWidth: 4,
+    borderColor: "white",
+    marginBottom: 10,
+    alignSelf: "center",
+    position: "absolute",
+    marginTop: 130,
   },
-
-  loginBtn: {
-    width: "50%",
-    borderRadius: 10,
-    height: 50,
-    bottom: 0,
-    position: "relative",
-    top: 80,
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: Dimensions.get("window").width / 4,
-    backgroundColor: "grey",
-  },
-
-  textButton: {
-    fontSize: 16,
-    lineHeight: 21,
+  signOutBtnText: {
+    alignSelf: "center",
+    textTransform: "uppercase",
     fontWeight: "bold",
-    letterSpacing: 0.25,
-    color: "white",
+    fontSize: 18,
+    color: "#2f402d",
   },
-
-  TextContainer: {
-    position: "relative",
-    height: 80,
+  container: {
+    flex: 1,
     resizeMode: "contain",
-    justifyContent: "flex-end",
-    top: 400,
-    //bottom: 100,
   },
-  scrollView: {
-    backgroundColor: "white",
-    resizeMode: "contain",
-    marginVertical: 3,
-    //marginHorizontal: 5,
-    paddingTop: 5,
-    paddingBottom: 0,
-  },
-  text: {
-    //paddingTop:3,
-    position: "relative",
-    fontSize: 21,
-    lineHeight: 21,
-    //fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: "black",
-  },
-  textInner: {
-    //paddingTop:3,
-    position: "relative",
-    fontSize: 21,
-    lineHeight: 21,
-    //fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: "black",
+  signOutBtn: {
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    opacity: 0.8,
+    width: "70%",
+    backgroundColor: "#85ba7f",
+    padding: 15,
+    borderRadius: 10,
+    alignSelf: "center",
+    marginBottom: 50,
+    //position: "absolute",
+    //top: 800,
   },
 });
