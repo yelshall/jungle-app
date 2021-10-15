@@ -263,12 +263,11 @@ var hostListeners = (socket) => {
     });
 
     socket.on('createEventHost', (request, callback) => {
-        host.createEventHost(request.newEvent, (err, ret) => {
+        host.createEventHost(request.hid, request.newEvent, (err, ret) => {
             if (err) {
                 if(callback) {callback(err, null)};
                 return;
             }
-
             if(callback) {callback(null, ret)};
         });
     });

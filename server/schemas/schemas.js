@@ -134,7 +134,7 @@ const eventSchema = new mongoose.Schema({
     },
     imageURL: {
         type: String,
-        required: true
+        default: 'https://bloximages.newyork1.vip.townnews.com/purdueexponent.org/content/tncms/assets/v3/editorial/8/c6/8c68927a-c2db-11ea-9f84-bb549081b729/5f08b46f175b6.image.jpg?resize=1200%2C899'
     },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,

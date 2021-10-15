@@ -119,12 +119,11 @@ var retreiveHostInfo = (hid, callback) => {
 }
 
 var createEventHost = (hid, newEvent, callback) => {
-    newEvent.eventHost = hid;
     event_functions.createEvent(newEvent, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
-            schemas.Host.findByIdAndUpdate(hid, {$push: {events: res._id}}, (err, res2) => {
+            schemas.Host.findByIdAndUpdate(hid, {$addToSet: {events: res._id}}, (err, res2) => {
                 if(err) {
                     if(callback) {callback(err, null);}
                 } else {

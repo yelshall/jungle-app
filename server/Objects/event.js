@@ -27,6 +27,7 @@ var createEvent = (newEvent, callback) => {
         if (callback) {callback(null, data);}
     })
     .catch(err => {
+        //console.log(err);
         if (callback) {callback(err, null);}
     });
 };
