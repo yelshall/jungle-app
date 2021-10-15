@@ -21,10 +21,11 @@ export default function CardSwipe({ navigation, route }) {
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	useEffect(() => {
-		socket.emit('getEvents', {}, (err, res) => {
+		socket.emit('getEvents', {sid: loginState.id}, (err, res) => {
 			if (err) {
 				return;
 			}
+
 			for(let i = 0; i < res.length; i++) {
 				events.push(res[i]);
 			}

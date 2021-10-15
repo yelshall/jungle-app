@@ -79,7 +79,7 @@ export default function Explore({ navigation, route }) {
 
 	const onLongPress = (event, type) => {
 		event.type = type;
-		navigation.navigate("event_info", { event: event });
+		navigation.navigate("event_info", { event: event, socket: socket, loginState: loginState });
 	};
 	useEffect(() => {
 		LayoutAnimation.spring();

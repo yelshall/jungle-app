@@ -117,7 +117,7 @@ var deleteStudent = (sid, callback) => {
 };
 
 var addInterestedEvent = (sid, eid, callback) => {
-    schemas.Student.findByIdAndUpdate(sid, { $push: { interestedEvents: eid } }, (err, res) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { interestedEvents: eid } }, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
         } else {
@@ -134,7 +134,7 @@ var addInterestedEvent = (sid, eid, callback) => {
 };
 
 var addConfirmedEvent = (sid, eid, callback) => {
-    schemas.Student.findByIdAndUpdate(sid, { $push: { confirmedEvents: eid } }, (err, res) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { confirmedEvents: eid } }, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
         } else {
@@ -185,7 +185,7 @@ var removeConfirmedEvent = (sid, eid, callback) => {
 };
 
 var followHost = (sid, hid, callback) => {
-    schemas.Student.findByIdAndUpdate(sid, { $push: { following: hid } }, (err, res) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { following: hid } }, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
         } else {

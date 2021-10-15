@@ -104,7 +104,7 @@ var getEvents = (callback) => {
 };
 
 var addInterestedStudent = (eid, sid, callback) => {
-    schemas.Event.findByIdAndUpdate(eid, {$push: {interestedStudents: sid}}, (err, res) => {
+    schemas.Event.findByIdAndUpdate(eid, {$addToSet: {interestedStudents: sid}}, (err, res) => {
         if (err) {
             if(callback) {callback(err, null);}
         } else {
@@ -114,7 +114,7 @@ var addInterestedStudent = (eid, sid, callback) => {
 };
 
 var addConfirmedStudent = (eid, sid, callback) => {
-    schemas.Event.findByIdAndUpdate(eid, {$push: {confirmedStudents: sid}}, (err, res) => {
+    schemas.Event.findByIdAndUpdate(eid, {$addToSet: {confirmedStudents: sid}}, (err, res) => {
         if (err) {
             if(callback) {callback(err, null);}
         } else {
@@ -144,7 +144,7 @@ var removeConfirmedStudent = (eid, sid, callback) => {
 };
 
 var addTag = (eid, newTag, callback) => {
-    schemas.Event.findByIdAndUpdate(eid, {$push: {tags: newTag}}, (err, res) => {
+    schemas.Event.findByIdAndUpdate(eid, {$addToSet: {tags: newTag}}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {

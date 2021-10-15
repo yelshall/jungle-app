@@ -1,229 +1,159 @@
 import {
-  View,
-  SafeAreaView,
-  ImageBackground,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  Button,
-  Pressable,
-  Dimensions,
+	View,
+	StyleSheet,
+	Alert,
+	ScrollView,
+	Dimensions,
+	Image,
 } from "react-native";
-
+import { EvilIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import React, { Component } from "react";
+import React from "react";
 
-import eventsData from "../../assets/events-data/eventsData";
 import { Text } from "react-native-elements";
 
-import { ListItem, Avatar } from "react-native-elements";
-
-const list = [
-  {
-    name: "by John Purdue",
-    avatar_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
-    subtitle: "Status: Verified",
-  },
-];
+const KHeight = Dimensions.get("window").height;
+const KWidth = Dimensions.get("window").width;
 
 export default function event_info({ navigation, route }) {
-  const {
-    event_name,
-    image,
-    event_host,
-    event_location,
-    event_date_time,
-    event_description,
-    tag,
-  } = route.params.event;
+	const socket = route.params.socket;
+	const loginState = route.params.loginState;
+	const event = route.params.event;
 
-  //console.log(image);
-  const [textValue, setTextValue] = React.useState("RESERVE");
-  const [RSVP, setRSVP] = React.useState(false);
+	const [textValue, setTextValue] = React.useState("RESERVE");
+	const [RSVP, setRSVP] = React.useState(event.type === 'INTERESTED');
 
-  let onPress = () => {
-    if (RSVP) {
-      Alert.alert("Canceled RSVP");
-      setTextValue("RESERVE");
-      setRSVP(false);
-    } else if (textValue == "RESERVE") {
-      Alert.alert("reserved");
-      setTextValue("CANCEL");
-      setRSVP(true);
-    }
-  };
+	let onPress = () => {
+		setRSVP(false);
+		socket.emit('removeInterestedEvent', {uid: loginState.id, eid: event._id});
+		socket.emit('addConfirmedEvent', {uid: loginState.id, eid: event._id});
+	};
 
-  return (
-    <View>
-      <SafeAreaView style={styles.container}>
-        <Pressable onPress={() => {}}>
-          <ImageBackground
-            style={styles.image}
-            source={{ uri: image }}
-          ></ImageBackground>
-        </Pressable>
-        <TouchableOpacity
-          activeOpacity={0}
-          onPress={() => {
-            Alert.alert("Host");
-          }}
-        >
-          <View style={{ height: 50 }}>
-            {list.map((l, i) => (
-              <ListItem key={i} bottomDivider>
-                <Avatar source={{ uri: l.avatar_url }} />
-                <ListItem.Content>
-                  <ListItem.Title>{l.name}</ListItem.Title>
-                  <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
-                </ListItem.Content>
-              </ListItem>
-            ))}
-          </View>
-        </TouchableOpacity>
-      </SafeAreaView>
-      <SafeAreaView style={styles.TextContainer}>
-        <Text h4 style={styles.textInner}>
-          {"\n"}DESCRIPTION:
-        </Text>
-        <SafeAreaView style={{ height: 60, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            <Text h4 style={styles.text}>
-              {event_description}
-            </Text>
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.textInner}>
-          LOCATION:
-        </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            <Text h4 style={styles.text}>
-              {event_location}
-              {"\n"}
-            </Text>
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.text}>
-          TIMES:
-        </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            <Text h4 style={styles.text}>
-              {event_date_time}
-            </Text>
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.text}>
-          TAGS:
-        </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            <Text h4 style={styles.text}>
-              {tag}
-            </Text>
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.text}>
-          ATTENDEES:
-        </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            <Text h4 style={styles.text}>
-              50
-            </Text>
-          </ScrollView>
-        </SafeAreaView>
-        <Text h4 style={styles.text}>
-          MAX:
-        </Text>
-        <SafeAreaView style={{ height: 35, position: "relative" }}>
-          <ScrollView style={styles.scrollView}>
-            <Text h4 style={styles.text}>
-              100
-            </Text>
-          </ScrollView>
-        </SafeAreaView>
-        <Pressable style={styles.loginBtn} onPress={onPress}>
-          <Text style={styles.textButton}> {textValue}</Text>
-        </Pressable>
-      </SafeAreaView>
-    </View>
-  );
+	let onCancel = () => {
+		socket.emit('removeConfirmedEvent', {uid: loginState.id, eid: event._id});
+	};
+
+
+	return (
+		<View style={styles.container}>
+			<View style={styles.header}></View>
+			<Image style={styles.avatar} source={{ uri: event.imageURL }} />
+
+			<View style={{ height: KHeight * 0.14 }}></View>
+			<Text
+				style={{
+					fontSize: 25,
+					position: "absolute",
+					alignSelf: "center",
+					marginTop: 50,
+					color: "white",
+					fontWeight: "bold",
+				}}
+			>
+				{event.eventName}
+			</Text>
+			<TouchableOpacity
+				onPress={() => Alert.alert("host was tapped")}
+				style={{
+					borderWidth: 1,
+					borderColor: "black",
+					borderRadius: 5,
+					width: "60%",
+					alignSelf: "center",
+				}}
+			>
+				<Text
+					style={{
+						fontSize: 15,
+						alignSelf: "center",
+						marginVertical: 10,
+						color: "green",
+						fontWeight: "bold",
+						adjustFonScaling: true,
+					}}
+				>
+					{event.eventHost}
+				</Text>
+			</TouchableOpacity>
+
+			<View
+				style={{
+					flexDirection: "row",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
+				<EvilIcons name="location" size={24} color="black" />
+				<Text style={{ alignSelf: "center", marginVertical: 20, width: "50%" }}>
+					{event.location}
+				</Text>
+			</View>
+			<ScrollView>
+				<Text style={{ alignSelf: "center", marginVertical: 50, width: "80%", flexWrap: "wrap" }}>
+					{event.description}
+				</Text>
+			</ScrollView>
+
+			<Text
+				style={{ alignSelf: "center", marginVertical: 30, fontWeight: "bold" }}
+			>
+				{event.dateTime}
+			</Text>
+
+			{
+				RSVP &&
+				<TouchableOpacity style={styles.signOutBtn} onPress={onPress}>
+					<Text style={styles.signOutBtnText}>RSVP</Text>
+				</TouchableOpacity>
+			}
+
+			{
+				!RSVP &&
+				<TouchableOpacity style={styles.signOutBtn} onPress={onCancel}>
+					<Text style={styles.signOutBtnText}>CANCEL</Text>
+				</TouchableOpacity>
+			}
+		</View>
+	);
 }
 
-// prettier-ignore
 const styles = StyleSheet.create({
-    container: {
-        height:300,
-        //width:410,
-        resizeMode:'contain',
-    },
-  
-    image: {
-      width: "100%",
-      height: "100%",
-      borderRadius: 20,
-      overflow: "hidden",
-      justifyContent: "flex-end",
-    },
-  
-    loginBtn: {
-      width: "50%",
-      borderRadius: 10,
-      height: 50,
-      bottom:0,
-      position: 'relative',
-      top: 80,
-      alignItems: "center",
-      justifyContent: "center",
-      marginLeft:Dimensions.get('window').width /4,
-      backgroundColor: "grey",
-    },
-  
-    textButton: {
-     fontSize: 16,
-     lineHeight: 21,
-     fontWeight: 'bold',
-     letterSpacing: 0.25,
-     color: 'white',
-    },
-  
-    TextContainer: {
-        position:'relative',
-        height:80,
-        resizeMode:'contain',
-        justifyContent: "flex-end",
-        top: 400,
-        //bottom: 100,
-  
-  
-    },
-    scrollView: {
-      backgroundColor: 'white',
-      resizeMode:"contain",
-      marginVertical:3,
-      //marginHorizontal: 5,
-      paddingTop:5,
-      paddingBottom:0,
-    },
-    text: {
-      //paddingTop:3,
-      position:"relative",
-      fontSize: 21,
-      lineHeight: 21,
-      //fontWeight: 'bold',
-      letterSpacing: 0.25,
-      color: 'black',
-     },
-     textInner: {
-      //paddingTop:3,
-      position:"relative",
-      fontSize: 21,
-      lineHeight: 21,
-      //fontWeight: 'bold',
-      letterSpacing: 0.25,
-      color: 'black',
-     },
-   
-  });
+	header: {
+		backgroundColor: "#96db8f",
+		height: KHeight * 0.28,
+	},
+	avatar: {
+		width: KHeight * .4,
+		height: KWidth * .5,
+		borderRadius: KHeight * .25,
+		borderWidth: 4,
+		borderColor: "white",
+		marginBottom: 10,
+		alignSelf: 'center',
+		position: 'absolute',
+		marginTop: 130
+	},
+	signOutBtnText: {
+		alignSelf: "center",
+		textTransform: "uppercase",
+		fontWeight: "bold",
+		fontSize: 18,
+		color: "#2f402d"
+	},
+	container: {
+		flex: 1,
+	},
+	signOutBtn: {
+		shadowColor: "black",
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.4,
+		shadowRadius: 5,
+		opacity: 0.8,
+		width: "70%",
+		backgroundColor: "#85ba7f",
+		padding: 15,
+		borderRadius: 10,
+		alignSelf: "center",
+		marginBottom: 50,
+	}
+});

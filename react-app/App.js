@@ -16,6 +16,7 @@ import { AuthContext } from "./src/utils/context";
 import event_info from "./src/screens/event_info";
 import eventsData from "./assets/events-data/eventsData";
 import editEvents from "./src/screens/editEvents";
+import Explore from "./src/screens/Explore";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -234,7 +235,6 @@ export default function App() {
       );
     }
   }*/
-
   return (
 	<AuthContext.Provider value={authContext}>
 	  <NavigationContainer>
@@ -250,6 +250,7 @@ export default function App() {
 			  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjY3ZDVhMmFiOWE5NGU1NzkzYWUzZCIsImVtYWlsIjoidGVzdEBtYWlsLm5ldCIsInNpZ25JblR5cGUiOiJTVFVERU5UIiwiaWF0IjoxNjM0MjgzOTAzLCJleHAiOjE2MzY4NzU5MDN9.pgMImc3x5acSBnnLd5EAo3kY4uS_X0MEMscoorDDYwA",
 		  }}} />
 		  <Stack.Screen name="event_info" component={event_info} initialParams={{socket: socket}} />
+		  <Stack.Screen name="Explore" component={Explore} initialParams={{socket: socket}}/>
 		</Stack.Navigator>
 	  </NavigationContainer>
 	</AuthContext.Provider>

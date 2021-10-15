@@ -162,7 +162,7 @@ var deleteEventHost = (hid, eid, callback) => {
 };
 
 var addFollower = (hid, sid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, {$push: {followers: sid}}, (err, res) => {
+    schemas.Host.findByIdAndUpdate(hid, {$addToSet: {followers: sid}}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
@@ -182,7 +182,7 @@ var removeFollower = (hid, sid, callback) => {
 };
 
 var addTag = (hid, tid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, {$push: {tags: tid}}, (err, res) => {
+    schemas.Host.findByIdAndUpdate(hid, {$addToSet: {tags: tid}}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {

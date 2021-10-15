@@ -112,19 +112,29 @@ io.on('connection', (socket) => {
     });
 
     socket.on('getEvents', (request, callback) => {
-        event.getEvents((err, res) => {
+        student.retreiveStudentInfo(request.sid, (err, res1) => {
             if(err) {
                 callback(err, null);
                 return;
             }
+            event.getEvents((err, res) => {
+                if(err) {
+                    callback(err, null);
+                    return;
+                }
 
-            for(let i = 0; i < res.length; i++) {
-                res[i].metadata = undefined;
-                res[i].confirmedStudents = undefined;
-                res[i].interestedStudents = undefined;
-            }
-
-            callback(null, res);
+                let arr = [];
+                for(let i = 0; i < res.length; i++) {
+                    if(res1.interestedEvents.filter(item => item._id.equals(res[i]._id)).length === 0 && res1.confirmedEvents.filter(item => item._id.equals(res[i]._id)).length === 0) {
+                        res[i].metadata = undefined;
+                        res[i].confirmedStudents = undefined;
+                        res[i].interestedStudents = undefined;
+                        arr.push(res[i]);
+                    }
+                }
+    
+                callback(null, arr);
+            });
         });
     });
 

@@ -66,7 +66,7 @@ var deleteTag = async (tid, callback) => {
 
 var addEvent = async (tid, eid, callback) => {
     try {
-        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$push: {events: eid}}).exec();
+        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$addToSet: {events: eid}}).exec();
 
         if(callback) {
             callback(null, ret);
@@ -97,7 +97,7 @@ var removeEvent = async (tid, eid, callback) => {
 
 var addHost = async (tid, hid, callback) => {
     try {
-        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$push: {hosts: hid}}).exec();
+        var ret = await schemas.Tag.findByIdAndUpdate(tid, {$addToSet: {hosts: hid}}).exec();
         if(callback) {
             callback(null, ret);
         }
