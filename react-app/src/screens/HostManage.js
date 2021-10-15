@@ -8,6 +8,7 @@ import {
 	SafeAreaView,
 	TouchableOpacity,
 	ScrollView,
+	ActivityIndicator
 } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -53,6 +54,9 @@ export default function HostManage({ navigation, route }) {
 	const [tagTypes, setTagTypes] = React.useState([]);
 
 	const [tags, setTags] = React.useState([]);
+	const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
+	const events = React.useRef([]).current;
+	const [isLoading, setIsLoading] = React.useState(true);
 
 	useEffect(() => {
 		socket.emit('getTags', {}, (err, res) => {
@@ -77,7 +81,29 @@ export default function HostManage({ navigation, route }) {
 			}
 
 			setTagTypes(tags);
-		})
+		});
+
+		socket.emit('getHostData', { hid: loginState.id }, (err, res) => {
+			if (err) {
+				Alert.alert(
+					"Host signup",
+					"Error occurred.",
+					[
+						{
+							text: "OK"
+						}
+					]
+				);
+				return;
+			}
+			for (let i = 0; i < res.events.length; i++) {
+				events.push(res.events[i]);
+			}
+			forceUpdate();
+			setTimeout(() => {
+				setIsLoading(false);
+			}, 500);
+		});
 	}, []);
 	const onCreateEvent = () => {
 		if (eventName === "") {
@@ -191,7 +217,7 @@ export default function HostManage({ navigation, route }) {
 				<SafeAreaView style={styles.itemView}>
 					<Image
 						style={{ height: 100, width: 100 }}
-						source={{ uri: item.image }}
+						source={{ uri: item.imageURL }}
 					/>
 					<Text
 						style={{
@@ -206,9 +232,9 @@ export default function HostManage({ navigation, route }) {
 					>
 						<Text style={{ fontWeight: "bold" }}>
 							{" "}
-							{item.event_name + "\n"}
+							{item.eventName + "\n"}
 						</Text>
-						{item.event_date_time}
+						{item.dateTime}
 					</Text>
 					{/** 
 			<MaterialIcons
@@ -238,152 +264,159 @@ export default function HostManage({ navigation, route }) {
 	};
 
 	return (
-		<View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
-			<Text style={{ margin: 60, fontSize: 28, fontWeight: "bold" }}>
-				Manage
-			</Text>
+		<>
+			{
+				isLoading ?
+					<ActivityIndicator size="large" />
+					:
+					<View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
+						<Text style={{ margin: 60, fontSize: 28, fontWeight: "bold" }}>
+							Manage
+						</Text>
 
-			<FlatList
-				data={eventsData}
-				keyExtractor={(item) => item.id}
-				renderItem={renderItem}
-				style={styles.container}
-			/>
-
-			<Modal
-				avoidKeyboard
-				presentationStyle="fullScreen"
-				visible={model1Open}
-				animationType="slide"
-			>
-				<Header
-					centerComponent={{
-						text: "Create An Event",
-						style: { color: "#fff" },
-					}}
-				>
-				</Header>
-
-				<ScrollView
-					style={{
-						width: "100%",
-					}}
-				>
-					<View style={styles.infoView}>
-						<Text style={styles.secondaryText}>Event Name</Text>
-						<TextInput
-							autoCorrect={false}
-							style={styles.TextInput}
-							placeholder="Enter Event name"
-							placeholderTextColor="#3d3d3d"
-							onChangeText={(eventName) => setEventName(eventName)}
+						<FlatList
+							data={events}
+							keyExtractor={(item) => item._id}
+							renderItem={renderItem}
+							style={styles.container}
 						/>
+
+						<Modal
+							avoidKeyboard
+							presentationStyle="fullScreen"
+							visible={model1Open}
+							animationType="slide"
+						>
+							<Header
+								centerComponent={{
+									text: "Create An Event",
+									style: { color: "#fff" },
+								}}
+							>
+							</Header>
+
+							<ScrollView
+								style={{
+									width: "100%",
+								}}
+							>
+								<View style={styles.infoView}>
+									<Text style={styles.secondaryText}>Event Name</Text>
+									<TextInput
+										autoCorrect={false}
+										style={styles.TextInput}
+										placeholder="Enter Event name"
+										placeholderTextColor="#3d3d3d"
+										onChangeText={(eventName) => setEventName(eventName)}
+									/>
+								</View>
+
+								<View style={styles.infoView}>
+									<Text style={styles.secondaryText}>Event Start Date</Text>
+									<TextInput
+										autoCorrect={false}
+										style={styles.TextInput}
+										placeholder="mm/dd/yyyy"
+										placeholderTextColor="#3d3d3d"
+										onChangeText={(startDate) => setStartDate(startDate)}
+									/>
+								</View>
+
+								<View style={styles.infoView}>
+									<Text style={styles.secondaryText}>Event End Date</Text>
+									<TextInput
+										autoCorrect={false}
+										style={styles.TextInput}
+										placeholder="mm/dd/yyyy"
+										placeholderTextColor="#3d3d3d"
+										onChangeText={(endDate) => setEndDate(endDate)}
+									/>
+								</View>
+
+								<View style={styles.infoView}>
+									<Text style={styles.secondaryText}>Location</Text>
+									<TextInput
+										autoCorrect={false}
+										style={styles.TextInput}
+										placeholder="Enter Event Location"
+										placeholderTextColor="#3d3d3d"
+										onChangeText={(location) => setLocation(location)}
+									/>
+								</View>
+
+								<View style={styles.infoView}>
+									<Text style={styles.secondaryText}>Max Number of Attendees</Text>
+									<TextInput
+										autoCorrect={false}
+										style={styles.TextInput}
+										placeholder="Enter Max Attendees"
+										placeholderTextColor="#3d3d3d"
+										onChangeText={(maxStudents) => setMaxStudents(maxStudents)}
+										onEndEditing={() => {
+											if (maxStudents <= 0) {
+												setMaxStudents(-1);
+											}
+										}}
+									/>
+								</View>
+
+								<View style={styles.infoView}>
+									<Text style={styles.secondaryText}>Event Description</Text>
+									<TextInput
+										autoCorrect={false}
+										style={styles.TextInput}
+										placeholder="Enter Event name"
+										placeholderTextColor="#3d3d3d"
+										onChangeText={(description) => setDescription(description)}
+									/>
+								</View>
+								<Text style={styles.secondaryText}>Tags</Text>
+								<DropDownPicker
+									style={{
+										backgroundColor: "#85ba7f",
+										borderWidth: 0,
+										alignSelf: "center",
+									}}
+									containerStyle={{
+										width: "77%",
+										paddingBottom: 20,
+										alignSelf: "center",
+									}}
+									dropDownContainerStyle={{
+										backgroundColor: "#85ba7f",
+										borderWidth: 0,
+										alignSelf: "center",
+									}}
+									multiple={true}
+									min={0}
+									max={3}
+									placeholder="Choose an option"
+									open={openTags}
+									value={tags}
+									items={tagTypes}
+									setOpen={setOpenTags}
+									setValue={setTags}
+									setItems={setTagTypes}
+									bottomOffset={100}
+								/>
+							</ScrollView>
+
+							<TouchableOpacity
+								style={styles.signOutBtn}
+								onPress={() => {
+									onCreateEvent();
+								}}
+							>
+								<Text style={styles.signOutBtnText}>Create Event</Text>
+							</TouchableOpacity>
+						</Modal>
+
+						<TouchableOpacity onPress={() => setModal1Open(true)}>
+							<AntDesign name="pluscircleo" size={50} color="green" />
+						</TouchableOpacity>
 					</View>
-
-					<View style={styles.infoView}>
-						<Text style={styles.secondaryText}>Event Start Date</Text>
-						<TextInput
-							autoCorrect={false}
-							style={styles.TextInput}
-							placeholder="mm/dd/yyyy"
-							placeholderTextColor="#3d3d3d"
-							onChangeText={(startDate) => setStartDate(startDate)}
-						/>
-					</View>
-
-					<View style={styles.infoView}>
-						<Text style={styles.secondaryText}>Event End Date</Text>
-						<TextInput
-							autoCorrect={false}
-							style={styles.TextInput}
-							placeholder="mm/dd/yyyy"
-							placeholderTextColor="#3d3d3d"
-							onChangeText={(endDate) => setEndDate(endDate)}
-						/>
-					</View>
-
-					<View style={styles.infoView}>
-						<Text style={styles.secondaryText}>Location</Text>
-						<TextInput
-							autoCorrect={false}
-							style={styles.TextInput}
-							placeholder="Enter Event Location"
-							placeholderTextColor="#3d3d3d"
-							onChangeText={(location) => setLocation(location)}
-						/>
-					</View>
-
-					<View style={styles.infoView}>
-						<Text style={styles.secondaryText}>Max Number of Attendees</Text>
-						<TextInput
-							autoCorrect={false}
-							style={styles.TextInput}
-							placeholder="Enter Max Attendees"
-							placeholderTextColor="#3d3d3d"
-							onChangeText={(maxStudents) => setMaxStudents(maxStudents)}
-							onEndEditing={() => {
-								if (maxStudents <= 0) {
-									setMaxStudents(-1);
-								}
-							}}
-						/>
-					</View>
-
-					<View style={styles.infoView}>
-						<Text style={styles.secondaryText}>Event Description</Text>
-						<TextInput
-							autoCorrect={false}
-							style={styles.TextInput}
-							placeholder="Enter Event name"
-							placeholderTextColor="#3d3d3d"
-							onChangeText={(description) => setDescription(description)}
-						/>
-					</View>
-					<Text style={styles.secondaryText}>Tags</Text>
-					<DropDownPicker
-						style={{
-							backgroundColor: "#85ba7f",
-							borderWidth: 0,
-							alignSelf: "center",
-						}}
-						containerStyle={{
-							width: "77%",
-							paddingBottom: 20,
-							alignSelf: "center",
-						}}
-						dropDownContainerStyle={{
-							backgroundColor: "#85ba7f",
-							borderWidth: 0,
-							alignSelf: "center",
-						}}
-						multiple={true}
-						min={0}
-						max={3}
-						placeholder="Choose an option"
-						open={openTags}
-						value={tags}
-						items={tagTypes}
-						setOpen={setOpenTags}
-						setValue={setTags}
-						setItems={setTagTypes}
-						bottomOffset={100}
-					/>
-				</ScrollView>
-
-				<TouchableOpacity
-					style={styles.signOutBtn}
-					onPress={() => {
-						onCreateEvent();
-					}}
-				>
-					<Text style={styles.signOutBtnText}>Create Event</Text>
-				</TouchableOpacity>
-			</Modal>
-
-			<TouchableOpacity onPress={() => setModal1Open(true)}>
-				<AntDesign name="pluscircleo" size={50} color="green" />
-			</TouchableOpacity>
-		</View>
+			}
+		</>
 	);
 }
 

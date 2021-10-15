@@ -112,6 +112,17 @@ io.on('connection', (socket) => {
         })
     });
 
+    socket.on('getFollowing', (request, callback) => {
+        student.retreiveStudentInfo(request.uid, (err, res) => {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+
+            callback(null, res.following);
+        });
+    });
+
     socket.on('getEvents', (request, callback) => {
         student.retreiveStudentInfo(request.sid, (err, res1) => {
             if (err) {
@@ -127,13 +138,14 @@ io.on('connection', (socket) => {
                 let arr = [];
                 for (let i = 0; i < res.length; i++) {
                     if (res1.interestedEvents.filter(item => item._id.equals(res[i]._id)).length === 0 &&
-                        res1.confirmedEvents.filter(item => item._id.equals(res[i]._id)).length === 0 &&
-                        res1.confirmedEvents[i].confirmedStudents.length < res1.confirmedEvents[i].confirmedStudents.maxStudents &&
-                        res1.interestedEvents[i].confirmedStudents.length < res1.interestedEvents[i].confirmedStudents.maxStudents) {
-                        res[i].metadata = undefined;
-                        res[i].confirmedStudents = undefined;
-                        res[i].interestedStudents = undefined;
-                        arr.push(res[i]);
+                        res1.confirmedEvents.filter(item => item._id.equals(res[i]._id)).length === 0) {
+                        if(res[i].maxStudents === -1 || res[i].maxStudents > res[i].confirmedStudents.length) {
+                            res[i].metadata = undefined;
+                            res[i].confirmedStudents = undefined;
+                            res[i].interestedStudents = undefined;
+    
+                            arr.push(res[i]);
+                        }
                     }
                 }
 
@@ -273,7 +285,13 @@ var hostListeners = (socket) => {
     });
 
     socket.on('updateEventHost', (request, callback) => {
-        //Implement Later
+        host.updateEventHost(request.eid, request.update, (err, res) => {
+            if (err) {
+                if (callback) { callback(err, null) };
+                return;
+            }
+            if (callback) { callback(null, res) };  
+        });
     });
 
     socket.on('deleteEventHost', (request, callback) => {

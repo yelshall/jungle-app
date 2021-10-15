@@ -67,9 +67,21 @@ export default function HostHome({ navigation, route }) {
 				},
 			})}
 		>
-			<Tabs.Screen name="HostManage" component={HostManage} initialParams={{ socket: socket, loginState: loginState}} />
-			<Tabs.Screen name="HostChat" component={HostChat} initialParams={{ socket: socket, loginState: loginState}} />
-			<Tabs.Screen name="HostProfile" component={HostProfile} initialParams={{ socket: socket, loginState: loginState}} />
+			<Tabs.Screen name="HostManage" component={HostManage} initialParams={{ socket: socket, loginState: loginState}} 
+			options={{ unmountOnBlur: true }}
+				listeners={({ navigation }) => ({
+					blur: () => navigation.setParams({ screen: undefined }),
+				})}/>
+			<Tabs.Screen name="HostChat" component={HostChat} initialParams={{ socket: socket, loginState: loginState}} 
+			options={{ unmountOnBlur: true }}
+			listeners={({ navigation }) => ({
+				blur: () => navigation.setParams({ screen: undefined }),
+			})}/>
+			<Tabs.Screen name="HostProfile" component={HostProfile} initialParams={{ socket: socket, loginState: loginState}} 
+			options={{ unmountOnBlur: true }}
+			listeners={({ navigation }) => ({
+				blur: () => navigation.setParams({ screen: undefined }),
+			})}/>
 		</Tabs.Navigator>
 	);
 }
