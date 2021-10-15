@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HostManage from "./HostManage";
 import HostChat from "./HostChat";
 import HostProfile from "./HostProfile";
+import editEvents from "./editEvents";
 
 const Tabs = createBottomTabNavigator();
 

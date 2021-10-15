@@ -14,7 +14,8 @@ import { getData, storeData, removeData } from "./src/utils/asyncStorage";
 import { ActivityIndicator, View, Text, Alert } from "react-native";
 import { AuthContext } from "./src/utils/context";
 import event_info from "./src/screens/event_info";
-
+import eventsData from "./assets/events-data/eventsData";
+import editEvents from "./src/screens/editEvents";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -130,7 +131,7 @@ export default function App() {
       });
     }, 500);
   }, []);
-
+  /** 
   if (loginState.isLoading) {
     return (
       <View
@@ -219,5 +220,23 @@ export default function App() {
         </AuthContext.Provider>
       );
     }
-  }
+  }*/
+  return (
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="HostHome" component={HostHome} />
+          <Stack.Screen
+            name="editEvents"
+            component={editEvents}
+            initialParams={{ event: eventsData[0] }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
+  );
 }
