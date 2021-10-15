@@ -17,6 +17,7 @@ import event_info from "./src/screens/event_info";
 import eventsData from "./assets/events-data/eventsData";
 import editEvents from "./src/screens/editEvents";
 import Explore from "./src/screens/Explore";
+import Host_info from "./src/screens/Host-info";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -251,6 +252,31 @@ export default function App() {
 		  }}} />
 		  <Stack.Screen name="event_info" component={event_info} initialParams={{socket: socket}} />
 		  <Stack.Screen name="Explore" component={Explore} initialParams={{socket: socket}}/>
+		  <Stack.Screen name="Host-info" component={Host_info}  initialParams={{socket: socket}}/>
+		</Stack.Navigator>
+	  </NavigationContainer>
+	</AuthContext.Provider>
+  );
+
+  return (
+	<AuthContext.Provider value={authContext}>
+	  <NavigationContainer>
+		<Stack.Navigator
+		  screenOptions={{
+			headerShown: false,
+		  }}
+		>
+		  <Stack.Screen name="HostHome" component={HostHome} initialParams={{socket: socket, loginState: {
+			  email: "testhost@mail.net",
+			  id: "61672088e5bfa76bf910c9db",
+			  signInType: "HOST",
+			  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjY3ZDVhMmFiOWE5NGU1NzkzYWUzZCIsImVtYWlsIjoidGVzdEBtYWlsLm5ldCIsInNpZ25JblR5cGUiOiJTVFVERU5UIiwiaWF0IjoxNjM0MjgzOTAzLCJleHAiOjE2MzY4NzU5MDN9.pgMImc3x5acSBnnLd5EAo3kY4uS_X0MEMscoorDDYwA",
+		  }}} />
+		  <Stack.Screen
+			name="editEvents"
+			component={editEvents}
+			initialParams={{ event: eventsData[0], socket: socket }}
+		  />
 		</Stack.Navigator>
 	  </NavigationContainer>
 	</AuthContext.Provider>

@@ -8,6 +8,7 @@ const verify = require('./utils/verify');
 const app = express();
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const schemas = require('./schemas/schemas');
 
 require('dotenv').config({ path: './config/.env' });
 
@@ -158,22 +159,18 @@ var studentListeners = (socket) => {
     });
 
     socket.on('getStudentEvents', (request, callback) => {
-        student.retreiveStudentInfo(request.sid, (err, res) => {
+        student.retreiveStudentInfo(request.sid, async (err, res) => {
             if (err) {
                 if(callback) {callback(err, null)};
                 return;
             }
         
             for(let i = 0; i < res.confirmedEvents.length; i++) {
-                res.confirmedEvents[i].metadata = undefined;
-                res.confirmedEvents[i].confirmedStudents = undefined;
-                res.confirmedEvents[i].interestedStudents = undefined;
+                res.confirmedEvents[i] = await schemas.Event.findById(res.confirmedEvents[i]._id).populate('eventHost').populate('tags').exec();
             }
 
             for(let i = 0; i < res.interestedEvents.length; i++) {
-                res.interestedEvents[i].metadata = undefined;
-                res.interestedEvents[i].confirmedStudents = undefined;
-                res.interestedEvents[i].interestedStudents = undefined;
+                res.interestedEvents[i] = await schemas.Event.findById(res.interestedEvents[i]._id).populate('eventHost').populate('tags').exec();
             }
     
             if(callback) {callback(null, {confirmedEvents: res.confirmedEvents, interestedEvents: res.interestedEvents})}
@@ -226,7 +223,7 @@ var studentListeners = (socket) => {
     });
 
     socket.on('followHost', (request, callback) => {
-        student.followHost(request.uid, request.eid, (err, ret) => {
+        student.followHost(request.uid, request.hid, (err, ret) => {
             if (err) {
                 if(callback) {callback(err, null)};
                 return;
@@ -237,7 +234,7 @@ var studentListeners = (socket) => {
     });
 
     socket.on('unfollowHost', (request, callback) => {
-        student.unfollowHost(request.uid, request.eid, (err, ret) => {
+        student.unfollowHost(request.uid, request.hid, (err, ret) => {
             if (err) {
                 if(callback) {callback(err, null)};
                 return;
@@ -263,12 +260,11 @@ var hostListeners = (socket) => {
     });
 
     socket.on('createEventHost', (request, callback) => {
-        host.createEventHost(request.newEvent, (err, ret) => {
+        host.createEventHost(request.hid, request.newEvent, (err, ret) => {
             if (err) {
                 if(callback) {callback(err, null)};
                 return;
             }
-
             if(callback) {callback(null, ret)};
         });
     });
@@ -279,6 +275,17 @@ var hostListeners = (socket) => {
 
     socket.on('deleteEventHost', (request, callback) => {
         host.deleteEventHost(request.hid, request.eid, (err, ret) => {
+            if (err) {
+                if(callback) {callback(err, null)};
+                return;
+            }
+
+            if(callback) {callback(null, ret)};
+        });
+    });
+
+    socket.on('getHostData', (request, callback) => {
+        host.retreiveHostInfo(request.hid, (err, ret) => {
             if (err) {
                 if(callback) {callback(err, null)};
                 return;

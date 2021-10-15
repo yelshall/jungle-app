@@ -108,23 +108,28 @@ var deleteHost = (hid, callback) => {
 }
 
 var retreiveHostInfo = (hid, callback) => {
-    schemas.Host.findById(hid, (err, res) => {
+    schemas.Host.findById(hid).populate('tags')
+    .populate('events').exec(async (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
-            if(res.password) {res.password = undefined;}
+            if(res) {res.password = undefined;}
+            let ret = [];
+            for(let i = 0; i < res.events.length; i++) {
+                ret.push(await schemas.Event.findById(res.events[i]._id).populate('eventHost').populate('updates').populate('tags').populate('tags').exec());
+            }
+            res.events = ret;
             if(callback) {callback(null, res);}
         }
     });
 }
 
 var createEventHost = (hid, newEvent, callback) => {
-    newEvent.eventHost = hid;
     event_functions.createEvent(newEvent, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
-            schemas.Host.findByIdAndUpdate(hid, {$push: {events: res._id}}, (err, res2) => {
+            schemas.Host.findByIdAndUpdate(hid, {$addToSet: {events: res._id}}, (err, res2) => {
                 if(err) {
                     if(callback) {callback(err, null);}
                 } else {
