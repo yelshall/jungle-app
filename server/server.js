@@ -85,8 +85,9 @@ io.on('connection', (socket) => {
     socket.on('verifyToken', (request, callback) => {
         try {
             let decoded = jwt.verify(request.token, process.env.APP_SECRET);
-
-            callback(null, { signInType: decoded.signInType });
+            decoded.iat = undefined;
+            decoded.exp = undefined;
+            callback(null, { email: decoded.email, id: decoded.id, signInType: decoded.signInType });
         } catch (err) {
             callback(err, null);
         }
