@@ -3,36 +3,70 @@ import { AntDesign } from '@expo/vector-icons';
 //import styles from "../../styles";
 import { MaterialIcons } from '@expo/vector-icons';
 
-import React, { useState } from "react";
+import React, { Component, useState } from "react";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
+class HostManage extends Component{
+
+  // state: {
+  //   model2Open: boolean,
+  //   model1Open: boolean,
+  // }
+
+  constructor(props){
+     super(props);
+     this.onNewEvent = this.onNewEvent.bind(this);
+     this.onEventTap = this.onEventTap.bind(this);
+     this.onNewEventCreate = this.onNewEventCreate.bind(this);
+     this.state = {
+      model1Open: false,
+      model2Open: false,
+    };
+      this.EventItems =[
+        {
+
+          title: "cat sitting",
+          imageUrl: "https://picsum.photos/id/237/200/300",
+          date: "12/13/2021",
+          id: "bd7a8bea-c1b1-46c2-aed5-3ad53abb28ba",
+          },
+          {
+        
+            title: "bird watching",
+            imageUrl: "https://picsum.photos/id/237/200/300",
+            date: "11/13/2021",
+            id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63"
+          },
+          {
+        
+            title: "swim racing",
+            imageUrl: "https://picsum.photos/id/237/200/300",
+            date: "10/13/2021",
+            id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+            }
+        ]
+      } 
+      
+      onNewEvent(){
+        this.setState({modelOpen1:true});
+      }
+    
+        onEventTap(){
+        this.setState({ modelOpen2: true });
+      }
+    
+      onNewEventCreate () {
+        this.setState({modelOpen1:false});
+        Alert.alert("Event created")
+      }
 
 
-const DATA = [{
 
-  title: "cat sitting",
-  imageUrl: "https://picsum.photos/id/237/200/300",
-  date: "12/13/2021",
-  id: "bd7a8bea-c1b1-46c2-aed5-3ad53abb28ba",
-  },
-  {
 
-    title: "bird watching",
-    imageUrl: "https://picsum.photos/id/237/200/300",
-    date: "11/13/2021",
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63"
-  },
-  {
 
-    title: "swim racing",
-    imageUrl: "https://picsum.photos/id/237/200/300",
-    date: "10/13/2021",
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    }
-  ]
-  
-function HostManage() {
-  const [modelOpen1,setModalOpen] = useState(false);
+  render(){
+
+
   
   return (
     <View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
@@ -41,15 +75,16 @@ function HostManage() {
    
 
       <FlatList
-        data={DATA}
+        data={this.EventItems}
         renderItem={renderItem}
       />
 
+      
 
-      <Modal visible={modelOpen1} animationType="slide">
+      <Modal visible={model1Open} animationType="slide">
         <View style={styles.modelContent}>
           <Text> Modal here </Text>
-          <TouchableOpacity style={styles.signOutBtn} onPress={()=>setModalOpen(false)}>
+          <TouchableOpacity style={styles.signOutBtn} onPress={this.onNewEventCreate.bind(this)}>
         <Text style={styles.signOutBtnText}>Create Event</Text>
       </TouchableOpacity>
         </View>
@@ -58,7 +93,7 @@ function HostManage() {
       <Modal visible={modelOpen2} animationType="fade">
         <View style={styles.modelContent}>
           <Text> Modal here for event View </Text>
-          <TouchableOpacity style={styles.signOutBtn} onPress={()=>setModalOpen(false)}>
+          <TouchableOpacity style={styles.signOutBtn} onPress={()=> Alert.alert("tests")}>
         <Text style={styles.signOutBtnText}>Create Event</Text>
       </TouchableOpacity>
         </View>
@@ -66,14 +101,14 @@ function HostManage() {
 
 
       <TouchableOpacity 
-        onPress ={()=>setModalOpen(true)}
+        onPress ={this.onNewEvent}
         >
         <AntDesign name="pluscircleo" size={50} color="green" />
       </TouchableOpacity>
     </View>
   );
 
-  
+  }
 }
 
 const Item = ({ item,onPress }) => (
@@ -97,7 +132,7 @@ return (
   <Item
     item={item}
     // onPress={() => setModalOpen2(true)}
-    onPress ={()=> console.log("ress")}
+    onPress ={this.onEventTap}
   />
 );
 };
