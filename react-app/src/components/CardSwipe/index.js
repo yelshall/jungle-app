@@ -8,6 +8,7 @@ import {
   Image,
   Animated,
   PanResponder,
+  Alert,
 } from "react-native";
 
 import { StatusBar } from "expo-status-bar";
@@ -83,7 +84,11 @@ export default class CardSwipe extends Component {
         this.position.setValue({ x: gestureState.dx, y: gestureState.dy });
       },
       onPanResponderRelease: (evt, gestureState) => {
+        // LIKEED EVENT
         if (gestureState.dx > 120) {
+          Alert.alert(
+            "liked " + eventsData[this.state.currentIndex].event_name
+          );
           Animated.spring(this.position, {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
           }).start(() => {
@@ -91,7 +96,12 @@ export default class CardSwipe extends Component {
               this.position.setValue({ x: 0, y: 0 });
             });
           });
-        } else if (gestureState.dx < -120) {
+        }
+        // NOPED EVENT
+        else if (gestureState.dx < -120) {
+          Alert.alert(
+            "disliked " + eventsData[this.state.currentIndex].event_name
+          );
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
           }).start(() => {
@@ -137,6 +147,7 @@ export default class CardSwipe extends Component {
                   top: 50,
                   left: 40,
                   zIndex: 1000,
+                  useNativeDriver: true,
                 }}
               >
                 <Text
@@ -161,6 +172,7 @@ export default class CardSwipe extends Component {
                   top: 50,
                   right: 40,
                   zIndex: 1000,
+                  useNativeDriver: true,
                 }}
               >
                 <Text
@@ -194,6 +206,7 @@ export default class CardSwipe extends Component {
                   width: SCREEN_WIDTH,
                   padding: 10,
                   position: "absolute",
+                  useNativeDriver: true,
                 },
               ]}
             >
@@ -205,6 +218,7 @@ export default class CardSwipe extends Component {
                   top: 50,
                   left: 40,
                   zIndex: 1000,
+                  useNativeDriver: true,
                 }}
               >
                 <Text
@@ -229,6 +243,7 @@ export default class CardSwipe extends Component {
                   top: 50,
                   right: 40,
                   zIndex: 1000,
+                  useNativeDriver: true,
                 }}
               >
                 <Text
