@@ -43,7 +43,6 @@ const fontSize = 300;
 export default function Host_info({ navigation, route }) {
   console.log(route.params);
   const eventsData = route.params.eventsData;
-  const hostData = route.params.HostData;
 
   const {
     id,
