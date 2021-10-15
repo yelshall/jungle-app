@@ -16,7 +16,7 @@ import { AuthContext } from './src/utils/context';
 
 const Stack = createStackNavigator();
 
-export default function App  ()  {
+export default function App() {
 	const socket = io("http://localhost:3000");
 
 	const initialLoginState = {
@@ -113,19 +113,19 @@ export default function App  ()  {
 	}, []);
 
 	return (
-					<AuthContext.Provider value={authContext}>
-						<NavigationContainer>
-							<Stack.Navigator
-								screenOptions={{
-									headerShown: false,
-								}}
-							>
-								<Stack.Screen name="HostHome" component={HostHome} />
-							</Stack.Navigator>
-	
-						</NavigationContainer>
-					</AuthContext.Provider>
-				)
+		<AuthContext.Provider value={authContext}>
+			<NavigationContainer>
+				<Stack.Navigator
+					screenOptions={{
+						headerShown: false,
+					}}
+				>
+					<Stack.Screen name="HostHome" component={HostHome} />
+				</Stack.Navigator>
+
+			</NavigationContainer>
+		</AuthContext.Provider>
+	)
 
 	// if (loginState.isLoading) {
 	// 	return (
