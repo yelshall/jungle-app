@@ -23,7 +23,7 @@ import FollowedHosts from "./src/screens/FollowedHosts";
 const Stack = createStackNavigator();
 
 export default function App() {
-	const socket = io("http://localhost:3000");
+	const socket = io("https://mighty-plateau-63166.herokuapp.com/");
 
 	const initialLoginState = {
 		isLoading: true,
