@@ -76,7 +76,8 @@ export default function Home() {
       />
       <Tabs.Screen
         name="Explore"
-        component={Explore.bind(eventsData, eventsData)}
+        component={Explore}
+        initialParams={{ eventsData: eventsData }}
       />
       <Tabs.Screen name="Chat" component={Chat} />
       <Tabs.Screen name="Profile" component={Profile} />
