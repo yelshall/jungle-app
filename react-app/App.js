@@ -131,88 +131,6 @@ export default function App() {
     }, 500);
   }, []);
 
-<<<<<<< HEAD
-	return (
-		<AuthContext.Provider value={authContext}>
-			<NavigationContainer>
-				<Stack.Navigator
-					screenOptions={{
-						headerShown: false,
-					}}
-				>
-					<Stack.Screen name="HostHome" component={HostHome} />
-				</Stack.Navigator>
-
-			</NavigationContainer>
-		</AuthContext.Provider>
-	)
-
-	// if (loginState.isLoading) {
-	// 	return (
-	// 		<View style={{
-	// 			flex: 1,
-	// 			justifyContent: 'center',
-	// 			alignItems: 'center'
-	// 		}}>
-	// 			<ActivityIndicator size='large' />
-	// 		</View>
-	// 	)
-	// }
-
-	// if (loginState.token === null) {
-	// 	return (
-	// 		<AuthContext.Provider value={authContext}>
-	// 			<NavigationContainer>
-	// 				<Stack.Navigator
-	// 					screenOptions={{
-	// 						headerShown: false,
-	// 					}}
-	// 				>
-	// 					<Stack.Screen name="HomeScreen" component={HomeScreen} initialParams={{ socket: socket }} />
-	// 					<Stack.Screen name="Login" component={Login} initialParams={{ socket: socket }} />
-	// 					<Stack.Screen name="Register" component={Register} initialParams={{ socket: socket }} />
-	// 					<Stack.Screen name="PersonalInfo" component={PersonalInfo} initialParams={{ socket: socket }} />
-	// 					<Stack.Screen name="Preference" component={Preferences} initialParams={{ socket: socket }} />
-	// 					<Stack.Screen name="HostSignup" component={HostSignup} initialParams={{ socket: socket }} />
-	// 				</Stack.Navigator>
-	// 			</NavigationContainer>
-	// 		</AuthContext.Provider>
-	// 	)
-	// } else {
-	// 	if (loginState.signInType === 'HOST') {
-	// 		return (
-	// 			<AuthContext.Provider value={authContext}>
-	// 				<NavigationContainer>
-	// 					<Stack.Navigator
-	// 						screenOptions={{
-	// 							headerShown: false,
-	// 						}}
-	// 					>
-	// 						<Stack.Screen name="HostHome" component={HostHome} />
-	// 					</Stack.Navigator>
-
-	// 				</NavigationContainer>
-	// 			</AuthContext.Provider>
-	// 		)
-	// 	} else {
-	// 		return (
-	// 			<AuthContext.Provider value={authContext}>
-	// 				<NavigationContainer>
-	// 					<Stack.Navigator
-	// 						screenOptions={{
-	// 							headerShown: false,
-	// 						}}
-	// 					>
-	// 						<Stack.Screen name="Home" component={Home} />
-	// 					</Stack.Navigator>
-
-	// 				</NavigationContainer>
-	// 			</AuthContext.Provider>
-	// 		)
-	// 	}
-	// }
-}
-=======
   if (loginState.isLoading) {
     return (
       <View
@@ -303,4 +221,3 @@ export default function App() {
     }
   }
 }
->>>>>>> 3799697d71e078a7173982e52d434db899914498
