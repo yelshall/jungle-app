@@ -6,15 +6,18 @@ import {
   Alert,
   Modal,
   SafeAreaView,
+  TouchableOpacity,
+  Icon,
   ScrollView,
 } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
 import { Header } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import eventsData from "../../assets/events-data/eventsData";
 import React, { useEffect } from "react";
 import { Button, TextInput } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 import DropDownPicker from "react-native-dropdown-picker";
 
 const isValidDate = (dateString) => {
@@ -35,7 +38,7 @@ const isValidDate = (dateString) => {
   return day > 0 && day <= monthLength[month - 1];
 };
 
-export default function HostManage() {
+export default function HostManage({ navigation, route }) {
   const [model1Open, setModal1Open] = React.useState(false);
 
   const [eventName, setEventName] = React.useState("");
@@ -62,6 +65,7 @@ export default function HostManage() {
   const [tags, setTags] = React.useState([]);
 
   const onCreateEvent = () => {
+    console.log("inside on createevent");
     if (eventName === "") {
       Alert.alert("Event creation", "Please choose a name for your event.", [
         {
@@ -129,24 +133,92 @@ export default function HostManage() {
     }
 
     if (!isValidDate(endDate)) {
+      Alert.alert("Event creation", "Please enter a valid end date.", [
+        {
+          text: "OK",
+        },
+      ]);
       return;
     }
 
     if (!isValidDate(startDate)) {
+      Alert.alert("Event creation", "Please enter a valid start date.", [
+        {
+          text: "OK",
+        },
+      ]);
       return;
     }
     setModal1Open(!model1Open);
     console.log("Sucess" + { eventName } + "created ");
+  };
 
+  const Item = ({ item, onPress }) => (
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("editEvents", { event: item });
+      }}
+    >
+      <View style={styles.container}>
+        <SafeAreaView style={styles.itemView}>
+          <Image
+            style={{ height: 100, width: 100 }}
+            source={{ uri: item.image }}
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              paddingLeft: 0,
+              //flexWrap: "wrap",
+            }}
+          ></Text>
+          <Text
+            style={{ fontSize: 15, position: "absolute", paddingLeft: 100 }}
+          >
+            <Text style={{ fontWeight: "bold" }}>
+              {" "}
+              {item.event_name + "\n"}
+            </Text>
+            {item.event_date_time}
+          </Text>
+          {/** 
+			<MaterialIcons
+			  name="keyboard-arrow-right"
+			  size={20}
+			  color="black"
+			  //alignSelf="stretch"
+			  styles={styles.arrow}
+			/>
+			*/}
+        </SafeAreaView>
+      </View>
+      <View
+        style={{
+          borderColor: "grey",
+          borderWidth: 1,
+          height: 1,
+          width: "100%",
+          alignSelf: "center",
+        }}
+      ></View>
+    </TouchableOpacity>
+  );
+
+  const renderItem = ({ item }) => {
+    return <Item item={item} onPress={() => {}} />;
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
-      <Text style={{ margin: 90, fontSize: 28 }}>Manage</Text>
+      <Text style={{ margin: 60, fontSize: 28, fontWeight: "bold" }}>
+        Manage
+      </Text>
 
       <FlatList
         data={eventsData}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        style={styles.container}
       />
 
       <Modal
@@ -292,68 +364,24 @@ export default function HostManage() {
   );
 }
 
-const Item = ({ item, onPress }) => (
-  <TouchableOpacity onPress={onPress}>
-    <View style={styles.container}>
-      <SafeAreaView style={styles.itemView}>
-        <Image
-          style={{ height: 100, width: 100 }}
-          source={{ uri: item.image }}
-        />
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            paddingLeft: 15,
-            flexWrap: "wrap",
-          }}
-        >
-          {item.event_name}
-        </Text>
-        <Text style={{ fontSize: 15, alignSelf: "flex-end" }}>
-          {item.event_date_time}
-        </Text>
-        <MaterialIcons
-          name="keyboard-arrow-right"
-          size={44}
-          color="black"
-          alignSelf="stretch"
-        />
-      </SafeAreaView>
-    </View>
-    <View
-      style={{
-        borderColor: "grey",
-        borderWidth: 1,
-        height: 1,
-        width: "70%",
-        alignSelf: "center",
-      }}
-    ></View>
-  </TouchableOpacity>
-);
-
-const renderItem = ({ item }) => {
-  return <Item item={item} onPress={() => {}} />;
-};
-
 const styles = StyleSheet.create({
+  container: {
+    height: 100,
+    width: "100%",
+  },
   itemView: {
-    flexWrap: "wrap",
-    flexDirection: "row",
-    flex: 1,
-    padding: 10,
-    marginBottom: 40,
+    //flexWrap: "wrap",
+    //flexDirection: "row",
+    width: "100%",
+
+    //flex: 1,
+    padding: 0,
+    marginBottom: 0,
     color: "green",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    //alignItems: "center",
+    //justifyContent: "space-evenly",
   },
-  modelContent: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 30,
-  },
+
   signOutBtn: {
     //top: 300,
     shadowColor: "black",
