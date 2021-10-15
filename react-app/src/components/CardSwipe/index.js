@@ -1,296 +1,308 @@
 import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-  Dimensions,
-  Image,
-  Animated,
-  PanResponder,
-  Alert,
+	StyleSheet,
+	SafeAreaView,
+	Text,
+	Dimensions,
+	Animated,
+	PanResponder,
+	ActivityIndicator
 } from "react-native";
 
-import { StatusBar } from "expo-status-bar";
-import React, { useState, Component } from "react";
-import Ionicons from "@expo/vector-icons/Ionicons";
-
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import eventsData from "../../../assets/events-data/eventsData";
+import React, { useEffect } from "react";
 import Card from "../EventCard/index";
-
-const Tabs = createBottomTabNavigator();
-
-import LottieView from "lottie-react-native";
-import { color } from "react-native-reanimated";
-import { render } from "react-dom";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-export default class CardSwipe extends Component {
-  constructor() {
-    super();
+export default function CardSwipe({ navigation, route }) {
+	const socket = route.params.socket;
+	const loginState = route.params.loginState;
+	const events = React.useRef([]).current;
+	const [isLoading, setIsLoading] = React.useState(true);
 
-    this.position = new Animated.ValueXY();
-    this.state = {
-      currentIndex: 0,
-    };
+	useEffect(() => {
+		socket.emit('getEvents', {sid: loginState.id}, (err, res) => {
+			if (err) {
+				return;
+			}
 
-    this.rotate = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: ["-10deg", "0deg", "10deg"],
-      extrapolate: "clamp",
-    });
+			for(let i = 0; i < res.length; i++) {
+				events.push(res[i]);
+			}
+			setTimeout(() => {
+				setIsLoading(false);
+			}, 500);
+		});
+	}, []);
 
-    this.rotateAndTranslate = {
-      transform: [
-        {
-          rotate: this.rotate,
-        },
-        ...this.position.getTranslateTransform(),
-      ],
-    };
+	const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
+	const position = React.useRef(new Animated.ValueXY()).current;
+	const currentIndex = React.useRef({index: 0}).current;
+	const [rotate, setRotate] = React.useState(
+		position.x.interpolate({
+			inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+			outputRange: ["-10deg", "0deg", "10deg"],
+			extrapolate: "clamp",
+		})
+	);
+	const [rotateAndTranslate, setRotateAndTranslate] = React.useState({
+		transform: [
+			{
+				rotate: rotate,
+			},
+			...position.getTranslateTransform(),
+		],
+	});
+	const [likeOpacity, setLikeOpacity] = React.useState(
+		position.x.interpolate({
+			inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+			outputRange: [0, 0, 1],
+			extrapolate: "clamp",
+		})
+	);
+	const [dislikeOpacity, setDislikeOpacity] = React.useState(
+		position.x.interpolate({
+			inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+			outputRange: [1, 0, 0],
+			extrapolate: "clamp",
+		})
+	);
+	const [nextCardOpacity, setNextCardOpacity] = React.useState(
+		position.x.interpolate({
+			inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+			outputRange: [1, 0, 1],
+			extrapolate: "clamp",
+		})
+	);
 
-    this.likeOpacity = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: [0, 0, 1],
-      extrapolate: "clamp",
-    });
-    this.dislikeOpacity = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: [1, 0, 0],
-      extrapolate: "clamp",
-    });
+	const [nextCardScale, setNextCardScale] = React.useState(
+		position.x.interpolate({
+			inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+			outputRange: [1, 0.8, 1],
+			extrapolate: "clamp",
+		})
+	);
 
-    this.nextCardOpacity = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: [1, 0, 1],
-      extrapolate: "clamp",
-    });
-    this.nextCardScale = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: [1, 0.8, 1],
-      extrapolate: "clamp",
-    });
-  }
-  UNSAFE_componentWillMount() {
-    this.PanResponder = PanResponder.create({
-      useNativeDriver: true,
 
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onPanResponderMove: (evt, gestureState) => {
-        this.position.setValue({ x: gestureState.dx, y: gestureState.dy });
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        // LIKEED EVENT
-        if (gestureState.dx > 120) {
-          Alert.alert(
-            "liked " + eventsData[this.state.currentIndex].event_name
-          );
-          Animated.spring(this.position, {
-            toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
-          }).start(() => {
-            this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
-              this.position.setValue({ x: 0, y: 0 });
-            });
-          });
-        }
-        // NOPED EVENT
-        else if (gestureState.dx < -120) {
-          Alert.alert(
-            "disliked " + eventsData[this.state.currentIndex].event_name
-          );
-          Animated.spring(this.position, {
-            toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
-          }).start(() => {
-            this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
-              this.position.setValue({ x: 0, y: 0 });
-            });
-          });
-        } else {
-          Animated.spring(this.position, {
-            toValue: { x: 0, y: 0 },
-            friction: 4,
-          }).start();
-        }
-      },
-    });
-  }
 
-  renderUsers = function () {
-    return eventsData
-      .map((item, i) => {
-        if (i < this.state.currentIndex) {
-          return null;
-        } else if (i == this.state.currentIndex) {
-          return (
-            <Animated.View
-              {...this.PanResponder.panHandlers}
-              key={item.id}
-              style={[
-                this.rotateAndTranslate,
-                {
-                  height: SCREEN_HEIGHT - 120,
-                  width: SCREEN_WIDTH,
-                  padding: 10,
-                  position: "absolute",
-                },
-              ]}
-            >
-              <Animated.View
-                style={{
-                  opacity: this.likeOpacity,
-                  transform: [{ rotate: "-30deg" }],
-                  position: "absolute",
-                  top: 50,
-                  left: 40,
-                  zIndex: 1000,
-                  useNativeDriver: true,
-                }}
-              >
-                <Text
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "green",
-                    color: "green",
-                    fontSize: 32,
-                    fontWeight: "800",
-                    padding: 10,
-                  }}
-                >
-                  LIKE
-                </Text>
-              </Animated.View>
+	const panResponder = React.useRef(PanResponder.create({
+		useNativeDriver: true,
 
-              <Animated.View
-                style={{
-                  opacity: this.dislikeOpacity,
-                  transform: [{ rotate: "30deg" }],
-                  position: "absolute",
-                  top: 50,
-                  right: 40,
-                  zIndex: 1000,
-                  useNativeDriver: true,
-                }}
-              >
-                <Text
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "red",
-                    color: "red",
-                    fontSize: 32,
-                    fontWeight: "800",
-                    padding: 10,
-                  }}
-                >
-                  NOPE
-                </Text>
-              </Animated.View>
+		onStartShouldSetPanResponder: (evt, gestureState) => true,
+		onPanResponderMove: (evt, gestureState) => {
+			position.setValue({ x: gestureState.dx, y: gestureState.dy });
+		},
+		onPanResponderRelease: (evt, gestureState) => {
+			// LIKED EVENT
+			if (gestureState.dx > 120) {
+				socket.emit('addInterestedEvent', {uid: loginState.id, eid: events[currentIndex.index]._id});
+				Animated.spring(position, {
+					toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
+				}).start(() => {
+					currentIndex.index += 1;
+					position.setValue({ x: 0, y: 0 });
+					forceUpdate();
+				});
+			}
+			// NOPED EVENT
+			else if (gestureState.dx < -120) {
+				socket.emit('removeInterestedEvent', {uid: loginState.id, eid: events[currentIndex.index]._id});
 
-              <SafeAreaView style={styles.container}>
-                <Card eventData={eventsData[i]} />
-              </SafeAreaView>
-            </Animated.View>
-          );
-        } else {
-          return (
-            <Animated.View
-              key={item.id}
-              style={[
-                {
-                  opacity: this.nextCardOpacity,
-                  transform: [{ scale: this.nextCardScale }],
-                  height: SCREEN_HEIGHT - 120,
-                  width: SCREEN_WIDTH,
-                  padding: 10,
-                  position: "absolute",
-                  useNativeDriver: true,
-                },
-              ]}
-            >
-              <Animated.View
-                style={{
-                  opacity: 0,
-                  transform: [{ rotate: "-30deg" }],
-                  position: "absolute",
-                  top: 50,
-                  left: 40,
-                  zIndex: 1000,
-                  useNativeDriver: true,
-                }}
-              >
-                <Text
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "green",
-                    color: "green",
-                    fontSize: 32,
-                    fontWeight: "800",
-                    padding: 10,
-                  }}
-                >
-                  LIKE
-                </Text>
-              </Animated.View>
+				Animated.spring(position, {
+					toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
+				}).start(() => {
+					currentIndex.index += 1;
+					position.setValue({ x: 0, y: 0 });
+					forceUpdate();
+				});
+			} else {
+				Animated.spring(position, {
+					toValue: { x: 0, y: 0 },
+					friction: 4,
+				}).start();
+			}
+		},
+	})
+	).current;
 
-              <Animated.View
-                style={{
-                  opacity: 0,
-                  transform: [{ rotate: "30deg" }],
-                  position: "absolute",
-                  top: 50,
-                  right: 40,
-                  zIndex: 1000,
-                  useNativeDriver: true,
-                }}
-              >
-                <Text
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "red",
-                    color: "red",
-                    fontSize: 32,
-                    fontWeight: "800",
-                    padding: 10,
-                  }}
-                >
-                  NOPE
-                </Text>
-              </Animated.View>
+	const renderUsers = () => {
+		return events
+			.map((item, i) => {
+				if (i < currentIndex.index) {
+					return null;
+				} else if (i == currentIndex.index) {
+					return (
+						<Animated.View
+							{...panResponder.panHandlers}
+							key={item._id}
+							style={[
+								rotateAndTranslate,
+								{
+									height: SCREEN_HEIGHT - 120,
+									width: SCREEN_WIDTH,
+									padding: 10,
+									position: "absolute",
+								},
+							]}
+						>
+							<Animated.View
+								style={{
+									opacity: likeOpacity,
+									transform: [{ rotate: "-30deg" }],
+									position: "absolute",
+									top: 50,
+									left: 40,
+									zIndex: 1000,
+									useNativeDriver: true,
+								}}
+							>
+								<Text
+									style={{
+										borderWidth: 1,
+										borderColor: "green",
+										color: "green",
+										fontSize: 32,
+										fontWeight: "800",
+										padding: 10,
+									}}
+								>
+									LIKE
+								</Text>
+							</Animated.View>
 
-              <SafeAreaView style={styles.container}>
-                <Card eventData={eventsData[i]} />
-              </SafeAreaView>
-            </Animated.View>
-          );
-        }
-      })
-      .reverse();
-  };
+							<Animated.View
+								style={{
+									opacity: dislikeOpacity,
+									transform: [{ rotate: "30deg" }],
+									position: "absolute",
+									top: 50,
+									right: 40,
+									zIndex: 1000,
+									useNativeDriver: true,
+								}}
+							>
+								<Text
+									style={{
+										borderWidth: 1,
+										borderColor: "red",
+										color: "red",
+										fontSize: 32,
+										fontWeight: "800",
+										padding: 10,
+									}}
+								>
+									NOPE
+								</Text>
+							</Animated.View>
 
-  render() {
-    return (
-      <SafeAreaView style={styles.container}>{this.renderUsers()}</SafeAreaView>
-    );
-  }
+							<SafeAreaView style={styles.container}>
+								<Card eventData={item} />
+							</SafeAreaView>
+						</Animated.View>
+					);
+				} else {
+					return (
+						<Animated.View
+							key={item._id}
+							style={[
+								{
+									opacity: nextCardOpacity,
+									transform: [{ scale: nextCardScale }],
+									height: SCREEN_HEIGHT - 120,
+									width: SCREEN_WIDTH,
+									padding: 10,
+									position: "absolute",
+									useNativeDriver: true,
+								},
+							]}
+						>
+							<Animated.View
+								style={{
+									opacity: 0,
+									transform: [{ rotate: "-30deg" }],
+									position: "absolute",
+									top: 50,
+									left: 40,
+									zIndex: 1000,
+									useNativeDriver: true,
+								}}
+							>
+								<Text
+									style={{
+										borderWidth: 1,
+										borderColor: "green",
+										color: "green",
+										fontSize: 32,
+										fontWeight: "800",
+										padding: 10,
+									}}
+								>
+									LIKE
+								</Text>
+							</Animated.View>
+
+							<Animated.View
+								style={{
+									opacity: 0,
+									transform: [{ rotate: "30deg" }],
+									position: "absolute",
+									top: 50,
+									right: 40,
+									zIndex: 1000,
+									useNativeDriver: true,
+								}}
+							>
+								<Text
+									style={{
+										borderWidth: 1,
+										borderColor: "red",
+										color: "red",
+										fontSize: 32,
+										fontWeight: "800",
+										padding: 10,
+									}}
+								>
+									NOPE
+								</Text>
+							</Animated.View>
+
+							<SafeAreaView style={styles.container}>
+								<Card eventData={item} />
+							</SafeAreaView>
+						</Animated.View>
+					);
+				}
+			})
+			.reverse();
+	};
+
+
+	return (
+		<SafeAreaView style={styles.container}>
+			{
+				isLoading ?
+					<ActivityIndicator size="large" />
+					:
+					renderUsers()
+			}
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: "#7F5DF0",
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    elevation: 5,
-  },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+	shadow: {
+		shadowColor: "#7F5DF0",
+		shadowOffset: {
+			width: 0,
+			height: 10,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.5,
+		elevation: 5,
+	},
+	container: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
 });

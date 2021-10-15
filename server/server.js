@@ -2,6 +2,7 @@ const PORT = process.env.PORT || 3000;
 const express = require('express');
 const host = require('./Objects/host');
 const student = require('./Objects/student');
+const event = require('./Objects/event');
 const tag = require('./Objects/tag');
 const verify = require('./utils/verify');
 const app = express();
@@ -85,8 +86,9 @@ io.on('connection', (socket) => {
     socket.on('verifyToken', (request, callback) => {
         try {
             let decoded = jwt.verify(request.token, process.env.APP_SECRET);
-
-            callback(null, { signInType: decoded.signInType });
+            decoded.iat = undefined;
+            decoded.exp = undefined;
+            callback(null, { email: decoded.email, id: decoded.id, signInType: decoded.signInType });
         } catch (err) {
             callback(err, null);
         }
@@ -109,6 +111,33 @@ io.on('connection', (socket) => {
         })
     });
 
+    socket.on('getEvents', (request, callback) => {
+        student.retreiveStudentInfo(request.sid, (err, res1) => {
+            if(err) {
+                callback(err, null);
+                return;
+            }
+            event.getEvents((err, res) => {
+                if(err) {
+                    callback(err, null);
+                    return;
+                }
+
+                let arr = [];
+                for(let i = 0; i < res.length; i++) {
+                    if(res1.interestedEvents.filter(item => item._id.equals(res[i]._id)).length === 0 && res1.confirmedEvents.filter(item => item._id.equals(res[i]._id)).length === 0) {
+                        res[i].metadata = undefined;
+                        res[i].confirmedStudents = undefined;
+                        res[i].interestedStudents = undefined;
+                        arr.push(res[i]);
+                    }
+                }
+    
+                callback(null, arr);
+            });
+        });
+    });
+
     studentListeners(socket);
     hostListeners(socket);
 });
@@ -120,77 +149,101 @@ var studentListeners = (socket) => {
     socket.on('studentSignup', (request, callback) => {
         student.studentSignup(request, (err, ret) => {
             if (err) {
-                callback(err, null);
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback(null, { id: ret._id, email: ret.token.email, token: ret.token.token, signInType: 'STUDENT' });
+            if(callback) {callback(null, { id: ret._id, email: ret.token.email, token: ret.token.token, signInType: 'STUDENT' })};
         });
+    });
+
+    socket.on('getStudentEvents', (request, callback) => {
+        student.retreiveStudentInfo(request.sid, (err, res) => {
+            if (err) {
+                if(callback) {callback(err, null)};
+                return;
+            }
+        
+            for(let i = 0; i < res.confirmedEvents.length; i++) {
+                res.confirmedEvents[i].metadata = undefined;
+                res.confirmedEvents[i].confirmedStudents = undefined;
+                res.confirmedEvents[i].interestedStudents = undefined;
+            }
+
+            for(let i = 0; i < res.interestedEvents.length; i++) {
+                res.interestedEvents[i].metadata = undefined;
+                res.interestedEvents[i].confirmedStudents = undefined;
+                res.interestedEvents[i].interestedStudents = undefined;
+            }
+    
+            if(callback) {callback(null, {confirmedEvents: res.confirmedEvents, interestedEvents: res.interestedEvents})}
+        })
+
     });
 
     socket.on('addInterestedEvent', (request, callback) => {
         student.addInterestedEvent(request.uid, request.eid, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 
     socket.on('addConfirmedEvent', (request, callback) => {
         student.addConfirmedEvent(request.uid, request.eid, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 
     socket.on('removeInterestedEvent', (request, callback) => {
         student.removeInterestedEvent(request.uid, request.eid, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 
     socket.on('removeConfirmedEvent', (request, callback) => {
         student.removeConfirmedEvent(request.uid, request.eid, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 
     socket.on('followHost', (request, callback) => {
         student.followHost(request.uid, request.eid, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 
     socket.on('unfollowHost', (request, callback) => {
         student.unfollowHost(request.uid, request.eid, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 };
@@ -201,22 +254,22 @@ var hostListeners = (socket) => {
     socket.on('hostSignup', (request, callback) => {
         host.hostSignup(request.newHost, (err, ret) => {
             if (err) {
-                callback(err, null);
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback(null, { id: ret._id, email: ret.token.email, token: ret.token.token, signInType: 'HOST' });
+            if(callback) {callback(null, { id: ret._id, email: ret.token.email, token: ret.token.token, signInType: 'HOST' })};
         });
     });
 
     socket.on('createEventHost', (request, callback) => {
         host.createEventHost(request.newEvent, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 
@@ -227,11 +280,11 @@ var hostListeners = (socket) => {
     socket.on('deleteEventHost', (request, callback) => {
         host.deleteEventHost(request.hid, request.eid, (err, ret) => {
             if (err) {
-                callback({ err: err });
+                if(callback) {callback(err, null)};
                 return;
             }
 
-            callback({ ret: ret });
+            if(callback) {callback(null, ret)};
         });
     });
 };

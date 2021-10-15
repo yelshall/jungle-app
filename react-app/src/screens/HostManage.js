@@ -65,7 +65,6 @@ export default function HostManage({ navigation, route }) {
   const [tags, setTags] = React.useState([]);
 
   const onCreateEvent = () => {
-    console.log("inside on createevent");
     if (eventName === "") {
       Alert.alert("Event creation", "Please choose a name for your event.", [
         {
@@ -150,7 +149,6 @@ export default function HostManage({ navigation, route }) {
       return;
     }
     setModal1Open(!model1Open);
-    console.log("Sucess" + { eventName } + "created ");
   };
 
   const Item = ({ item, onPress }) => (

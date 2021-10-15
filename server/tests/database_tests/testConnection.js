@@ -222,7 +222,6 @@ describe('Insert Documents', () => {
         
         notification.save()
         .then(data => {
-            console.log('jere');
             console.log(data);
             done({err: "Invalid document inserted"});
         })
