@@ -1,12 +1,17 @@
 const schemas = require("../schemas/schemas");
 const event_functions = require("./event");
 const tag_functions = require("./tag");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 var hostSignup = (newHost, callback) => {
-    //Hash password first
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync(newHost.password, salt);
+
     let host = {
         email: newHost.email,
-        password: newHost.password,
+        hostEmail: newHost.hostEmail,
+        password: hash,
         hostName: newHost.hostName,
         description: newHost.description,
         tags: newHost.tags
@@ -23,7 +28,12 @@ var hostSignup = (newHost, callback) => {
             await tag_functions.addHost(newHost.tags[i], data._id);
         }
 
+        let token = jwt.sign({ id: data._id, email: data.email, signInType: 'HOST' }, process.env.APP_SECRET, {
+            expiresIn: 2592000 // 1 month
+        });            
+
         data.password = undefined;
+        data.token = {id: data._id, email: data.email, token: token,  signInType: 'HOST'};
         if (callback) {callback(null, data);}
     })
     .catch(err => {
@@ -31,8 +41,39 @@ var hostSignup = (newHost, callback) => {
     });
 };
 
+var isHostLogin = async (loginInfo, callback) => {
+    try {
+        let doc = await schemas.Host.findOne({email: loginInfo.email});
+        if(doc === null) {
+            return false;
+        }
+        return true;
+    } catch (error) {
+        return null;
+    }
+};
+
 var hostLogin = (loginInfo, callback) => {
-    //Implement Later
+    schemas.Host.findOne({email: loginInfo.email}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+            return;
+        }
+        
+        if(res === null) {
+            if(callback) {callback({err: 'INCORRECT_EMAIL'}, null);}
+            return;
+        }
+
+        if(!bcrypt.compareSync(loginInfo.password, res.password)) {
+            if(callback) {callback({err: 'INCORRECT_PASSWORD'}, null);}
+        } else {
+            let token = jwt.sign({ id: res._id, email: res.email, signInType: 'HOST' }, process.env.APP_SECRET, {
+                expiresIn: 2592000 // 1 month
+            });            
+            if(callback) {callback(null, { id: res._id, email: res.email, token: token,  signInType: 'HOST'});}
+        }
+    });
 };
 
 var deleteHost = (hid, callback) => {
@@ -67,23 +108,28 @@ var deleteHost = (hid, callback) => {
 }
 
 var retreiveHostInfo = (hid, callback) => {
-    schemas.Host.findById(hid, (err, res) => {
+    schemas.Host.findById(hid).populate('tags')
+    .populate('events').exec(async (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
-            if(res.password) {res.password = undefined;}
+            if(res) {res.password = undefined;}
+            let ret = [];
+            for(let i = 0; i < res.events.length; i++) {
+                ret.push(await schemas.Event.findById(res.events[i]._id).populate('eventHost').populate('updates').populate('tags').populate('tags').exec());
+            }
+            res.events = ret;
             if(callback) {callback(null, res);}
         }
     });
 }
 
 var createEventHost = (hid, newEvent, callback) => {
-    newEvent.eventHost = hid;
     event_functions.createEvent(newEvent, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
-            schemas.Host.findByIdAndUpdate(hid, {$push: {events: res._id}}, (err, res2) => {
+            schemas.Host.findByIdAndUpdate(hid, {$addToSet: {events: res._id}}, (err, res2) => {
                 if(err) {
                     if(callback) {callback(err, null);}
                 } else {
@@ -121,7 +167,7 @@ var deleteEventHost = (hid, eid, callback) => {
 };
 
 var addFollower = (hid, sid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, {$push: {followers: sid}}, (err, res) => {
+    schemas.Host.findByIdAndUpdate(hid, {$addToSet: {followers: sid}}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
@@ -141,7 +187,7 @@ var removeFollower = (hid, sid, callback) => {
 };
 
 var addTag = (hid, tid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, {$push: {tags: tid}}, (err, res) => {
+    schemas.Host.findByIdAndUpdate(hid, {$addToSet: {tags: tid}}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
@@ -174,6 +220,7 @@ var removeTag = (hid, tid, callback) => {
 
 module.exports = {
     hostSignup: hostSignup,
+    isHostLogin: isHostLogin,
     hostLogin: hostLogin,
     deleteHost: deleteHost,
     retreiveHostInfo: retreiveHostInfo,

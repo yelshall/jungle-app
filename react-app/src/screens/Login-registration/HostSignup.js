@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Text,
     View,
@@ -8,28 +8,134 @@ import {
     Alert
 } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
+import { AuthContext } from '../../utils/context';
 
-
-export default function Register({ navigation }) {
+export default function Register({ navigation, route }) {
+    const socket = route.params.socket;
+    const { signUp } = React.useContext(AuthContext);
+    
     const [name, setName] = React.useState("");
     const [description, setDescription] = React.useState("");
-    
+    const [email, setEmail] = React.useState("");
+
     //Add validation for these fields
     const [phoneNumber, setPhoneNumber] = React.useState("");
     const [website, setWebsite] = React.useState("");
-    const [email, setEmail] = React.useState("");
 
     const [tags, setTags] = React.useState([]);
     const [openTags, setOpenTags] = React.useState(false);
-    const [tagTypes, setTagTypes] = React.useState([
-        { label: 'Tag1', value: '1' },
-        { label: 'Tag2', value: '2' },
-        { label: 'Tag3', value: '3' }
-    ]);
+    const [tagTypes, setTagTypes] = React.useState([]);
 
+    useEffect(() => {
+        socket.emit('getTags', {}, (err, res) => {
+            if(err) {
+                Alert.alert(
+                    "Host signup",
+                    "Error occurred.",
+                    [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                );
+                navigation.navigate('HomeScreen');
+                return;
+            }
+    
+            let tags = [];
+    
+            for(let i = 0; i < res.length; i++) {
+                tags.push({label: res[i].tagName, value: res[i]._id});
+            }
+    
+            setTagTypes(tags);
+        })
+    }, []);
+
+    let verifyValidEmail = () => {
+        let re = /^(([^<>()[\]\ \.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!re.test(String(email).toLowerCase())) {
+            Alert.alert(
+                "Host signup",
+                "Please enter a valid email.",
+                [
+                    {
+                        text: "OK"
+                    }
+                ]
+            );
+            return false;
+        }
+        return true;
+    }
 
     var onContinue = () => {
-        navigation.navigate('Home');
+        if (name.length === 0) {
+            Alert.alert(
+                "Host sign up",
+                "Please enter a name for your organization.",
+                [
+                    {
+                        text: "OK"
+                    }
+                ]
+            );
+            return;
+        }
+
+        if (!verifyValidEmail()) {
+            return;
+        }
+
+
+        if (description.length === 0) {
+            Alert.alert(
+                "Host sign up",
+                "Please enter a description for your organization.",
+                [
+                    {
+                        text: "OK"
+                    }
+                ]
+            );
+            return;
+        }
+
+        if (tags.length === 0) {
+            Alert.alert(
+                "Host sign up",
+                "Please choose at least one tag for your organization.",
+                [
+                    {
+                        text: "OK"
+                    }
+                ]
+            );
+            return;
+        }
+
+        route.params.newHost.hostName = name;
+        route.params.newHost.hostEmail = email;
+        route.params.newHost.tags = tags;
+        route.params.newHost.description = description;
+        route.params.newHost.phoneNumber = phoneNumber;
+        route.params.newHost.website = website;
+
+        socket.emit('hostSignup', { newHost: route.params.newHost }, (err, response) => {
+            if (err) {
+                Alert.alert(
+                    "Host sign up",
+                    "Error signing you up.",
+                    [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                );
+                return
+            }
+            signUp(response);
+        });
     };
 
     return (
@@ -37,6 +143,7 @@ export default function Register({ navigation }) {
 
             <Text style={styles.secondaryText}>Organization name</Text>
             <TextInput
+                autoCorrect={false}
                 style={styles.TextInput}
                 placeholder='Enter a name'
                 placeholderTextColor='#3d3d3d'
@@ -45,6 +152,8 @@ export default function Register({ navigation }) {
 
             <Text style={styles.secondaryText}>Organization email</Text>
             <TextInput
+                autoCapitalize='none'
+                autoCorrect={false}
                 style={styles.TextInput}
                 placeholder='Enter an email'
                 placeholderTextColor='#3d3d3d'
@@ -54,6 +163,8 @@ export default function Register({ navigation }) {
 
             <Text style={styles.secondaryText}>Phone number (optional)</Text>
             <TextInput
+                autoCapitalize='none'
+                autoCorrect={false}
                 style={styles.TextInput}
                 placeholder='Enter a phone number'
                 placeholderTextColor='#3d3d3d'
@@ -63,6 +174,8 @@ export default function Register({ navigation }) {
 
             <Text style={styles.secondaryText}>Organization website (optional)</Text>
             <TextInput
+                autoCapitalize='none'
+                autoCorrect={false}
                 style={styles.TextInput}
                 placeholder='Enter a website'
                 placeholderTextColor='#3d3d3d'
@@ -86,7 +199,7 @@ export default function Register({ navigation }) {
                     borderWidth: 0,
                 }}
                 containerStyle={{
-                    bottom: 95,
+                    bottom: 75,
                     width: '77%',
                     paddingBottom: 20
                 }}
@@ -104,6 +217,7 @@ export default function Register({ navigation }) {
                 setOpen={setOpenTags}
                 setValue={setTags}
                 setItems={setTagTypes}
+                bottomOffset={100}
             />
 
             <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
@@ -130,7 +244,7 @@ const styles = StyleSheet.create({
         color: "#3d3d3d",
         alignSelf: 'flex-start',
         left: 50,
-        bottom: 100
+        bottom: 80
     },
     TextInput: {
         color: "black",
@@ -141,7 +255,7 @@ const styles = StyleSheet.create({
         width: '77%',
         alignSelf: 'flex-start',
         left: 52,
-        bottom: 100
+        bottom: 80
     },
     TextBox: {
         backgroundColor: "#e6ffef",
@@ -156,7 +270,7 @@ const styles = StyleSheet.create({
         height: '10%',
         alignSelf: 'flex-start',
         left: 52,
-        bottom: 100
+        bottom: 80
     },
     continueBtn: {
         shadowColor: 'black',
@@ -168,7 +282,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#85ba7f',
         padding: 15,
         borderRadius: 10,
-        bottom: 20
     },
     continueBtnText: {
         alignSelf: 'center',

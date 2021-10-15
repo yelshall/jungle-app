@@ -27,6 +27,9 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    imageURL: {
+        type: String
+    },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
@@ -73,8 +76,8 @@ const hostSchema = new mongoose.Schema({
         required: true
     },
     hostName: {
-            type: String,
-            required: true
+        type: String,
+        required: true
     },
     description: {
         type: String,
@@ -87,6 +90,9 @@ const hostSchema = new mongoose.Schema({
     website: {
         type: String,
         required: false
+    },
+    imageURL: {
+        type: String
     },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -126,6 +132,10 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    imageURL: {
+        type: String,
+        default: 'https://bloximages.newyork1.vip.townnews.com/purdueexponent.org/content/tncms/assets/v3/editorial/8/c6/8c68927a-c2db-11ea-9f84-bb549081b729/5f08b46f175b6.image.jpg?resize=1200%2C899'
+    },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
@@ -135,8 +145,8 @@ const eventSchema = new mongoose.Schema({
         ref: 'Student'
     }],
     confirmedStudents: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Student'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'
     }],
     maxStudents: {
         type: Number,
@@ -167,6 +177,9 @@ const TagSchema = new mongoose.Schema({
     tagName: {
         type: String,
         required: true
+    },
+    imageURL: {
+        type: String
     },
     events: [{
         type: mongoose.Schema.Types.ObjectId,

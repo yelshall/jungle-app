@@ -6,11 +6,18 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  Image,
   ImageBackground,
+  Pressable,
+  Alert,
+  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import Constants from "expo-constants";
+import { SearchBar } from "react-native-elements";
+import { DefaultTheme } from "@react-navigation/native";
+import { withDelay } from "react-native-reanimated";
+
 var { height, width } = Dimensions.get("window");
 
 const smallSize = width / 5;
@@ -25,14 +32,6 @@ const COLORS = [
   "papayawhip",
   "tomato",
 ];
-const ITEMS = [
-  "https://s-media-cache-ak0.pinimg.com/564x/1d/00/9d/1d009d53dd993bd0a604397e65bbde6d.jpg",
-  "https://s-media-cache-ak0.pinimg.com/564x/53/9d/bb/539dbb7cc07c677925627c6e91585ef5.jpg",
-  "https://s-media-cache-ak0.pinimg.com/564x/3d/0b/a6/3d0ba6600a33f3e4b3bac737e024d720.jpg",
-  "https://s-media-cache-ak0.pinimg.com/564x/d9/b8/27/d9b8276db7cd24443bc4a937f853914b.jpg",
-  "https://s-media-cache-ak0.pinimg.com/564x/75/eb/53/75eb53941897f231cd0b55f25806d887.jpg",
-  "",
-];
 
 const SMALL_ITEMS = [
   "https://s-media-cache-ak0.pinimg.com/564x/e3/44/6f/e3446f61632a9381c96362b45749c5f6.jpg",
@@ -41,46 +40,22 @@ const SMALL_ITEMS = [
   "https://s-media-cache-ak0.pinimg.com/236x/fa/5c/a9/fa5ca9074f962ef824e513aac4d59f1f.jpg",
   "https://s-media-cache-ak0.pinimg.com/236x/95/bb/e4/95bbe482ca9744ea71f68321ec4260a2.jpg",
   "https://s-media-cache-ak0.pinimg.com/564x/54/7d/13/547d1303000793176aca26505312089c.jpg",
-  "",
 ];
 
-export default class Explore extends Component {
-  constructor(props) {
-    super(props);
+export default function Explore({ navigation, route }) {
+  const eventsData = route.params.eventsData;
 
-    this.state = {
-      scrollX: new Animated.Value(0),
-      indicator: new Animated.Value(1),
-    };
-  }
+  const [scrollX, setScrollX] = React.useState(new Animated.Value(0));
+  const [search, setSearch] = React.useState("");
 
-  componentDidMount() {
+  const onLongPress = (event) => {
+    navigation.navigate("event_info", { event: event });
+  };
+  useEffect(() => {
     LayoutAnimation.spring();
-  }
+  }, []);
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={{ height: 20 + height / 2 }}>
-          <Text style={[styles.heading, { fontSize: 28 }]}>Reserved</Text>
-          {this.renderScroll()}
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.heading}>Liked</Text>
-          <ScrollView
-            contentContainerStyle={{ alignItems: "flex-start" }}
-            style={{ paddingHorizontal: 10, flex: 1, width: width }}
-          >
-            {SMALL_ITEMS.map((image, i) => {
-              return this.renderNormal(image, i);
-            })}
-          </ScrollView>
-        </View>
-      </View>
-    );
-  }
-
-  renderScroll() {
+  const renderScroll = (scrollX, data) => {
     return (
       <Animated.ScrollView
         horizontal={true}
@@ -92,24 +67,24 @@ export default class Explore extends Component {
         snapToAlignment="start"
         showsHorizontalScrollIndicator={false}
         onScroll={Animated.event([
-          { nativeEvent: { contentOffset: { x: this.state.scrollX } } },
+          { nativeEvent: { contentOffset: { x: scrollX } } },
         ])}
       >
-        {ITEMS.map((image, i) => {
-          return this.renderRow(image, i);
+        {data.map((event, i) => {
+          return renderRow(event, i, scrollX);
         })}
       </Animated.ScrollView>
     );
-  }
+  };
 
-  renderNormal(image, i) {
-    if (image === "") {
+  const renderNormal = (event, index) => {
+    if (event === null) {
       return null;
     }
 
     return (
       <View
-        key={i}
+        key={index}
         style={{
           flexDirection: "row",
           flex: 1,
@@ -118,30 +93,35 @@ export default class Explore extends Component {
           marginBottom: 20,
         }}
       >
-        <ImageBackground
-          source={{ uri: image }}
-          style={[
-            {
-              height: smallSize,
-              width: smallSize,
-              opacity: 1,
-              resizeMode: "cover",
-            },
-          ]}
-        />
+        <TouchableOpacity onLongPress={() => onLongPress(event)}>
+          <ImageBackground
+            source={{ uri: event.image }}
+            style={[
+              {
+                height: smallSize,
+                width: smallSize,
+                opacity: 1,
+                resizeMode: "cover",
+              },
+            ]}
+          />
+        </TouchableOpacity>
+
         <View style={{ marginLeft: 20 }}>
-          <Text style={{ fontWeight: "600", fontSize: 16 }}>
-            Words of wisdom
-          </Text>
+          <TouchableOpacity onLongPress={() => onLongPress(event)}>
+            <Text style={{ fontWeight: "600", fontSize: 16 }}>
+              Words of wisdom
+            </Text>
+          </TouchableOpacity>
           <Text style={{ fontWeight: "300", fontSize: 12 }}>
             We live in a world of deadlines
           </Text>
         </View>
       </View>
     );
-  }
+  };
 
-  renderRow(image, i) {
+  const renderRow = (event, i, scrollX) => {
     let inputRange = [
       (i - 1) * itemWidth,
       i * itemWidth,
@@ -151,7 +131,7 @@ export default class Explore extends Component {
     let secondRange = [(i - 1) * itemWidth, i * itemWidth, (i + 1) * itemWidth];
 
     // Ensure that we're leaving space for latest item.
-    if (image === "") {
+    if (event === null) {
       return (
         <View
           key={i}
@@ -161,95 +141,128 @@ export default class Explore extends Component {
     }
 
     return (
-      <Animated.View
-        key={i}
-        style={[
-          styles.emptyItem,
-          {
-            opacity: this.state.scrollX.interpolate({
-              inputRange: secondRange,
-              outputRange: [0.3, 1, 1],
-            }),
-            height: this.state.scrollX.interpolate({
-              inputRange: secondRange,
-              outputRange: [itemHeight * 0.8, itemHeight, itemHeight],
-            }),
-          },
-        ]}
-      >
-        <ImageBackground
+      <TouchableOpacity onLongPress={() => onLongPress(event)}>
+        <Animated.View
           key={i}
-          source={{ uri: image }}
           style={[
-            StyleSheet.AbsoluteFill,
+            styles.emptyItem,
             {
-              height: itemHeight,
-              width: itemWidth,
-              opacity: 1,
-              resizeMode: "cover",
+              opacity: scrollX.interpolate({
+                inputRange: secondRange,
+                outputRange: [0.3, 1, 1],
+              }),
+              height: scrollX.interpolate({
+                inputRange: secondRange,
+                outputRange: [itemHeight * 0.8, itemHeight, itemHeight],
+              }),
             },
           ]}
         >
+          <ImageBackground
+            key={i}
+            source={{ uri: event.image }}
+            style={[
+              StyleSheet.AbsoluteFill,
+              {
+                height: itemHeight,
+                width: itemWidth,
+                opacity: 1,
+                resizeMode: "cover",
+              },
+            ]}
+          ></ImageBackground>
+          {/** 
           <View
             style={[
               StyleSheet.AbsoluteFill,
               {
                 opacity: 0.4,
-                backgroundColor: COLORS[i],
+                //backgroundColor: COLORS[i],
                 width: itemWidth,
                 height: itemHeight,
               },
             ]}
           ></View>
-          <Animated.View
-            style={[
-              {
-                width: itemWidth,
-                alignItems: "flex-end",
-                justifyContent: "flex-end",
-                flex: 1,
-                position: "relative",
-                height: itemHeight,
-                opacity: this.state.scrollX.interpolate({
-                  inputRange,
-                  outputRange: [0.4, 1, 1, 1],
-                }),
-                transform: [
-                  {
-                    scale: this.state.scrollX.interpolate({
-                      inputRange,
-                      outputRange: [0.5, 1, 1.4, 1],
-                    }),
-                  },
-                ],
-              },
-            ]}
+          */}
+        </Animated.View>
+        {/** 
+        <Animated.View
+          style={[
+            {
+              width: itemWidth,
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
+              flex: 1,
+              position: "relative",
+              height: itemHeight,
+              opacity: scrollX.interpolate({
+                inputRange,
+                outputRange: [0.4, 1, 1, 1],
+              }),
+              transform: [
+                {
+                  scale: scrollX.interpolate({
+                    inputRange,
+                    outputRange: [0.5, 1, 1.4, 1],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              width: itemWidth,
+              height: itemHeight,
+              position: "absolute",
+              bottom: -itemHeight / 4,
+              right: -itemWidth / 4,
+            }}
           >
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                width: itemWidth,
-                height: itemHeight,
-                position: "absolute",
-                bottom: -itemHeight / 4,
-                right: -itemWidth / 4,
-              }}
-            >
-              <Text style={{ fontSize: fontSize, color: "rgba(0,0,0,0.4)" }}>
-                {i + 1}
-              </Text>
-            </View>
-          </Animated.View>
-        </ImageBackground>
-      </Animated.View>
+            <Text style={{ fontSize: fontSize, color: "rgba(0,0,0,0.4)" }}>
+              {i + 1}
+            </Text>
+          </View>
+        </Animated.View>
+          */}
+      </TouchableOpacity>
     );
-  }
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={{ height: 20 + height / 2 }}>
+        <SearchBar
+          placeholder="Search..."
+          onChangeText={(search) => setSearch(search)}
+          value={search}
+          round={DefaultTheme}
+          platform={"ios"}
+          containerStyle={styles.SearchStyle}
+        />
+        <Text style={[styles.heading, { fontSize: 28 }]}>Reserved</Text>
+        {renderScroll(scrollX, eventsData)}
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.heading}>Liked</Text>
+        <ScrollView
+          contentContainerStyle={{ alignItems: "flex-start" }}
+          style={{ paddingHorizontal: 10, flex: 1, width: width }}
+        >
+          {eventsData.map((event, i) => {
+            return renderNormal(event, i);
+          })}
+        </ScrollView>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerExplore: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -266,11 +279,14 @@ const styles = StyleSheet.create({
     width: itemWidth,
     backgroundColor: "transparent",
   },
-  heading: {
+  headingExplore: {
     fontSize: 22,
     fontWeight: "300",
     alignSelf: "flex-start",
     paddingHorizontal: 10,
     paddingVertical: 10,
+  },
+  SearchStyle: {
+    backgroundColor: "#F3F3F3",
   },
 });
