@@ -8,14 +8,17 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Icon,
+  ScrollView,
 } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
+import { Header } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import eventsData from "../../assets/events-data/eventsData";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, TextInput } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { mdiPlusCircle } from "@mdi/js";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const isValidDate = (dateString) => {
   if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) return false;
@@ -37,13 +40,117 @@ const isValidDate = (dateString) => {
 
 export default function HostManage({ navigation, route }) {
   const [model1Open, setModal1Open] = React.useState(false);
+
   const [eventName, setEventName] = React.useState("");
+  const [startDate, setStartDate] = React.useState("");
+  const [endDate, setEndDate] = React.useState("");
+  const [location, setLocation] = React.useState("");
+  const [imageUrl, setImageUrl] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [maxStudents, setMaxStudents] = React.useState(0);
+
+  const [openTags, setOpenTags] = React.useState(false);
+  const [tagTypes, setTagTypes] = React.useState([
+    { label: "Sports", value: "Sports" },
+    { label: "Dance", value: "Dance" },
+    { label: "Stem", value: "Stem" },
+    { label: "Music", value: "Music" },
+    { label: "Photography", value: "Photography" },
+    { label: "Arts", value: "Arts" },
+    { label: "Fishing", value: "Fishing" },
+    { label: "Shooting", value: "Shooting" },
+    { label: "Cooking", value: "Cooking" },
+  ]);
+
+  const [tags, setTags] = React.useState([]);
 
   const onCreateEvent = () => {
+    console.log("inside on createevent");
     if (eventName === "") {
-      Alert.alert();
+      Alert.alert("Event creation", "Please choose a name for your event.", [
+        {
+          text: "OK",
+        },
+      ]);
       return;
     }
+    if (location === "") {
+      Alert.alert(
+        "Event creation",
+        "Please choose a location for your event.",
+        [
+          {
+            text: "OK",
+          },
+        ]
+      );
+      return;
+    }
+    if (imageUrl === "") {
+      Alert.alert("Event creation", "Please choose an image for your event.", [
+        {
+          text: "OK",
+        },
+      ]);
+      return;
+    }
+
+    if (description === "") {
+      Alert.alert(
+        "Event creation",
+        "Please choose a description for your event.",
+        [
+          {
+            text: "OK",
+          },
+        ]
+      );
+      return;
+    }
+    if (startDate === "") {
+      Alert.alert(
+        "Event creation",
+        "Please choose a start date for your event.",
+        [
+          {
+            text: "OK",
+          },
+        ]
+      );
+      return;
+    }
+    if (endDate === "") {
+      Alert.alert(
+        "Event creation",
+        "Please choose an end date for your event.",
+        [
+          {
+            text: "OK",
+          },
+        ]
+      );
+      return;
+    }
+
+    if (!isValidDate(endDate)) {
+      Alert.alert("Event creation", "Please enter a valid end date.", [
+        {
+          text: "OK",
+        },
+      ]);
+      return;
+    }
+
+    if (!isValidDate(startDate)) {
+      Alert.alert("Event creation", "Please enter a valid start date.", [
+        {
+          text: "OK",
+        },
+      ]);
+      return;
+    }
+    setModal1Open(!model1Open);
+    console.log("Sucess" + { eventName } + "created ");
   };
 
   const Item = ({ item, onPress }) => (
@@ -76,14 +183,14 @@ export default function HostManage({ navigation, route }) {
             {item.event_date_time}
           </Text>
           {/** 
-		  <MaterialIcons
-			name="keyboard-arrow-right"
-			size={20}
-			color="black"
-			//alignSelf="stretch"
-			styles={styles.arrow}
-		  />
-		  */}
+			<MaterialIcons
+			  name="keyboard-arrow-right"
+			  size={20}
+			  color="black"
+			  //alignSelf="stretch"
+			  styles={styles.arrow}
+			/>
+			*/}
         </SafeAreaView>
       </View>
       <View
@@ -101,7 +208,6 @@ export default function HostManage({ navigation, route }) {
   const renderItem = ({ item }) => {
     return <Item item={item} onPress={() => {}} />;
   };
-
   return (
     <View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
       <Text style={{ margin: 60, fontSize: 28, fontWeight: "bold" }}>
@@ -115,23 +221,144 @@ export default function HostManage({ navigation, route }) {
         style={styles.container}
       />
 
-      <Modal visible={model1Open} animationType="slide">
-        <TextInput onChangeText={(text) => setEventName(text)} />
-        <View style={styles.modelContent}>
-          <TouchableOpacity
-            style={styles.signOutBtn}
-            onPress={() => setModal1Open(!model1Open)}
-          >
-            <Text style={styles.signOutBtnText}>Create Event</Text>
-          </TouchableOpacity>
-        </View>
+      <Modal
+        avoidKeyboard
+        presentationStyle="fullScreen"
+        visible={model1Open}
+        animationType="slide"
+      >
+        <Header
+          centerComponent={{
+            text: "Create An Event",
+            style: { color: "#fff" },
+          }}
+        ></Header>
+
+        <ScrollView
+          style={{
+            width: "100%",
+          }}
+        >
+          <View style={styles.infoView}>
+            <Text style={styles.secondaryText}>Event Name</Text>
+            <TextInput
+              autoCorrect={false}
+              style={styles.TextInput}
+              placeholder="Enter Event name"
+              placeholderTextColor="#3d3d3d"
+              onChangeText={(eventName) => setEventName(eventName)}
+            />
+          </View>
+
+          <View style={styles.infoView}>
+            <Text style={styles.secondaryText}>Event Start Date</Text>
+            <TextInput
+              autoCorrect={false}
+              style={styles.TextInput}
+              placeholder="mm/dd/yyyy"
+              placeholderTextColor="#3d3d3d"
+              onChangeText={(startDate) => setStartDate(startDate)}
+            />
+          </View>
+
+          <View style={styles.infoView}>
+            <Text style={styles.secondaryText}>Event End Date</Text>
+            <TextInput
+              autoCorrect={false}
+              style={styles.TextInput}
+              placeholder="mm/dd/yyyy"
+              placeholderTextColor="#3d3d3d"
+              onChangeText={(endDate) => setEndDate(endDate)}
+            />
+          </View>
+
+          <View style={styles.infoView}>
+            <Text style={styles.secondaryText}>Location</Text>
+            <TextInput
+              autoCorrect={false}
+              style={styles.TextInput}
+              placeholder="Enter Event Location"
+              placeholderTextColor="#3d3d3d"
+              onChangeText={(location) => setLocation(location)}
+            />
+          </View>
+
+          <View style={styles.infoView}>
+            <Text style={styles.secondaryText}>Image Url</Text>
+            <TextInput
+              autoCorrect={false}
+              style={styles.TextInput}
+              placeholder="Enter Event ImageUrl"
+              placeholderTextColor="#3d3d3d"
+              onChangeText={(imageUrl) => setImageUrl(imageUrl)}
+              f
+            />
+          </View>
+
+          <View style={styles.infoView}>
+            <Text style={styles.secondaryText}>Max Number of Attendees</Text>
+            <TextInput
+              autoCorrect={false}
+              style={styles.TextInput}
+              placeholder="Enter Max Attendees"
+              placeholderTextColor="#3d3d3d"
+              onChangeText={(maxStudents) => setMaxStudents(setMaxStudents)}
+            />
+          </View>
+
+          <View style={styles.infoView}>
+            <Text style={styles.secondaryText}>Event Description</Text>
+            <TextInput
+              autoCorrect={false}
+              style={styles.TextInput}
+              placeholder="Enter Event name"
+              placeholderTextColor="#3d3d3d"
+              onChangeText={(description) => setDescription(description)}
+            />
+          </View>
+          <Text style={styles.secondaryText}>Tags</Text>
+          <DropDownPicker
+            style={{
+              backgroundColor: "#85ba7f",
+              borderWidth: 0,
+              alignSelf: "center",
+            }}
+            containerStyle={{
+              width: "77%",
+              paddingBottom: 20,
+              alignSelf: "center",
+            }}
+            dropDownContainerStyle={{
+              backgroundColor: "#85ba7f",
+              borderWidth: 0,
+              alignSelf: "center",
+            }}
+            multiple={true}
+            min={0}
+            max={3}
+            placeholder="Choose an option"
+            open={openTags}
+            value={tags}
+            items={tagTypes}
+            setOpen={setOpenTags}
+            setValue={setTags}
+            setItems={setTagTypes}
+            bottomOffset={100}
+          />
+        </ScrollView>
+
+        <TouchableOpacity
+          style={styles.signOutBtn}
+          onPress={() => {
+            onCreateEvent();
+          }}
+        >
+          <Text style={styles.signOutBtnText}>Create Event</Text>
+        </TouchableOpacity>
       </Modal>
 
-      <TouchableOpacity
-        style={{ position: "absolute", top: 760, right: 15 }}
-        onPress={() => setModal1Open(true)}
-      >
-        <AntDesign name="pluscircleo" size={70} color="gray" spin={true} />
+      <TouchableOpacity onPress={() => setModal1Open(true)}>
+        <AntDesign name="pluscircleo" size={50} color="green" />
       </TouchableOpacity>
     </View>
   );
@@ -142,15 +369,6 @@ const styles = StyleSheet.create({
     height: 100,
     width: "100%",
   },
-
-  createEvent: {
-    alignSelf: "center",
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    fontSize: 18,
-    color: "#2f402d",
-  },
-
   itemView: {
     //flexWrap: "wrap",
     //flexDirection: "row",
@@ -164,17 +382,6 @@ const styles = StyleSheet.create({
     //justifyContent: "space-evenly",
   },
 
-  arrow: {
-    paddingLeft: 100,
-  },
-
-  modelContent: {
-    //flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-
-    padding: 30,
-  },
   signOutBtn: {
     //top: 300,
     shadowColor: "black",
@@ -186,6 +393,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#85ba7f",
     padding: 15,
     borderRadius: 10,
+    alignSelf: "center",
+    marginBottom: 50,
   },
   signOutBtnText: {
     alignSelf: "center",
@@ -193,5 +402,28 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
     color: "#2f402d",
+  },
+  secondaryText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "#3d3d3d",
+    alignSelf: "flex-start",
+    left: 50,
+  },
+  TextInput: {
+    color: "black",
+    padding: 10,
+    marginBottom: 10,
+    borderBottomColor: "#d8ffd4",
+    borderBottomWidth: 2,
+    width: "77%",
+    alignSelf: "flex-start",
+    left: 52,
+  },
+  infoView: {
+    padding: 20,
+    paddingBottom: 20,
   },
 });

@@ -131,7 +131,7 @@ export default function App() {
       });
     }, 500);
   }, []);
-  /** 
+
   if (loginState.isLoading) {
     return (
       <View
@@ -200,6 +200,11 @@ export default function App() {
               }}
             >
               <Stack.Screen name="HostHome" component={HostHome} />
+              <Stack.Screen
+                name="editEvents"
+                component={editEvents}
+                initialParams={{ event: eventsData[0] }}
+              />
             </Stack.Navigator>
           </NavigationContainer>
         </AuthContext.Provider>
@@ -220,23 +225,5 @@ export default function App() {
         </AuthContext.Provider>
       );
     }
-  }*/
-  return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="HostHome" component={HostHome} />
-          <Stack.Screen
-            name="editEvents"
-            component={editEvents}
-            initialParams={{ event: eventsData[0] }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthContext.Provider>
-  );
+  }
 }
