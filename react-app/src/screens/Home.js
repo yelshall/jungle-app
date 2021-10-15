@@ -79,7 +79,7 @@ export default function Home({ route }) {
 			<Tabs.Screen
 				name="Explore"
 				component={Explore}
-				initialParams={{ socket: socket, loginState: loginState, eventsData: eventsData }}
+				initialParams={{ socket: socket, loginState: loginState}}
 				options={{ unmountOnBlur: true }}
 				listeners={({ navigation }) => ({
 					blur: () => navigation.setParams({ screen: undefined }),
