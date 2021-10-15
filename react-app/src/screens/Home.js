@@ -86,7 +86,7 @@ export default function Home({ route }) {
 				})}
 			/>
 			<Tabs.Screen name="Chat" component={Chat} />
-			<Tabs.Screen name="Profile" component={Profile} />
+			<Tabs.Screen name="Profile" component={Profile} 				initialParams={{ socket: socket, loginState: loginState}}/>
 		</Tabs.Navigator>
 	);
 }

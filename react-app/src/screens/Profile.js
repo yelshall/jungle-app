@@ -6,7 +6,9 @@ import HostData from "../../assets/events-data/HostData";
 import eventsData from "../../assets/events-data/eventsData";
 import LottieView from "lottie-react-native";
 
-export default function Profile({ navigation }) {
+export default function Profile({ navigation, route }) {
+  const socket = route.params.socket;
+  const loginState = route.params.loginState;
   const { signOut } = React.useContext(AuthContext);
   const onSignout = () => {
     signOut();
@@ -16,6 +18,8 @@ export default function Profile({ navigation }) {
     navigation.navigate("FollowedHosts", {
       HostData: HostData[0],
       eventsData: eventsData,
+      socket: socket,
+      loginState: loginState
     });
   };
 

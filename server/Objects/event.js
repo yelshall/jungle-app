@@ -59,6 +59,9 @@ var updateEvent = (eid, update, callback) => {
             case "EVENT_DATETIME":
                 updateEventDateTime(eid, update.dateTime, callback);
                 break;
+            case "EVENT_ENDDATETIME":
+                updateEventEndDateTime(eid, update.endDateTime, callback);
+                break;
             case "EVENT_LOCATION":
                 updateEventLocation(eid, update.location, callback);
                 break;
@@ -179,6 +182,17 @@ var updateEventName = (eid, newName, callback) => {
 
 var updateEventDateTime = (eid, newDateTime, callback) => {
     schemas.Event.findByIdAndUpdate(eid, {dateTime: newDateTime}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+        } else {
+            update_functions.createUpdate("The host changed event details!", `The event's date and time has been changed to ${dateTime}.`, true, eid, callback);
+            if(callback) {callback(null, res);}
+        }
+    });
+};
+
+var updateEventEndDateTime = (eid, newDateTime, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {endDateTime: newDateTime}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {

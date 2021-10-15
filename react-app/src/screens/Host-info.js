@@ -1,17 +1,17 @@
 import {
-  View,
-  SafeAreaView,
-  LayoutAnimation,
-  ImageBackground,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  ActivityIndicator,
-  Pressable,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-  Animated,
+	View,
+	SafeAreaView,
+	LayoutAnimation,
+	ImageBackground,
+	StyleSheet,
+	Alert,
+	ScrollView,
+	ActivityIndicator,
+	Pressable,
+	Dimensions,
+	Image,
+	TouchableOpacity,
+	Animated,
 } from "react-native";
 
 import React, { useEffect } from "react";
@@ -22,12 +22,12 @@ import Constants from "expo-constants";
 import { Divider } from "react-native-elements";
 
 const list = [
-  {
-    name: "by John Purdue",
-    avatar_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
-    subtitle: "Status: Verified",
-  },
+	{
+		name: "by John Purdue",
+		avatar_url:
+			"https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
+		subtitle: "Status: Verified",
+	},
 ];
 
 var { height, width } = Dimensions.get("window");
@@ -37,179 +37,184 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function Host_info({ navigation, route }) {
-  const hostId = route.params.host._id;
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
-  const hostValue = React.useRef([]).current;
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+	const hostId = route.params.host._id;
+	const socket = route.params.socket;
+	const loginState = route.params.loginState;
+	const hostValue = React.useRef([]).current;
+	const [isLoading, setIsLoading] = React.useState(true);
+	const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
-  useEffect(() => {
-    socket.emit("getHostData", { hid: hostId }, (err, res) => {
-      if (err) {
-        Alert.alert("Error", "Could not get host info data.", [
-          {
-            text: "OK",
-          },
-        ]);
-        return;
-      }
+	useEffect(() => {
+		socket.emit("getHostData", { hid: hostId }, (err, res) => {
+			if (err) {
+				Alert.alert("Error", "Could not get host info data.", [
+					{
+						text: "OK",
+					},
+				]);
+				return;
+			}
 
-      hostValue.push(res);
+			if(res.followers.includes(loginState.id)) {
+				setFollow(!Follow_Bool);
+				setTextValue("Unfollow");
+			}
 
-      forceUpdate();
+			hostValue.push(res);
 
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-    });
-  }, []);
+			forceUpdate();
 
-  const onLongPress = (event) => {
-    navigation.navigate("event_info", {
-      event: event,
-      loginState: loginState,
-      socket: socket,
-    });
-  };
-  useEffect(() => {
-    LayoutAnimation.spring();
-  }, []);
+			setTimeout(() => {
+				setIsLoading(false);
+			}, 500);
+		});
+	}, []);
 
-  const [textValue, setTextValue] = React.useState("Follow");
-  const [Follow_Bool, setFollow] = React.useState(false);
+	const onLongPress = (event) => {
+		navigation.navigate("event_info", {
+			event: event,
+			loginState: loginState,
+			socket: socket,
+		});
+	};
+	useEffect(() => {
+		LayoutAnimation.spring();
+	}, []);
 
-  let onPress = () => {
-    if (!Follow_Bool) {
-      hostValue[0].followers.push("Follower");
-      socket.emit("followHost", { uid: loginState.id, hid: hostId });
-      setTextValue("Unfollow");
-      setFollow(true);
-    } else {
-      hostValue[0].followers.pop();
-      socket.emit("unfollowHost", { uid: loginState.id, hid: hostId });
-      setTextValue("Follow");
-      setFollow(false);
-    }
-  };
+	const [textValue, setTextValue] = React.useState("Follow");
+	const [Follow_Bool, setFollow] = React.useState(false);
 
-  const renderNormal = (event, index) => {
-    if (event === null) {
-      return null;
-    }
+	let onPress = () => {
+		if (!Follow_Bool) {
+			hostValue[0].followers.push("Follower");
+			socket.emit("followHost", { uid: loginState.id, hid: hostId });
+			setTextValue("Unfollow");
+			setFollow(true);
+		} else {
+			hostValue[0].followers.pop();
+			socket.emit("unfollowHost", { uid: loginState.id, hid: hostId });
+			setTextValue("Follow");
+			setFollow(false);
+		}
+	};
 
-    return (
-      <View
-        key={index}
-        style={{
-          flexWrap: "nowrap",
-          flexDirection: "row",
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 20,
-        }}
-      >
-        <TouchableOpacity onLongPress={() => onLongPress(event)}>
-          <ImageBackground
-            source={{ uri: event.imageURL }}
-            style={[
-              {
-                height: smallSize,
-                width: smallSize,
-                opacity: 1,
-                resizeMode: "cover",
-              },
-            ]}
-          />
-        </TouchableOpacity>
+	const renderNormal = (event, index) => {
+		if (event === null) {
+			return null;
+		}
 
-        <View style={{ marginLeft: 20, flex: 1 }}>
-          <TouchableOpacity onLongPress={() => onLongPress(event)}>
-            <Text
-              style={{
-                fontWeight: "600",
-                fontSize: 16,
-                position: "absolute",
-                bottom: 5,
-              }}
-            >
-              {event.eventName}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
+		return (
+			<View
+				key={index}
+				style={{
+					flexWrap: "nowrap",
+					flexDirection: "row",
+					flex: 1,
+					alignItems: "center",
+					justifyContent: "center",
+					marginBottom: 20,
+				}}
+			>
+				<TouchableOpacity onLongPress={() => onLongPress(event)}>
+					<ImageBackground
+						source={{ uri: event.imageURL }}
+						style={[
+							{
+								height: smallSize,
+								width: smallSize,
+								opacity: 1,
+								resizeMode: "cover",
+							},
+						]}
+					/>
+				</TouchableOpacity>
 
-  return (
-    <>
-      {isLoading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <>
-          <View style={styles.container}>
-            <View style={styles.header}></View>
+				<View style={{ marginLeft: 20, flex: 1 }}>
+					<TouchableOpacity onLongPress={() => onLongPress(event)}>
+						<Text
+							style={{
+								fontWeight: "600",
+								fontSize: 16,
+								position: "absolute",
+								bottom: 5,
+							}}
+						>
+							{event.eventName}
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+		);
+	};
 
-            {hostValue[0].imageURL.length > 0 && (
-              <Image
-                style={styles.avatar}
-                source={{ uri: hostValue[0].imageURL }}
-              />
-            )}
-            <View style={styles.body}>
-              <View style={styles.bodyContent}>
-                <Text style={styles.name}>{hostValue[0].hostName}</Text>
+	return (
+		<>
+			{isLoading ? (
+				<ActivityIndicator size="large" />
+			) : (
+				<>
+					<View style={styles.container}>
+						<View style={styles.header}></View>
 
-                <Text style={styles.description}>
-                  {hostValue[0].followers.length + " Followers"}
-                </Text>
+						{hostValue[0].imageURL.length > 0 && (
+							<Image
+								style={styles.avatar}
+								source={{ uri: hostValue[0].imageURL }}
+							/>
+						)}
+						<View style={styles.body}>
+							<View style={styles.bodyContent}>
+								<Text style={styles.name}>{hostValue[0].hostName}</Text>
 
-                <Text style={styles.info}>{hostValue[0].hostEmail}</Text>
+								<Text style={styles.description}>
+									{hostValue[0].followers.length + " Followers"}
+								</Text>
 
-                <Text style={styles.description}>
-                  {hostValue[0].description}
-                </Text>
+								<Text style={styles.info}>{hostValue[0].hostEmail}</Text>
 
-                {hostValue[0].website.length > 0 && (
-                  <Text style={styles.info}>{hostValue[0].website}</Text>
-                )}
+								<Text style={styles.description}>
+									{hostValue[0].description}
+								</Text>
 
-                {hostValue[0].tags.length > 0 && (
-                  <Text style={styles.info}>
-                    {"Tags: " + hostValue[0].tags}
-                  </Text>
-                )}
-                {hostValue[0].phoneNumber.length > 0 && (
-                  <Text style={styles.info}>
-                    {"Phone: " + hostValue[0].phoneNumber}
-                  </Text>
-                )}
+								{hostValue[0].website.length > 0 && (
+									<Text style={styles.info}>{hostValue[0].website}</Text>
+								)}
 
-                <Pressable style={styles.buttonContainer} onPress={onPress}>
-                  <Text style={styles.textButton}> {textValue}</Text>
-                </Pressable>
+								{hostValue[0].tags.length > 0 && (
+									<Text style={styles.info}>
+										{"Tags: " + hostValue[0].tags}
+									</Text>
+								)}
+								{hostValue[0].phoneNumber.length > 0 && (
+									<Text style={styles.info}>
+										{"Phone: " + hostValue[0].phoneNumber}
+									</Text>
+								)}
 
-                <Divider orientation="vertical" width={5} />
-              </View>
-            </View>
-          </View>
+								<Pressable style={styles.buttonContainer} onPress={onPress}>
+									<Text style={styles.textButton}> {textValue}</Text>
+								</Pressable>
 
-          <View style={styles.containerExplore}>
-            <Text style={styles.headingExplore}>Posted Events</Text>
-            <ScrollView
-              contentContainerStyle={{ alignItems: "flex-start" }}
-              style={{ paddingHorizontal: 10, flex: 1, width: width }}
-            >
-              {hostValue[0].events.map((event, i) => {
-                return renderNormal(event, i);
-              })}
-            </ScrollView>
-          </View>
-        </>
-      )}
-    </>
-  );
+								<Divider orientation="vertical" width={5} />
+							</View>
+						</View>
+					</View>
+
+					<View style={styles.containerExplore}>
+						<Text style={styles.headingExplore}>Posted Events</Text>
+						<ScrollView
+							contentContainerStyle={{ alignItems: "flex-start" }}
+							style={{ paddingHorizontal: 10, flex: 1, width: width }}
+						>
+							{hostValue[0].events.map((event, i) => {
+								return renderNormal(event, i);
+							})}
+						</ScrollView>
+					</View>
+				</>
+			)}
+		</>
+	);
 }
 
 // prettier-ignore
