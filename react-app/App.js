@@ -132,7 +132,7 @@ export default function App() {
     }, 500);
   }, []);
 
-  if (loginState.isLoading) {
+  /*if (loginState.isLoading) {
     return (
       <View
         style={{
@@ -225,5 +225,20 @@ export default function App() {
         </AuthContext.Provider>
       );
     }
-  }
+  }*/
+  return (
+	<AuthContext.Provider value={authContext}>
+	  <NavigationContainer>
+		<Stack.Navigator
+		  screenOptions={{
+			headerShown: false,
+		  }}
+		>
+		  <Stack.Screen name="Home" component={Home} />
+		  <Stack.Screen name="event_info" component={event_info} />
+		</Stack.Navigator>
+	  </NavigationContainer>
+	</AuthContext.Provider>
+  );
+
 }
