@@ -10,7 +10,7 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 
 
-export default function Register({ navigation }) {
+export default function Register({ navigation, route }) {
     const [name, setName] = React.useState("");
     const [dateOfBirth, setDateOfBirth] = React.useState("");
 
@@ -56,7 +56,7 @@ export default function Register({ navigation }) {
         if (fullName.length !== 2) {
             Alert.alert(
                 "Sign up",
-                "Please enter your full name as first name and last name only",
+                "Please enter your full name as first name and last name only, like 'John Smith'.",
                 [
                     {
                         text: "OK"
@@ -69,7 +69,7 @@ export default function Register({ navigation }) {
         if (!isValidDate(dateOfBirth)) {
             Alert.alert(
                 "Sign up",
-                "Please enter a valid date of birth in the form of mm/dd/yyyy",
+                "Please enter a valid date of birth in the form of mm/dd/yyyy.",
                 [
                     {
                         text: "OK"
@@ -82,7 +82,7 @@ export default function Register({ navigation }) {
         if (gender === "") {
             Alert.alert(
                 "Sign up",
-                "Please choose a gender option",
+                "Please choose a gender option.",
                 [
                     {
                         text: "OK"
@@ -95,7 +95,7 @@ export default function Register({ navigation }) {
         if (signupType === "") {
             Alert.alert(
                 "Sign up",
-                "Please choose a sign up type",
+                "Please choose a sign up type.",
                 [
                     {
                         text: "OK"
@@ -105,11 +105,28 @@ export default function Register({ navigation }) {
             return;
         }
 
-        if(signupType === "Host") {
-            navigation.navigate('HostSignup');
+        if (signupType === "Host") {
+            navigation.navigate('HostSignup', {
+                newHost: {
+                    email: route.params.email,
+                    password: route.params.password
+                }
+            });
             return;
         }
-        navigation.navigate('Preference');
+
+        navigation.navigate('Preferences', {
+            newStudent: {
+                email: route.params.email,
+                password: route.params.password,
+                fullName: {
+                    firstName: fullName[0],
+                    lastName: fullName[1]
+                },
+                birthDate: new Date(dateOfBirth),
+                gender: gender
+            }
+        });
     };
 
     return (
@@ -117,6 +134,7 @@ export default function Register({ navigation }) {
 
             <Text style={styles.secondaryText}>Full Name</Text>
             <TextInput
+                autoCorrect={false}
                 style={styles.TextInput}
                 placeholder='Enter your name'
                 placeholderTextColor='#3d3d3d'
@@ -125,6 +143,7 @@ export default function Register({ navigation }) {
 
             <Text style={styles.secondaryText}>Date of birth</Text>
             <TextInput
+                autoCorrect={false}
                 style={styles.TextInput}
                 placeholder='mm/dd/yyyy'
                 placeholderTextColor='#3d3d3d'

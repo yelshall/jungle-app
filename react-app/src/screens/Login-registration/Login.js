@@ -8,8 +8,8 @@ import {
 	Alert,
 	StyleSheet
 } from 'react-native'
-import {storeData, getData} from '../../utils/asyncStorage';
-import { AuthContext, Authcontext } from '../../utils/context';
+
+import { AuthContext } from '../../utils/context';
 
 export default function Login({ navigation, route }) {
 	const socket = route.params.socket;
@@ -111,6 +111,7 @@ export default function Login({ navigation, route }) {
 
 			<Text style={styles.secondaryText}> Email</Text>
 			<TextInput
+				autoCorrect={false}
 				autoCapitalize='none'
 				onEndEditing={verifyValidEmail}
 				style={styles.TextInput}
@@ -122,6 +123,7 @@ export default function Login({ navigation, route }) {
 			{/*Add show/hide password option using the eye*/}
 			<Text style={styles.secondaryText}> Password</Text>
 			<TextInput
+				autoCorrect={false}
 				autoCapitalize='none'
 				style={styles.TextInput}
 				placeholder='Enter your password'

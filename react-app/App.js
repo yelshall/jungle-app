@@ -11,7 +11,7 @@ import PersonalInfo from "./src/screens/Login-registration/PersonalInfo";
 import HostSignup from "./src/screens/Login-registration/HostSignup";
 import { io } from "socket.io-client";
 import { getData, storeData, removeData } from './src/utils/asyncStorage';
-import { ActivityIndicator, View, Text } from "react-native";
+import { ActivityIndicator, View, Text, Alert } from "react-native";
 import { AuthContext } from './src/utils/context';
 
 const Stack = createStackNavigator();
@@ -21,7 +21,6 @@ export default function App  ()  {
 
 	const initialLoginState = {
 		isLoading: true,
-		email: null,
 		token: null,
 		signInType: null
 	};
@@ -38,7 +37,6 @@ export default function App  ()  {
 			case 'LOGIN':
 				return {
 					...prevState,
-					email: action.email,
 					token: action.token,
 					signInType: action.signInType,
 					isLoading: false
@@ -46,7 +44,6 @@ export default function App  ()  {
 			case 'LOGOUT':
 				return {
 					...prevState,
-					email: null,
 					token: null,
 					signInType: null,
 					isLoading: false
@@ -54,7 +51,6 @@ export default function App  ()  {
 			case 'REGISTER':
 				return {
 					...prevState,
-					email: action.email,
 					token: action.token,
 					signInType: action.signInType,
 					isLoading: false
@@ -69,12 +65,19 @@ export default function App  ()  {
 			try {
 				let token = response.token;
 				await storeData('token', response);
-				dispatch({ type: 'LOGIN', email: response.email, token: token, signInType: response.signInType });
+				dispatch({ type: 'LOGIN', token: token, signInType: response.signInType });
 			} catch (err) {
 				console.log(err);
 			}
 		},
-		signUp: () => {
+		signUp: async (response) => {
+			try {
+				let token = response.token;
+				await storeData('token', response);
+				dispatch({ type: 'REGISTER', token: token, signInType: response.signInType });
+			} catch (err) {
+				console.log(err);
+			}
 		},
 		signOut: async () => {
 			try {

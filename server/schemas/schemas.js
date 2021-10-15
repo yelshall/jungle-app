@@ -76,8 +76,8 @@ const hostSchema = new mongoose.Schema({
         required: true
     },
     hostName: {
-            type: String,
-            required: true
+        type: String,
+        required: true
     },
     description: {
         type: String,
@@ -145,8 +145,8 @@ const eventSchema = new mongoose.Schema({
         ref: 'Student'
     }],
     confirmedStudents: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Student'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'
     }],
     maxStudents: {
         type: Number,
@@ -177,6 +177,9 @@ const TagSchema = new mongoose.Schema({
     tagName: {
         type: String,
         required: true
+    },
+    imageURL: {
+        type: String
     },
     events: [{
         type: mongoose.Schema.Types.ObjectId,
