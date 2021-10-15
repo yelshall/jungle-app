@@ -20,6 +20,8 @@ export default function event_info({ navigation, route }) {
 	const loginState = route.params.loginState;
 	const event = route.params.event;
 
+	console.log(event);
+
 	const [textValue, setTextValue] = React.useState("RESERVE");
 	const [RSVP, setRSVP] = React.useState(event.type === 'INTERESTED');
 
@@ -52,29 +54,31 @@ export default function event_info({ navigation, route }) {
 			>
 				{event.eventName}
 			</Text>
+			{event.eventHost && 
 			<TouchableOpacity
-				onPress={() => Alert.alert("host was tapped")}
+			onPress={() => navigation.navigate('Host-info', {loginState: loginState, socket: socket, host: event.eventHost})}
+			style={{
+				borderWidth: 1,
+				borderColor: "black",
+				borderRadius: 5,
+				width: "60%",
+				alignSelf: "center",
+			}}
+		>
+			<Text
 				style={{
-					borderWidth: 1,
-					borderColor: "black",
-					borderRadius: 5,
-					width: "60%",
+					fontSize: 15,
 					alignSelf: "center",
+					marginVertical: 10,
+					color: "green",
+					fontWeight: "bold",
+					adjustFonScaling: true,
 				}}
 			>
-				<Text
-					style={{
-						fontSize: 15,
-						alignSelf: "center",
-						marginVertical: 10,
-						color: "green",
-						fontWeight: "bold",
-						adjustFonScaling: true,
-					}}
-				>
-					{event.eventHost}
-				</Text>
-			</TouchableOpacity>
+				{event.eventHost.hostName}
+			</Text>
+		</TouchableOpacity>
+			}
 
 			<View
 				style={{

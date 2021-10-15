@@ -94,7 +94,7 @@ var retreiveEventInfo = (eid, callback) => {
 };
 
 var getEvents = (callback) => {
-    schemas.Event.find().populate('updates').populate('tags').exec((err, res) => {
+    schemas.Event.find().populate('eventHost').populate('updates').populate('tags').exec((err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
             return;

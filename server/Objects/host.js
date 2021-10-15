@@ -108,11 +108,17 @@ var deleteHost = (hid, callback) => {
 }
 
 var retreiveHostInfo = (hid, callback) => {
-    schemas.Host.findById(hid, (err, res) => {
+    schemas.Host.findById(hid).populate('tags')
+    .populate('events').exec(async (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
-            if(res.password) {res.password = undefined;}
+            if(res) {res.password = undefined;}
+            let ret = [];
+            for(let i = 0; i < res.events.length; i++) {
+                ret.push(await schemas.Event.findById(res.events[i]._id).populate('eventHost').populate('updates').populate('tags').populate('tags').exec());
+            }
+            res.events = ret;
             if(callback) {callback(null, res);}
         }
     });

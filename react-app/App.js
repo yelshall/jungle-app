@@ -17,6 +17,7 @@ import event_info from "./src/screens/event_info";
 import eventsData from "./assets/events-data/eventsData";
 import editEvents from "./src/screens/editEvents";
 import Explore from "./src/screens/Explore";
+import Host_info from "./src/screens/Host-info";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -235,7 +236,7 @@ export default function App() {
       );
     }
   }*/
-  /*return (
+  return (
 	<AuthContext.Provider value={authContext}>
 	  <NavigationContainer>
 		<Stack.Navigator
@@ -251,10 +252,11 @@ export default function App() {
 		  }}} />
 		  <Stack.Screen name="event_info" component={event_info} initialParams={{socket: socket}} />
 		  <Stack.Screen name="Explore" component={Explore} initialParams={{socket: socket}}/>
+		  <Stack.Screen name="Host-info" component={Host_info}  initialParams={{socket: socket}}/>
 		</Stack.Navigator>
 	  </NavigationContainer>
 	</AuthContext.Provider>
-  );*/
+  );
 
   return (
 	<AuthContext.Provider value={authContext}>
