@@ -115,12 +115,18 @@ for i in range(len(event_list)):
 
   #Store the strings in JSON format, which would be a Dictionary
   event = {
-      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Purdue_Boilermakers_logo.svg/1024px-Purdue_Boilermakers_logo.svg.png",
+      "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Purdue_Boilermakers_logo.svg/1024px-Purdue_Boilermakers_logo.svg.png",
       "eventName" : current_title,
       "dateTime" : start_date_time,
       "endDateTime" : end_date_time,
       "location" : location,
-      "description" : description
+      "description" : description,
+      "tags": [],
+      "interestedStudents": [],
+      "confirmedStudents": [],
+      "maxStudents": -1,
+      "updates": [],
+      "metadata": {"dateCreated": datetime.utcnow()}
   }
 
   # Insert the event dictionary into the database
