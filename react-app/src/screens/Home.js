@@ -1,14 +1,12 @@
 import { StyleSheet, Image } from "react-native";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Explore from "./Explore";
 import Profile from "./Profile";
 import CardSwipe from "../components/CardSwipe/index";
 import eventsData from "../../assets/events-data/eventsData";
-import event_info from "./event_info";
-
 import Chat from "./Chat";
 
 const Tabs = createBottomTabNavigator();
@@ -56,17 +54,15 @@ export default function Home({ route }) {
 								: "ios-information-circle-outline";
 					}
 					return (
-						<>
-							<Image
-								source={filePath}
-								resizeMode="contain"
-								style={{
-									width: 25,
-									height: 25,
-									tintColor: focused ? "#e32f45" : "#748c94",
-								}}
-							/>
-						</>
+						<Image
+							source={filePath}
+							resizeMode="contain"
+							style={{
+								width: 25,
+								height: 25,
+								tintColor: focused ? "#e32f45" : "#748c94",
+							}}
+						/>
 					);
 				},
 			})}
@@ -75,11 +71,19 @@ export default function Home({ route }) {
 				name="Swipe"
 				component={CardSwipe}
 				initialParams={{ socket: socket, loginState: loginState }}
+				options={{ unmountOnBlur: true }}
+				listeners={({ navigation }) => ({
+					blur: () => navigation.setParams({ screen: undefined }),
+				})}
 			/>
 			<Tabs.Screen
 				name="Explore"
 				component={Explore}
-				initialParams={{ socket: socket, eventsData: eventsData }}
+				initialParams={{ socket: socket, loginState: loginState, eventsData: eventsData }}
+				options={{ unmountOnBlur: true }}
+				listeners={({ navigation }) => ({
+					blur: () => navigation.setParams({ screen: undefined }),
+				})}
 			/>
 			<Tabs.Screen name="Chat" component={Chat} />
 			<Tabs.Screen name="Profile" component={Profile} />

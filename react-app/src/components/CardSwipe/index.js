@@ -5,19 +5,38 @@ import {
 	Dimensions,
 	Animated,
 	PanResponder,
-	Alert,
+	ActivityIndicator
 } from "react-native";
 
-import React, { Component, useEffect } from "react";
-import eventsData from "../../../assets/events-data/eventsData";
+import React, { useEffect } from "react";
 import Card from "../EventCard/index";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function CardSwipe({ navigation, route }) {
-	const [position, setPosition] = React.useState(new Animated.ValueXY());
-	const [currentIndex, setCurrentIndex] = React.useState(0);
+	const socket = route.params.socket;
+	const loginState = route.params.loginState;
+	const events = React.useRef([]).current;
+	const [isLoading, setIsLoading] = React.useState(true);
+
+	useEffect(() => {
+		socket.emit('getEvents', {}, (err, res) => {
+			if (err) {
+				return;
+			}
+			for(let i = 0; i < res.length; i++) {
+				events.push(res[i]);
+			}
+			setTimeout(() => {
+				setIsLoading(false);
+			}, 500);
+		});
+	}, []);
+
+	const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
+	const position = React.useRef(new Animated.ValueXY()).current;
+	const currentIndex = React.useRef({index: 0}).current;
 	const [rotate, setRotate] = React.useState(
 		position.x.interpolate({
 			inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
@@ -75,26 +94,25 @@ export default function CardSwipe({ navigation, route }) {
 		onPanResponderRelease: (evt, gestureState) => {
 			// LIKED EVENT
 			if (gestureState.dx > 120) {
-				Alert.alert(
-					"liked " + eventsData[currentIndex].event_name
-				);
+				socket.emit('addInterestedEvent', {uid: loginState.id, eid: events[currentIndex.index]._id});
 				Animated.spring(position, {
 					toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
 				}).start(() => {
-					setCurrentIndex((oldIndex) => oldIndex + 1);
+					currentIndex.index += 1;
 					position.setValue({ x: 0, y: 0 });
+					forceUpdate();
 				});
 			}
 			// NOPED EVENT
 			else if (gestureState.dx < -120) {
-				Alert.alert(
-					"disliked " + eventsData[currentIndex].event_name
-				);
+				socket.emit('removeInterestedEvent', {uid: loginState.id, eid: events[currentIndex.index]._id});
+
 				Animated.spring(position, {
 					toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
 				}).start(() => {
-					setCurrentIndex((oldIndex) => oldIndex + 1);
+					currentIndex.index += 1;
 					position.setValue({ x: 0, y: 0 });
+					forceUpdate();
 				});
 			} else {
 				Animated.spring(position, {
@@ -107,15 +125,15 @@ export default function CardSwipe({ navigation, route }) {
 	).current;
 
 	const renderUsers = () => {
-		return eventsData
+		return events
 			.map((item, i) => {
-				if (i < currentIndex) {
+				if (i < currentIndex.index) {
 					return null;
-				} else if (i == currentIndex) {
+				} else if (i == currentIndex.index) {
 					return (
 						<Animated.View
 							{...panResponder.panHandlers}
-							key={item.id}
+							key={item._id}
 							style={[
 								rotateAndTranslate,
 								{
@@ -177,14 +195,14 @@ export default function CardSwipe({ navigation, route }) {
 							</Animated.View>
 
 							<SafeAreaView style={styles.container}>
-								<Card eventData={eventsData[i]} />
+								<Card eventData={item} />
 							</SafeAreaView>
 						</Animated.View>
 					);
 				} else {
 					return (
 						<Animated.View
-							key={item.id}
+							key={item._id}
 							style={[
 								{
 									opacity: nextCardOpacity,
@@ -248,7 +266,7 @@ export default function CardSwipe({ navigation, route }) {
 							</Animated.View>
 
 							<SafeAreaView style={styles.container}>
-								<Card eventData={eventsData[i]} />
+								<Card eventData={item} />
 							</SafeAreaView>
 						</Animated.View>
 					);
@@ -257,8 +275,16 @@ export default function CardSwipe({ navigation, route }) {
 			.reverse();
 	};
 
+
 	return (
-		<SafeAreaView style={styles.container}>{renderUsers()}</SafeAreaView>
+		<SafeAreaView style={styles.container}>
+			{
+				isLoading ?
+					<ActivityIndicator size="large" />
+					:
+					renderUsers()
+			}
+		</SafeAreaView>
 	);
 }
 

@@ -13,7 +13,9 @@ import { io } from "socket.io-client";
 import { getData, storeData, removeData } from "./src/utils/asyncStorage";
 import { ActivityIndicator, View, Text, Alert } from "react-native";
 import { AuthContext } from "./src/utils/context";
-
+import event_info from "./src/screens/event_info";
+import eventsData from "./assets/events-data/eventsData";
+import editEvents from "./src/screens/editEvents";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -71,7 +73,6 @@ export default function App() {
 	const authContext = React.useMemo(
 		() => ({
 			signIn: async (response) => {
-				console.log(response);
 				try {
 					let token = response.token;
 					await storeData("token", response);
@@ -86,7 +87,6 @@ export default function App() {
 				}
 			},
 			signUp: async (response) => {
-				console.log(response);
 				try {
 					let token = response.token;
 					await storeData("token", response);
@@ -140,105 +140,118 @@ export default function App() {
 		}, 500);
 	}, []);
 
-	/*if (loginState.isLoading) {
-	  return (
-		<View
-		  style={{
-			flex: 1,
-			justifyContent: "center",
-			alignItems: "center",
+  /*if (loginState.isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (loginState.token === null) {
+    return (
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              initialParams={{ socket: socket }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              initialParams={{ socket: socket }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              initialParams={{ socket: socket }}
+            />
+            <Stack.Screen
+              name="PersonalInfo"
+              component={PersonalInfo}
+              initialParams={{ socket: socket }}
+            />
+            <Stack.Screen
+              name="HostSignup"
+              component={HostSignup}
+              initialParams={{ socket: socket }}
+            />
+            <Stack.Screen
+              name="Preferences"
+              component={Preferences}
+              initialParams={{ socket: socket }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthContext.Provider>
+    );
+  } else {
+    if (loginState.signInType === "HOST") {
+      return (
+        <AuthContext.Provider value={authContext}>
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="HostHome" component={HostHome} initialParams={{socket: socket}} />
+              <Stack.Screen
+                name="editEvents"
+                component={editEvents}
+                initialParams={{ event: eventsData[0], socket: socket }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AuthContext.Provider>
+      );
+    } else {
+      return (
+        <AuthContext.Provider value={authContext}>
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="Home" component={Home} initialParams={{socket: socket}} />
+              <Stack.Screen name="event_info" component={event_info} initialParams={{socket: socket}} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AuthContext.Provider>
+      );
+    }
+  }*/
+
+  return (
+	<AuthContext.Provider value={authContext}>
+	  <NavigationContainer>
+		<Stack.Navigator
+		  screenOptions={{
+			headerShown: false,
 		  }}
 		>
-		  <ActivityIndicator size="large" />
-		</View>
-	  );
-	}
-  
-	if (loginState.token === null) {
-	  return (
-		<AuthContext.Provider value={authContext}>
-		  <NavigationContainer>
-			<Stack.Navigator
-			  screenOptions={{
-				headerShown: false,
-			  }}
-			>
-			  <Stack.Screen
-				name="HomeScreen"
-				component={HomeScreen}
-				initialParams={{ socket: socket }}
-			  />
-			  <Stack.Screen
-				name="Login"
-				component={Login}
-				initialParams={{ socket: socket }}
-			  />
-			  <Stack.Screen
-				name="Register"
-				component={Register}
-				initialParams={{ socket: socket }}
-			  />
-			  <Stack.Screen
-				name="PersonalInfo"
-				component={PersonalInfo}
-				initialParams={{ socket: socket }}
-			  />
-			  <Stack.Screen
-				name="HostSignup"
-				component={HostSignup}
-				initialParams={{ socket: socket }}
-			  />
-			  <Stack.Screen
-				name="Preferences"
-				component={Preferences}
-				initialParams={{ socket: socket }}
-			  />
-			</Stack.Navigator>
-		  </NavigationContainer>
-		</AuthContext.Provider>
-	  );
-	} else {
-	  if (loginState.signInType === "HOST") {
-		return (
-		  <AuthContext.Provider value={authContext}>
-			<NavigationContainer>
-			  <Stack.Navigator
-				screenOptions={{
-				  headerShown: false,
-				}}
-			  >
-				<Stack.Screen name="HostHome" component={HostHome} initialParams={{socket: socket}} />
-			  </Stack.Navigator>
-			</NavigationContainer>
-		  </AuthContext.Provider>
-		);
-	  } else {
-		return (
-		  <AuthContext.Provider value={authContext}>
-			<NavigationContainer>
-			  <Stack.Navigator
-				screenOptions={{
-				  headerShown: false,
-				}}
-			  >
-				<Stack.Screen name="Home" component={Home} initialParams={{socket: socket}} />
-			  </Stack.Navigator>
-			</NavigationContainer>
-		  </AuthContext.Provider>
-		);
-	  }
-	}*/
-	return (
-		<AuthContext.Provider value={authContext}>
-			<NavigationContainer>
-				<Stack.Navigator
-					screenOptions={{
-						headerShown: false,
-					}}
-				>
-					<Stack.Screen name="Home" component={Home} initialParams={{socket: socket, loginState: loginState}} />
-				</Stack.Navigator>
-			</NavigationContainer>
-		</AuthContext.Provider>
-	);
+		  <Stack.Screen name="Home" component={Home} initialParams={{socket: socket, loginState: {
+			  email: "test@mail.net",
+			  id: "61667d5a2ab9a94e5793ae3d",
+			  signInType: "STUDENT",
+			  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjY3ZDVhMmFiOWE5NGU1NzkzYWUzZCIsImVtYWlsIjoidGVzdEBtYWlsLm5ldCIsInNpZ25JblR5cGUiOiJTVFVERU5UIiwiaWF0IjoxNjM0MjgzOTAzLCJleHAiOjE2MzY4NzU5MDN9.pgMImc3x5acSBnnLd5EAo3kY4uS_X0MEMscoorDDYwA",
+		  }}} />
+		  <Stack.Screen name="event_info" component={event_info} initialParams={{socket: socket}} />
+		</Stack.Navigator>
+	  </NavigationContainer>
+	</AuthContext.Provider>
+  );
 }

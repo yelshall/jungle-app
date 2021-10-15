@@ -1049,7 +1049,7 @@
   "resolved" "https://registry.npmjs.org/@emotion/unitless/-/unitless-0.7.5.tgz"
   "version" "0.7.5"
 
-"@expo/config-plugins@^3.0.0", "@expo/config-plugins@^3.0.6", "@expo/config-plugins@3.1.0":
+"@expo/config-plugins@^3.0.0", "@expo/config-plugins@^3.0.6", "@expo/config-plugins@^3.1.0", "@expo/config-plugins@3.1.0":
   "integrity" "sha512-V5qxaxCAExBM0TXmbU1QKiZcAGP3ecu7KXede8vByT15cro5PkcWu2sSdJCYbHQ/gw6Vf/i8sr8gKlN8V8TSLg=="
   "resolved" "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-3.1.0.tgz"
   "version" "3.1.0"
@@ -2391,13 +2391,6 @@
   "resolved" "https://registry.npmjs.org/big-integer/-/big-integer-1.6.49.tgz"
   "version" "1.6.49"
 
-"bindings@^1.5.0":
-  "integrity" "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ=="
-  "resolved" "https://registry.npmjs.org/bindings/-/bindings-1.5.0.tgz"
-  "version" "1.5.0"
-  dependencies:
-    "file-uri-to-path" "1.0.0"
-
 "blueimp-md5@^2.10.0":
   "integrity" "sha512-DRQrD6gJyy8FbiE4s+bDoXS9hiW3Vbx5uCdwvcCf3zLHL+Iv7LtGHLpr+GZV8rHG8tK766FGYBwRbu8pELTt+w=="
   "resolved" "https://registry.npmjs.org/blueimp-md5/-/blueimp-md5-2.19.0.tgz"
@@ -3324,6 +3317,40 @@
     "expo-modules-core" "~0.2.0"
     "uuid" "^3.3.2"
 
+"expo-dev-client@^0.6.0":
+  "integrity" "sha512-amvLv5s1YGYHs9Hil0UOJci/IvSGuQd2UIJnfRaTiSbdLITlHx4YK77LQyEGPj5mx9Lq1kQ+NdGpDaNS6U7vMw=="
+  "resolved" "https://registry.npmjs.org/expo-dev-client/-/expo-dev-client-0.6.0.tgz"
+  "version" "0.6.0"
+  dependencies:
+    "@expo/config-plugins" "^3.1.0"
+    "expo-dev-launcher" "0.8.1"
+    "expo-dev-menu" "0.8.2"
+    "expo-dev-menu-interface" "0.4.1"
+    "expo-manifests" "~0.2.1"
+    "expo-updates-interface" "~0.4.0"
+
+"expo-dev-launcher@0.8.1":
+  "integrity" "sha512-/rG3IldgPYhq6eC3R0b7IBaw2t2Lz0FXR9LfX7HSM+gbczHV9yDyyO70XfQdSdvr+pmPPb4iQf3oCBN8EtWVmw=="
+  "resolved" "https://registry.npmjs.org/expo-dev-launcher/-/expo-dev-launcher-0.8.1.tgz"
+  "version" "0.8.1"
+  dependencies:
+    "@expo/config-plugins" "^3.1.0"
+    "resolve-from" "^5.0.0"
+    "semver" "^7.3.5"
+
+"expo-dev-menu-interface@0.4.1":
+  "integrity" "sha512-gc1w47D71Y2fRlF0k6JSVYct/aMWeZp5/QAdisqRprtZTeTXxMG9AwtT5NihrlfyaAbHE2udeB7yxBx5vH4pUQ=="
+  "resolved" "https://registry.npmjs.org/expo-dev-menu-interface/-/expo-dev-menu-interface-0.4.1.tgz"
+  "version" "0.4.1"
+
+"expo-dev-menu@0.8.2":
+  "integrity" "sha512-byxULXZYT+CMwHI0ZcyrZ8iQBfU3zjqQpiQUYfAIz68vs1b5oviQw/zFDi8EywGDSvGR8GusvJTApVzFOUtAxQ=="
+  "resolved" "https://registry.npmjs.org/expo-dev-menu/-/expo-dev-menu-0.8.2.tgz"
+  "version" "0.8.2"
+  dependencies:
+    "@expo/config-plugins" "^3.1.0"
+    "expo-dev-menu-interface" "0.4.1"
+
 "expo-error-recovery@~2.2.0":
   "integrity" "sha512-HKbu6VHAlfhoP7y+HaGJwJizoUTY2eBTBHAi1RE7l/r4sc+cAegTmwwqf/3AOR8C7VntDvuQKtW7NZIyA+62KQ=="
   "resolved" "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-2.2.0.tgz"
@@ -3351,10 +3378,22 @@
   "resolved" "https://registry.npmjs.org/expo-image-loader/-/expo-image-loader-2.2.0.tgz"
   "version" "2.2.0"
 
+"expo-json-utils@~0.2.0":
+  "integrity" "sha512-HRPnEYXPMxduR9OzoUS1WmOFhgSLiclDdkbM4rCryiH7kzlKjFVGqaFwIVk1/IELVpDDjg1Fxwf0eSSN7NQXPA=="
+  "resolved" "https://registry.npmjs.org/expo-json-utils/-/expo-json-utils-0.2.0.tgz"
+  "version" "0.2.0"
+
 "expo-keep-awake@~9.2.0":
   "integrity" "sha512-R5jAx5j3MqrhKFB307FBpaHtYSYeVIFX/rVforBF5inKonYjXRWVhjGoBjolF4geAryNamC3NKhMfxyaaB0W6Q=="
   "resolved" "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-9.2.0.tgz"
   "version" "9.2.0"
+
+"expo-manifests@~0.2.1":
+  "integrity" "sha512-NyyvlncDgczPQPnMT7qWEzZsplBG+TcBqgp/lZGWcZ4br+d9Ap24YP6PGJj5y9mXscUX6mqDPujlK3TB/eTO1Q=="
+  "resolved" "https://registry.npmjs.org/expo-manifests/-/expo-manifests-0.2.1.tgz"
+  "version" "0.2.1"
+  dependencies:
+    "expo-json-utils" "~0.2.0"
 
 "expo-modules-autolinking@^0.0.3":
   "integrity" "sha512-azkCRYj/DxbK4udDuDxA9beYzQTwpJ5a9QA0bBgha2jHtWdFGF4ZZWSY+zNA5mtU3KqzYt8jWHfoqgSvKyu1Aw=="
@@ -3394,6 +3433,11 @@
   "integrity" "sha512-Gvjk/6DntlPfkoRrrmbl9jzD2YtlNVa9jV9/T1+zdvg9XvO7H+BUgAQ1NYFFx/3Wdk03z+xfCYugRWk9X5nZ5A=="
   "resolved" "https://registry.npmjs.org/expo-updates-interface/-/expo-updates-interface-0.2.2.tgz"
   "version" "0.2.2"
+
+"expo-updates-interface@~0.4.0":
+  "integrity" "sha512-EUJaLnDAePikGEQT8w6gjCY3m/dlGgjZKVn5XBaxZMkHzOy3PDQo6QOcK/bcMdkA3CyNrvo6NCe+/7RHrgmK4A=="
+  "resolved" "https://registry.npmjs.org/expo-updates-interface/-/expo-updates-interface-0.4.0.tgz"
+  "version" "0.4.0"
 
 "expo-updates@~0.8.1":
   "integrity" "sha512-MX4YI80oPvbjLzdo+sNvxRma8TEOxESliADHdbrJQpdILhPZTz6GLSypqDKZps68oyvYWxJqID55EBam1nFlAg=="
@@ -3591,11 +3635,6 @@
   dependencies:
     "escape-string-regexp" "^1.0.5"
 
-"file-uri-to-path@1.0.0":
-  "integrity" "sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw=="
-  "resolved" "https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz"
-  "version" "1.0.0"
-
 "fill-range@^4.0.0":
   "integrity" "sha1-1USBHUKPmOsGpj3EAtJAPDKMOPc="
   "resolved" "https://registry.npmjs.org/fill-range/-/fill-range-4.0.0.tgz"
@@ -3747,19 +3786,6 @@
   "integrity" "sha1-FQStJSMVjKpA20onh8sBQRmU6k8="
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
-
-"fsevents@^1.2.7":
-  "integrity" "sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
-  "version" "1.2.13"
-  dependencies:
-    "bindings" "^1.5.0"
-    "nan" "^2.12.1"
-
-"fsevents@^2.1.2":
-  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
-  "version" "2.3.2"
 
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
@@ -5501,11 +5527,6 @@
     "any-promise" "^1.0.0"
     "object-assign" "^4.0.1"
     "thenify-all" "^1.0.0"
-
-"nan@^2.12.1":
-  "integrity" "sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ=="
-  "resolved" "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
-  "version" "2.15.0"
 
 "nanoid@^3.1.23":
   "integrity" "sha512-dW2pUSGZ8ZnCFIlBIA31SV8huOGCHb6OwzVCc7A69rb/a+SgPBwfmLvK5TKQ3INPbRkcI8a/Owo0XbiTNH19wg=="

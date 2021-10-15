@@ -12,9 +12,9 @@ var createEvent = (newEvent, callback) => {
         tags: newEvent.tags,
         eventHost: newEvent.eventHost,
         description: newEvent.description,
+        imageURL: newEvent.imageURL,
+        maxStudents: newEvent.maxStudents
     };
-
-    if(newEvent.maxStudents) {event.maxStudents = newEvent.maxStudents;}
 
     let eventSave = new schemas.Event(event);
     
@@ -89,6 +89,17 @@ var retreiveEventInfo = (eid, callback) => {
         } else {
             if(callback) {callback(null, res);}
         }
+    });
+};
+
+var getEvents = (callback) => {
+    schemas.Event.find().populate('updates').populate('tags').exec((err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+            return;
+        }
+        if(callback) {callback(null, res);}
+
     });
 };
 
@@ -224,6 +235,7 @@ module.exports = {
     createEvent: createEvent,
     deleteEvent: deleteEvent,
     updateEvent: updateEvent,
+    getEvents: getEvents,
     retreiveEventInfo: retreiveEventInfo,
     addConfirmedStudent: addConfirmedStudent,
     addInterestedStudent: addInterestedStudent,
