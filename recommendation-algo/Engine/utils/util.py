@@ -1,10 +1,31 @@
+## import dependencies
+import tensorflow as tf
+print(tf.version)
+string = tf.Variable([1,2,3,4,5],tf.int32)
+print(string.shape)
+
+
 ## tf.SparseTensor representation of the Rating Matrix.
-def build_rating_sparse_tensor(ratings_df):
+def build_rating_sparse_tensor(ratings):
   """
   Args:
     ratings_df: a pd.DataFrame with `user_id`, `movie_id` and `rating` columns.
   Returns:
     a tf.SparseTensor representing the ratings matrix.
+  """
+  return 0
+
+def sparse_mean_square_error(sparse_ratings, user_embeddings, events_embeddings):
+  """
+  Args:
+    sparse_ratings: A SparseTensor rating matrix, of dense_shape [N, M]
+    user_embeddings: A dense Tensor U of shape [N, k] where k is the embedding
+      dimension, such that U_i is the embedding of user i.
+    movie_embeddings: A dense Tensor V of shape [M, k] where k is the embedding
+      dimension, such that V_j is the embedding of movie j.
+  Returns:
+    A scalar Tensor representing the MSE between the true ratings and the
+      model's predictions.
   """
   return 0
 

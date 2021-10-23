@@ -1,4 +1,5 @@
 ## CF model
+#CFModel (Collaborative Filtering Model) helper class
 import collections
 from matplotlib import pyplot as plt
 import tensorflow as tf
