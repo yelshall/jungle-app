@@ -1,6 +1,5 @@
 import {
   View,
-  SafeAreaView,
   LayoutAnimation,
   ImageBackground,
   StyleSheet,
@@ -11,7 +10,6 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  Animated,
 } from "react-native";
 
 import React, { useEffect } from "react";
@@ -20,15 +18,6 @@ import { Text } from "react-native-elements";
 import Constants from "expo-constants";
 
 import { Divider } from "react-native-elements";
-
-const list = [
-  {
-    name: "by John Purdue",
-    avatar_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
-    subtitle: "Status: Verified",
-  },
-];
 
 var { height, width } = Dimensions.get("window");
 
