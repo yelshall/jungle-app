@@ -1,50 +1,26 @@
 import {
   View,
-  SafeAreaView,
   LayoutAnimation,
-  ImageBackground,
   StyleSheet,
   Alert,
-  ScrollView,
-  Button,
   Pressable,
   Dimensions,
-  Image,
-  TouchableOpacity,
-  Animated,
-  FlatList,
 } from "react-native";
 
-import React, { Component, useEffect } from "react";
-import HostData from "../../assets/events-data/HostData";
+import React, { useEffect } from "react";
 
 import { Text } from "react-native-elements";
 import Constants from "expo-constants";
 
 import { Divider } from "react-native-elements";
-import HostManage from "./HostManage";
-import Host_info from "./Host-info";
-import users from "../../assets/events-data/users";
-
-const list = [
-  {
-    name: "by John Purdue",
-    avatar_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
-    subtitle: "Status: Verified",
-  },
-];
 
 var { height, width } = Dimensions.get("window");
 
-const smallSize = width / 5;
 const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
-export default function ChangePref({ navigation, route }) {
-  const users = route.params.users;
-
-  const { id, tags, key } = route.params.users;
+export default function ChangePref({ route }) {
+  const { tags } = route.params.users;
 
   useEffect(() => {
     LayoutAnimation.spring();
@@ -66,7 +42,7 @@ export default function ChangePref({ navigation, route }) {
         </View>
       </View>
       <View>
-        {tags.map((tags, i) => {
+        {tags.map((tags) => {
           return <Text style={styles.item}>{tags}</Text>;
         })}
       </View>

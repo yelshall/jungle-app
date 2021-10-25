@@ -1,38 +1,21 @@
 import {
   View,
-  SafeAreaView,
   LayoutAnimation,
   ImageBackground,
   StyleSheet,
   Alert,
   ScrollView,
-  Button,
-  Pressable,
   Dimensions,
-  Image,
   TouchableOpacity,
-  Animated,
   ActivityIndicator,
 } from "react-native";
 
-import React, { Component, useEffect } from "react";
-import HostData from "../../assets/events-data/HostData";
+import React, { useEffect } from "react";
 
 import { Text } from "react-native-elements";
 import Constants from "expo-constants";
 
 import { Divider } from "react-native-elements";
-import HostManage from "./HostManage";
-import Host_info from "./Host-info";
-
-const list = [
-  {
-    name: "by John Purdue",
-    avatar_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
-    subtitle: "Status: Verified",
-  },
-];
 
 var { height, width } = Dimensions.get("window");
 
