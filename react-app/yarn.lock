@@ -1217,6 +1217,14 @@
     "fs-extra" "^9.0.0"
     "resolve-from" "^5.0.0"
 
+"@expo/react-native-action-sheet@^3.6.0":
+  "integrity" "sha512-tuc8mJmDeCc1q/U2q+IJ9pKeIZL/JJoHYBf34Vor1aabfk8m+/LSDlCCi4MVFIU1fHHwgNQyuDbGhsanYPJFRw=="
+  "resolved" "https://registry.npmjs.org/@expo/react-native-action-sheet/-/react-native-action-sheet-3.12.0.tgz"
+  "version" "3.12.0"
+  dependencies:
+    "@types/hoist-non-react-statics" "^3.3.1"
+    "hoist-non-react-statics" "^3.3.0"
+
 "@expo/spawn-async@1.5.0":
   "integrity" "sha512-LB7jWkqrHo+5fJHNrLAFdimuSXQ2MQ4lA7SQW5bf/HbsXuV2VrT/jN/M8f/KoWt0uJMGN4k/j7Opx4AvOOxSew=="
   "resolved" "https://registry.npmjs.org/@expo/spawn-async/-/spawn-async-1.5.0.tgz"
@@ -1574,6 +1582,14 @@
   "integrity" "sha512-VbjwR1fhsn2h2KXAY4oy1fm7dCxaKy0D+deTb8Ilc3Eo3rc5+5eA4rfYmZaHgNJKxVyI0f6WIXzO2zLkVmQPHA=="
   "resolved" "https://registry.npmjs.org/@types/hammerjs/-/hammerjs-2.0.40.tgz"
   "version" "2.0.40"
+
+"@types/hoist-non-react-statics@^3.3.1":
+  "integrity" "sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA=="
+  "resolved" "https://registry.npmjs.org/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz"
+  "version" "3.3.1"
+  dependencies:
+    "@types/react" "*"
+    "hoist-non-react-statics" "^3.3.0"
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   "integrity" "sha512-sz7iLqvVUg1gIedBOvlkxPlc8/uVzyS5OwGz1cKjXzkl3FpL3al0crU8YGU1WoHkxn0Wxbw5tyi6hvzJKNzFsw=="
@@ -2590,7 +2606,7 @@
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.0.9.tgz"
   "version" "3.0.9"
 
-"dayjs@^1.8.15":
+"dayjs@^1.8.15", "dayjs@^1.8.26":
   "integrity" "sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig=="
   "resolved" "https://registry.npmjs.org/dayjs/-/dayjs-1.10.7.tgz"
   "version" "1.10.7"
@@ -5145,7 +5161,7 @@
   dependencies:
     "asap" "~2.0.6"
 
-"prop-types@^15.5.10", "prop-types@^15.6.0", "prop-types@^15.6.2", "prop-types@^15.7.2":
+"prop-types@*", "prop-types@^15.5.10", "prop-types@^15.6.0", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.7.x":
   "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
   "version" "15.7.2"
@@ -5245,6 +5261,11 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
 
+"react-native-communications@^2.2.1":
+  "integrity" "sha1-eIO1ayCgAu63kMET+GFuqGksp5U="
+  "resolved" "https://registry.npmjs.org/react-native-communications/-/react-native-communications-2.2.1.tgz"
+  "version" "2.2.1"
+
 "react-native-dropdown-picker@^5.1.28":
   "integrity" "sha512-REF1QMuuJhVrNh71IvgCY594wT6+l4KQG8TRgwPUfvnWPukzbNHClGkqf6E7Y7xZS5eK6NeE1uAzoZZJntdwWA=="
   "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.1.28.tgz"
@@ -5275,10 +5296,39 @@
     "invariant" "^2.2.4"
     "prop-types" "^15.7.2"
 
-"react-native-iphone-x-helper@^1.3.0":
+"react-native-gifted-chat@^0.16.3":
+  "integrity" "sha512-7EJKQPzzg1yIbLFNq9n5bGJWZ7Woi2bTeT7M4EVSChmFF/qyNos+gFxEcafPkEihEeIxeOne6hBQlYNKmDABgA=="
+  "resolved" "https://registry.npmjs.org/react-native-gifted-chat/-/react-native-gifted-chat-0.16.3.tgz"
+  "version" "0.16.3"
+  dependencies:
+    "@expo/react-native-action-sheet" "^3.6.0"
+    "dayjs" "^1.8.26"
+    "prop-types" "^15.7.2"
+    "react-native-communications" "^2.2.1"
+    "react-native-iphone-x-helper" "^1.2.1"
+    "react-native-lightbox" "^0.8.1"
+    "react-native-parsed-text" "0.0.22"
+    "react-native-typing-animation" "^0.1.7"
+    "uuid" "3.4.0"
+
+"react-native-iphone-x-helper@^1.2.1", "react-native-iphone-x-helper@^1.3.0":
   "integrity" "sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg=="
   "resolved" "https://registry.npmjs.org/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz"
   "version" "1.3.1"
+
+"react-native-lightbox@^0.8.1":
+  "integrity" "sha512-TFZA6iKEEHpAUIXjMTRb6vx0/9rHgEKy3ZBiRAy295PwldYg5c8opwnbyURLIl522ykeqhVx9uGdXjSMIowLvA=="
+  "resolved" "https://registry.npmjs.org/react-native-lightbox/-/react-native-lightbox-0.8.1.tgz"
+  "version" "0.8.1"
+  dependencies:
+    "prop-types" "^15.7.2"
+
+"react-native-parsed-text@0.0.22":
+  "integrity" "sha512-hfD83RDXZf9Fvth3DowR7j65fMnlqM9PpxZBGWkzVcUTFtqe6/yPcIoIAgrJbKn6YmtzkivmhWE2MCE4JKBXrQ=="
+  "resolved" "https://registry.npmjs.org/react-native-parsed-text/-/react-native-parsed-text-0.0.22.tgz"
+  "version" "0.0.22"
+  dependencies:
+    "prop-types" "^15.7.x"
 
 "react-native-ratings@8.0.4":
   "integrity" "sha512-Xczu5lskIIRD6BEdz9A0jDRpEck/SFxRqiglkXi0u67yAtI1/pcJC76P4MukCbT8K4BPVl+42w83YqXBoBRl7A=="
@@ -5327,6 +5377,11 @@
   "integrity" "sha512-mKOfBLIBFBcs9br1rlZDvxD5+mAl8Gfr5CounwJtxI6Z82rGrMO+Kgl9EIg3RMVf3G855a85YVqHJL2f5EDRlw=="
   "resolved" "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.3.1.tgz"
   "version" "0.3.1"
+
+"react-native-typing-animation@^0.1.7":
+  "integrity" "sha512-4H3rF9M+I2yAZpYJcY0Mb29TXkn98QK12rrKSY6LZj1BQD9NNmRZuNXzwX4XHapsIz+N/J8M3p27FOQPbfzqeg=="
+  "resolved" "https://registry.npmjs.org/react-native-typing-animation/-/react-native-typing-animation-0.1.7.tgz"
+  "version" "0.1.7"
 
 "react-native-unimodules@0.14.10":
   "integrity" "sha512-QpNyxdK81qtu9Y2omj7QRAnfoOGzDUC3iFCHwjFDew7J2KMn7RvlMs6hBj3lFTcee60TRB6gUY69lFL+DpPBFQ=="
@@ -5428,7 +5483,7 @@
   "resolved" "https://registry.npmjs.org/react-timer-mixin/-/react-timer-mixin-0.13.4.tgz"
   "version" "0.13.4"
 
-"react@*", "react@^16.13.1", "react@^16.8.0 || ^17.0.0", "react@>= 16.8.0", "react@>=16.5.1", "react@16.13.1":
+"react@*", "react@^16.13.1", "react@^16.8.0 || ^17.0.0", "react@>= 16.8.0", "react@>=16.3.0", "react@>=16.5.1", "react@16.13.1":
   "integrity" "sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w=="
   "resolved" "https://registry.npmjs.org/react/-/react-16.13.1.tgz"
   "version" "16.13.1"
@@ -6414,7 +6469,7 @@
   "resolved" "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   "version" "1.0.1"
 
-"uuid@^3.3.2", "uuid@^3.4.0":
+"uuid@^3.3.2", "uuid@^3.4.0", "uuid@3.4.0":
   "integrity" "sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A=="
   "resolved" "https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz"
   "version" "3.4.0"

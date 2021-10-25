@@ -19,256 +19,253 @@ import editEvents from "./src/screens/editEvents";
 import Explore from "./src/screens/Explore";
 import Host_info from "./src/screens/Host-info";
 import FollowedHosts from "./src/screens/FollowedHosts";
+import Chat from "./src/screens/Chat";
+import Messages from "./src/screens/Messages";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-	const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+	//const socket = io("https://mighty-plateau-63166.herokuapp.com/");
 
-	const initialLoginState = {
-		isLoading: true,
-		token: null,
-		signInType: null,
-		id: null,
-	};
+	// const initialLoginState = {
+	// 	isLoading: true,
+	// 	token: null,
+	// 	signInType: null,
+	// 	id: null,
+	// };
 
-	const loginReducer = (prevState, action) => {
-		switch (action.type) {
-			case "RETREIVE_TOKEN":
-				return {
-					...prevState,
-					token: action.token,
-					id: action.id,
-					signInType: action.signInType,
-					isLoading: false,
-				};
-			case "LOGIN":
-				return {
-					...prevState,
-					token: action.token,
-					id: action.id,
-					signInType: action.signInType,
-					isLoading: false,
-				};
-			case "LOGOUT":
-				return {
-					...prevState,
-					token: null,
-					id: null,
-					signInType: null,
-					isLoading: false,
-				};
-			case "REGISTER":
-				return {
-					...prevState,
-					token: action.token,
-					id: null,
-					signInType: action.signInType,
-					isLoading: false,
-				};
-		}
-	};
+	// const loginReducer = (prevState, action) => {
+	// 	switch (action.type) {
+	// 		case "RETREIVE_TOKEN":
+	// 			return {
+	// 				...prevState,
+	// 				token: action.token,
+	// 				id: action.id,
+	// 				signInType: action.signInType,
+	// 				isLoading: false,
+	// 			};
+	// 		case "LOGIN":
+	// 			return {
+	// 				...prevState,
+	// 				token: action.token,
+	// 				id: action.id,
+	// 				signInType: action.signInType,
+	// 				isLoading: false,
+	// 			};
+	// 		case "LOGOUT":
+	// 			return {
+	// 				...prevState,
+	// 				token: null,
+	// 				id: null,
+	// 				signInType: null,
+	// 				isLoading: false,
+	// 			};
+	// 		case "REGISTER":
+	// 			return {
+	// 				...prevState,
+	// 				token: action.token,
+	// 				id: null,
+	// 				signInType: action.signInType,
+	// 				isLoading: false,
+	// 			};
+	// 	}
+	// };
 
-	const [loginState, dispatch] = React.useReducer(
-		loginReducer,
-		initialLoginState
-	);
+	// const [loginState, dispatch] = React.useReducer(
+	// 	loginReducer,
+	// 	initialLoginState
+	// );
 
-	const authContext = React.useMemo(
-		() => ({
-			signIn: async (response) => {
-				try {
-					let token = response.token;
-					await storeData("token", response);
-					dispatch({
-						type: "LOGIN",
-						token: token,
-						signInType: response.signInType,
-						id: response.id,
-					});
-				} catch (err) {
-					console.log(err);
-				}
-			},
-			signUp: async (response) => {
-				try {
-					let token = response.token;
-					await storeData("token", response);
-					dispatch({
-						type: "REGISTER",
-						token: token,
-						signInType: response.signInType,
-						id: response.id,
-					});
-				} catch (err) {
-					console.log(err);
-				}
-			},
-			signOut: async () => {
-				try {
-					await removeData("token");
-				} catch (err) {
-					console.log(err);
-				}
-				dispatch({ type: "LOGOUT" });
-			},
-		}),
-		[]
-	);
+	// const authContext = React.useMemo(
+	// 	() => ({
+	// 		signIn: async (response) => {
+	// 			try {
+	// 				let token = response.token;
+	// 				await storeData("token", response);
+	// 				dispatch({
+	// 					type: "LOGIN",
+	// 					token: token,
+	// 					signInType: response.signInType,
+	// 					id: response.id,
+	// 				});
+	// 			} catch (err) {
+	// 				console.log(err);
+	// 			}
+	// 		},
+	// 		signUp: async (response) => {
+	// 			try {
+	// 				let token = response.token;
+	// 				await storeData("token", response);
+	// 				dispatch({
+	// 					type: "REGISTER",
+	// 					token: token,
+	// 					signInType: response.signInType,
+	// 					id: response.id,
+	// 				});
+	// 			} catch (err) {
+	// 				console.log(err);
+	// 			}
+	// 		},
+	// 		signOut: async () => {
+	// 			try {
+	// 				await removeData("token");
+	// 			} catch (err) {
+	// 				console.log(err);
+	// 			}
+	// 			dispatch({ type: "LOGOUT" });
+	// 		},
+	// 	}),
+	// 	[]
+	// );
 
-	useEffect(() => {
-		setTimeout(async () => {
-			let token = null;
-			try {
-				token = await getData("token");
-			} catch (err) {
-				console.log(err);
-			}
-			socket.emit("verifyToken", token, async (err, response) => {
-				if (err) {
-					try {
-						await removeData("token");
-					} catch (err) {
-						console.log(err);
-					}
-					dispatch({
-						type: "RETREIVE_TOKEN",
-						id: null,
-						token: null,
-						signInType: null,
-					});
-					return;
-				}
-				dispatch({
-					type: "RETREIVE_TOKEN",
-					token: token,
-					signInType: response.signInType,
-					id: response.id,
-				});
-			});
-		}, 500);
-	}, []);
+	// useEffect(() => {
+	// 	setTimeout(async () => {
+	// 		let token = null;
+	// 		try {
+	// 			token = await getData("token");
+	// 		} catch (err) {
+	// 			console.log(err);
+	// 		}
+	// 		socket.emit("verifyToken", token, async (err, response) => {
+	// 			if (err) {
+	// 				try {
+	// 					await removeData("token");
+	// 				} catch (err) {
+	// 					console.log(err);
+	// 				}
+	// 				dispatch({
+	// 					type: "RETREIVE_TOKEN",
+	// 					id: null,
+	// 					token: null,
+	// 					signInType: null,
+	// 				});
+	// 				return;
+	// 			}
+	// 			dispatch({
+	// 				type: "RETREIVE_TOKEN",
+	// 				token: token,
+	// 				signInType: response.signInType,
+	// 				id: response.id,
+	// 			});
+	// 		});
+	// 	}, 500);
+	// }, []);
 
-	if (loginState.isLoading) {
-		return (
-			<View
-				style={{
-					flex: 1,
-					justifyContent: "center",
-					alignItems: "center",
-				}}
-			>
-				<ActivityIndicator size="large" />
-			</View>
-		);
-	}
+	// if (loginState.isLoading) {
+	// 	return (
+	// 		<View
+	// 			style={{
+	// 				flex: 1,
+	// 				justifyContent: "center",
+	// 				alignItems: "center",
+	// 			}}
+	// 		>
+	// 			<ActivityIndicator size="large" />
+	// 		</View>
+	// 	);
+	// }
 
-	if (loginState.token === null) {
-		return (
-			<AuthContext.Provider value={authContext}>
-				<NavigationContainer>
-					<Stack.Navigator
-						screenOptions={{
-							headerShown: false,
-						}}
-					>
-						<Stack.Screen
-							name="HomeScreen"
-							component={HomeScreen}
-							initialParams={{ socket: socket }}
-						/>
-						<Stack.Screen
-							name="Login"
-							component={Login}
-							initialParams={{ socket: socket }}
-						/>
-						<Stack.Screen
-							name="Register"
-							component={Register}
-							initialParams={{ socket: socket }}
-						/>
-						<Stack.Screen
-							name="PersonalInfo"
-							component={PersonalInfo}
-							initialParams={{ socket: socket }}
-						/>
-						<Stack.Screen
-							name="HostSignup"
-							component={HostSignup}
-							initialParams={{ socket: socket }}
-						/>
-						<Stack.Screen
-							name="Preferences"
-							component={Preferences}
-							initialParams={{ socket: socket }}
-						/>
-					</Stack.Navigator>
-				</NavigationContainer>
-			</AuthContext.Provider>
-		);
-	} else {
-		if (loginState.signInType === "HOST") {
+	// if (loginState.token === null) {
+	// 	return (
+	// 			<NavigationContainer>
+	// 				<Stack.Navigator
+	// 					screenOptions={{
+	// 						headerShown: false,
+	// 					}}
+	// 				>
+	// 					<Stack.Screen
+	// 						name="HomeScreen"
+	// 						component={HomeScreen}
+	// 						initialParams={{ socket: socket }}
+	// 					/>
+	// 					<Stack.Screen
+	// 						name="Login"
+	// 						component={Login}
+	// 						initialParams={{ socket: socket }}
+	// 					/>
+	// 					<Stack.Screen
+	// 						name="Register"
+	// 						component={Register}
+	// 						initialParams={{ socket: socket }}
+	// 					/>
+	// 					<Stack.Screen
+	// 						name="PersonalInfo"
+	// 						component={PersonalInfo}
+	// 						initialParams={{ socket: socket }}
+	// 					/>
+	// 					<Stack.Screen
+	// 						name="HostSignup"
+	// 						component={HostSignup}
+	// 						initialParams={{ socket: socket }}
+	// 					/>
+	// 					<Stack.Screen
+	// 						name="Preferences"
+	// 						component={Preferences}
+	// 						initialParams={{ socket: socket }}
+	// 					/>
+	// 				</Stack.Navigator>
+	// 			</NavigationContainer>
+	// 	);
+		
+	// } else {
+	// 	if (loginState.signInType === "HOST") {
 			return (
-				<AuthContext.Provider value={authContext}>
+			
 					<NavigationContainer>
 						<Stack.Navigator
 							screenOptions={{
 								headerShown: false,
 							}}
 						>
-							<Stack.Screen name="HostHome" component={HostHome} initialParams={{ socket: socket, loginState: loginState }} />
-							<Stack.Screen
-								name="editEvents"
-								component={editEvents}
-								initialParams={{ event: eventsData[0], socket: socket, loginState: loginState }}
-							/>
+							<Stack.Screen name="Chat" component={Chat}  />
+							<Stack.Screen name = "Messages" component={Messages}/>
 						</Stack.Navigator>
 					</NavigationContainer>
-				</AuthContext.Provider>
-			);
-		} else {
-			return (
-				<AuthContext.Provider value={authContext}>
-					<NavigationContainer>
-						<Stack.Navigator
-							screenOptions={{
-								headerShown: false,
-							}}
-						>
-							<Stack.Screen
-								name="Home"
-								component={Home}
-								initialParams={{
-									socket: socket,
-									loginState: loginState
-								}}
-							/>
-							<Stack.Screen
-								name="event_info"
-								component={event_info}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="Explore"
-								component={Explore}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="Host-info"
-								component={Host_info}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="FollowedHosts"
-								component={FollowedHosts}
-								initialParams={{
-									loginState: loginState, socket: socket
-								}} />
-						</Stack.Navigator>
-					</NavigationContainer>
-				</AuthContext.Provider>
-			);
-		}
-	}
 
-}
+			);
+
+		}
+		// } else {
+		// 	return (
+		// 		<AuthContext.Provider value={authContext}>
+		// 			<NavigationContainer>
+		// 				<Stack.Navigator
+		// 					screenOptions={{
+		// 						headerShown: false,
+		// 					}}
+		// 				>
+		// 					<Stack.Screen
+		// 						name="Home"
+		// 						component={Home}
+		// 						initialParams={{
+		// 							socket: socket,
+		// 							loginState: loginState
+		// 						}}
+		// 					/>
+		// 					<Stack.Screen
+		// 						name="event_info"
+		// 						component={event_info}
+		// 						initialParams={{ socket: socket, loginState: loginState }}
+		// 					/>
+		// 					<Stack.Screen
+		// 						name="Explore"
+		// 						component={Explore}
+		// 						initialParams={{ socket: socket, loginState: loginState }}
+		// 					/>
+		// 					<Stack.Screen
+		// 						name="Host-info"
+		// 						component={Host_info}
+		// 						initialParams={{ socket: socket, loginState: loginState }}
+		// 					/>
+		// 					<Stack.Screen
+		// 						name="FollowedHosts"
+		// 						component={FollowedHosts}
+		// 						initialParams={{
+		// 							loginState: loginState, socket: socket
+		// 						}} />
+		// 				</Stack.Navigator>
+		// 			</NavigationContainer>
+		// 		</AuthContext.Provider>
+		// 	);
+		// }
+	
