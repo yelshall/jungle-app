@@ -23,7 +23,7 @@ import Constants from "expo-constants";
 
 import { Divider } from "react-native-elements";
 import HostManage from "./HostManage";
-import Host_info from "./Host_info";
+import Host_info from "./Host-info";
 import users from "../../assets/events-data/users";
 
 const list = [
