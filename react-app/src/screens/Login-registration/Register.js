@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
 	container: {
 		width: "100%",
 		height: "100%",
-		backgroundColor: "#96db8f",
+		backgroundColor: "#8acf82",
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 5,
 		opacity: 0.8,
 		width: '70%',
-		backgroundColor: '#85ba7f',
+		backgroundColor: '#51b375',
 		padding: 15,
 		borderRadius: 10,
 		bottom: 160
@@ -170,6 +170,6 @@ const styles = StyleSheet.create({
 		textTransform: 'uppercase',
 		fontWeight: 'bold',
 		fontSize: 14,
-		color: "#2f402d"
+		color: "white"
 	}
 })
