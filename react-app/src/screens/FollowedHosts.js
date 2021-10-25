@@ -1,18 +1,18 @@
 import {
-	View,
-	SafeAreaView,
-	LayoutAnimation,
-	ImageBackground,
-	StyleSheet,
-	Alert,
-	ScrollView,
-	Button,
-	Pressable,
-	Dimensions,
-	Image,
-	TouchableOpacity,
-	Animated,
-	ActivityIndicator
+  View,
+  SafeAreaView,
+  LayoutAnimation,
+  ImageBackground,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  Button,
+  Pressable,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  Animated,
+  ActivityIndicator,
 } from "react-native";
 
 import React, { Component, useEffect } from "react";
@@ -26,12 +26,12 @@ import HostManage from "./HostManage";
 import Host_info from "./Host-info";
 
 const list = [
-	{
-		name: "by John Purdue",
-		avatar_url:
-			"https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
-		subtitle: "Status: Verified",
-	},
+  {
+    name: "by John Purdue",
+    avatar_url:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/JohnPurdue.jpg/300px-JohnPurdue.jpg",
+    subtitle: "Status: Verified",
+  },
 ];
 
 var { height, width } = Dimensions.get("window");
@@ -41,123 +41,136 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function FollowedHosts({ navigation, route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+  const socket = route.params.socket;
+  const loginState = route.params.loginState;
 
-	const hostValue = React.useRef([]).current;
-	const [isLoading, setIsLoading] = React.useState(true);
-	const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+  const hostValue = React.useRef([]).current;
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
-	useEffect(() => {
-		LayoutAnimation.spring();
+  useEffect(() => {
+    LayoutAnimation.spring();
 
-		socket.emit("getFollowing", { uid: loginState.id }, (err, res) => {
-			if (err) {
-				Alert.alert("Error", "Could not get host info data.", [
-					{
-						text: "OK",
-					},
-				]);
-				return;
-			}
+    socket.emit("getFollowing", { uid: loginState.id }, (err, res) => {
+      if (err) {
+        Alert.alert("Error", "Could not get host info data.", [
+          {
+            text: "OK",
+          },
+        ]);
+        return;
+      }
 
-			for(let i = 0; i < res.length; i++) {
-				hostValue.push(res[i]);
-			}
+      for (let i = 0; i < res.length; i++) {
+        hostValue.push(res[i]);
+      }
 
-			forceUpdate();
+      forceUpdate();
 
-			setTimeout(() => {
-				setIsLoading(false);
-			}, 500);
-		});
-	}, []);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    });
+  }, []);
 
-	const onLongPress = (host) => {
-		navigation.navigate("Host-info", {socket: socket, loginState: loginState, host: host});
-	};
+  const onLongPress = (host) => {
+    navigation.navigate("Host-info", {
+      socket: socket,
+      loginState: loginState,
+      host: host,
+    });
+  };
 
-	const renderNormal = (host, index) => {
-		if (host === null) {
-			return null;
-		}
+  const renderNormal = (host, index) => {
+    if (host === null) {
+      return null;
+    }
 
-		return (
-			<View
-				key={index}
-				style={{
-					flexWrap: "nowrap",
-					flexDirection: "row",
-					flex: 1,
-					alignItems: "center",
-					justifyContent: "center",
-					marginBottom: 20,
-				}}
-			>
-				<TouchableOpacity onLongPress={() => onLongPress(host)}>
-					<ImageBackground
-						source={{ uri: hostValue[index].imageURL }}
-						style={[
-							{
-								height: smallSize,
-								width: smallSize,
-								opacity: 1,
-								resizeMode: "cover",
-							},
-						]}
-					/>
-				</TouchableOpacity>
+    return (
+      <View
+        key={index}
+        style={{
+          flexWrap: "nowrap",
+          flexDirection: "row",
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 20,
+        }}
+      >
+        <TouchableOpacity onLongPress={() => onLongPress(host)}>
+          <ImageBackground
+            source={{ uri: hostValue[index].imageURL }}
+            style={[
+              {
+                height: smallSize,
+                width: smallSize,
+                opacity: 1,
+                resizeMode: "cover",
+              },
+            ]}
+          />
+        </TouchableOpacity>
 
-				<View style={{ marginLeft: 20, flex: 1 }}>
-					<TouchableOpacity onLongPress={() => onLongPress(host)}>
-						<Text
-							style={{
-								fontWeight: "600",
-								fontSize: 16,
-								position: "absolute",
-								bottom: 5,
-							}}
-						>
-							{hostValue[index].hostName}
-						</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
-		);
-	};
+        <View style={{ marginLeft: 20, flex: 1 }}>
+          <TouchableOpacity onLongPress={() => onLongPress(host)}>
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: 16,
+                position: "absolute",
+                bottom: 5,
+              }}
+            >
+              {hostValue[index].hostName}
+              {/** check-mark check and View */}
+              {/**  
+              {"verified" == ver_status ? (
+                <Image
+                  style={styles.ver_stat}
+                  source={require("../../assets/check-mark.png")}
+                />
+              ) : null}
+              */}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
-	return (
-		<>
-			{isLoading ? (
-				<ActivityIndicator size="large" />
-			) : (
-				<>
-					<View style={styles.container}>
-						<View style={styles.header}></View>
-						<View style={styles.body}>
-							<View style={styles.bodyContent}>
-								<Text style={styles.name}> {"Following"} </Text>
+  return (
+    <>
+      {isLoading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <>
+          <View style={styles.container}>
+            <View style={styles.header}></View>
+            <View style={styles.body}>
+              <View style={styles.bodyContent}>
+                <Text style={styles.name}> {"Following"} </Text>
 
-								<Divider orientation="vertical" width={5} />
-							</View>
-						</View>
-					</View>
+                <Divider orientation="vertical" width={5} />
+              </View>
+            </View>
+          </View>
 
-					<View style={styles.containerExplore}>
-						<Text style={styles.headingExplore}>Hosts</Text>
-						<ScrollView
-							contentContainerStyle={{ alignItems: "flex-start" }}
-							style={{ paddingHorizontal: 10, flex: 1, width: width }}
-						>
-							{hostValue.map((host, i) => {
-								return renderNormal(host, i);
-							})}
-						</ScrollView>
-					</View>
-				</>)
-			}
-		</>
-	);
+          <View style={styles.containerExplore}>
+            <Text style={styles.headingExplore}>Hosts</Text>
+            <ScrollView
+              contentContainerStyle={{ alignItems: "flex-start" }}
+              style={{ paddingHorizontal: 10, flex: 1, width: width }}
+            >
+              {hostValue.map((host, i) => {
+                return renderNormal(host, i);
+              })}
+            </ScrollView>
+          </View>
+        </>
+      )}
+    </>
+  );
 }
 
 // prettier-ignore
@@ -175,6 +188,17 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 		justifyContent: "flex-end",
 	},
+  ver_stat: {
+    width: 20,
+    height: 20,
+    //borderRadius: 0,
+    //borderWidth: 4,
+    //borderColor: "white",
+    //marginBottom:10,
+    //alignSelf:'center',
+    position: 'relative',
+    marginTop:0,
+  },
 
 	loginBtn: {
 		width: "50%",
