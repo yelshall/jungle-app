@@ -56,7 +56,7 @@ export default function Preferences({ navigation, route }) {
 	}, []);
 
 	const renderItem = ({ item }) => {
-		const backgroundColor = selectedIds.some(i => i.id === item.id) ? "#85ba7f" : "#bfffb8";
+		const backgroundColor = selectedIds.some(i => i.id === item.id) ? "#61aa7c" : "#51b375";
 		const color = selectedIds.some(i => i.id === item.id) ? 'white' : 'black';
 
 		if (item.empty === true) {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: "100%",
 		height: "100%",
-		backgroundColor: "#96db8f",
+		backgroundColor: "#8acf82",
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.4,
 		shadowRadius: 5,
 		width: '70%',
-		backgroundColor: '#85ba7f',
+		backgroundColor: '#8acf82',
 		padding: 15,
 		borderRadius: 10,
 		bottom: 70,

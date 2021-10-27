@@ -15,7 +15,7 @@ const Tag = ({ tag }) => {
 };
 
 export default function Card(props) {
-	const event = props.eventData;
+  const event = props.eventData;
 
 	return (
 		<SafeAreaView style={styles.card}>
@@ -64,57 +64,55 @@ const styles = StyleSheet.create({
 		height: "80%",
 		borderRadius: 20,
 		backgroundColor: "#fefefe",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.36,
+    shadowRadius: 6.68,
+    elevation: 11,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+    overflow: "hidden",
 
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 5,
-		},
-		shadowOpacity: 0.36,
-		shadowRadius: 6.68,
-
-		elevation: 11,
-	},
-	image: {
-		width: "100%",
-		height: "100%",
-		borderRadius: 10,
-		overflow: "hidden",
-
-		justifyContent: "flex-end",
-	},
-	cardInner: {
-		padding: 10,
-	},
-	event_name: {
-		fontSize: 30,
-		color: "white",
-		fontWeight: "bold",
-		marginBottom: 20,
-	},
-	image_button: {
-		//marginBottom: 280,
-		//marginLeft: 280,
-		//width: "90%",
-		borderRadius: 5,
-		height: 500,
-		alignItems: "center",
-		justifyContent: "center",
-		//marginTop: 40,
-	},
-	event_desc: {
-		fontSize: 24,
-		color: "white",
-		marginBottom: 5,
-	},
-	event_host: {
-		fontSize: 20,
-		color: "white",
-		marginBottom: 5,
-	},
-	event_loc: {
-		fontSize: 18,
-		color: "white",
-		marginBottom: 5,
-	},
+    justifyContent: "flex-end",
+  },
+  cardInner: {
+    padding: 10,
+  },
+  event_name: {
+    fontSize: 30,
+    color: "white",
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  image_button: {
+    //marginBottom: 280,
+    //marginLeft: 280,
+    //width: "90%",
+    borderRadius: 5,
+    height: 500,
+    alignItems: "center",
+    justifyContent: "center",
+    //marginTop: 40,
+  },
+  event_desc: {
+    fontSize: 24,
+    color: "white",
+    marginBottom: 5,
+  },
+  event_host: {
+    fontSize: 20,
+    color: "white",
+    marginBottom: 5,
+  },
+  event_loc: {
+    fontSize: 18,
+    color: "white",
+    marginBottom: 5,
+  },
 });
