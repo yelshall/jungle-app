@@ -1,7 +1,6 @@
 import requests
 import unicodedata
 from bs4 import BeautifulSoup as bs
-import pymongo
 from pymongo import MongoClient
 from datetime import datetime
 
@@ -122,7 +121,7 @@ for i in range(len(event_list)):
       "location" : location,
       "description" : description,
       "tags": [],
-      "interestedStudents": [],
+      "interes sltedStudents": [],
       "confirmedStudents": [],
       "maxStudents": -1,
       "updates": [],
