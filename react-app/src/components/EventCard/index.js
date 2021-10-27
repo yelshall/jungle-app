@@ -4,8 +4,15 @@ import {
 	ImageBackground,
 	SafeAreaView,
 	StyleSheet,
+	View
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
+const Tag = ({ tag }) => {
+	return (<View style={styles.tagView}>
+		<Text style={styles.tagText}>{tag.tagName}</Text>
+	</View>)
+};
 
 export default function Card(props) {
 	const event = props.eventData;
@@ -30,8 +37,15 @@ export default function Card(props) {
 						<Text style={styles.event_loc}>Loc: {event.location}</Text>
 						<Text style={styles.event_loc}>Date: {event.dateTime}</Text>
 						{
-							event.tags &&
-							<Text style={styles.event_loc}>Tag: {event.tags[0].tagName}</Text>
+							typeof event.tags != "undefined" &&
+							<View>
+								<Text style={styles.event_loc}>Tags:</Text>
+								{
+									event.tags.map(tag => {
+										return <Tag tag={tag} />
+									})
+								}
+							</View>
 						}
 					</SafeAreaView>
 				</ImageBackground>
@@ -41,6 +55,10 @@ export default function Card(props) {
 };
 
 const styles = StyleSheet.create({
+	tagView: {
+		backgroundColor: '#fefefe',
+		borderRadius: 10
+	},
 	card: {
 		width: "90%",
 		height: "80%",
