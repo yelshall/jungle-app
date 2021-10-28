@@ -37,7 +37,7 @@ export default function Card(props) {
 						<Text style={styles.event_loc}>Loc: {event.location}</Text>
 						<Text style={styles.event_loc}>Date: {event.dateTime}</Text>
 						{
-							typeof event.tags != "undefined" &&
+							typeof event.tags !== "undefined" &&
 							<View>
 								<Text style={styles.event_loc}>Tags:</Text>
 								{
