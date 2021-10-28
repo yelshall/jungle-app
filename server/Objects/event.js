@@ -3,7 +3,6 @@ const tag_functions = require('../Objects/tag');
 const update_functions = require('../Objects/update');
 
 var createEvent = (newEvent, callback) => {
-    //Possibly connect location to google maps
     let event = {
         eventName: newEvent.eventName,
         dateTime: newEvent.dateTime,
@@ -13,7 +12,12 @@ var createEvent = (newEvent, callback) => {
         eventHost: newEvent.eventHost,
         description: newEvent.description,
         imageURL: newEvent.imageURL,
-        maxStudents: newEvent.maxStudents
+        maxStudents: newEvent.maxStudents,
+        latitude: newEvent.latitude,
+        longitude: newEvent.longitude,
+        url: newEvent.url, 
+        media: newEvent.media,
+        imageURL: newEvent.imageURL
     };
 
     let eventSave = new schemas.Event(event);
@@ -21,28 +25,27 @@ var createEvent = (newEvent, callback) => {
     eventSave.save()
     .then(async data => {
         for(let i = 0; i < newEvent.tags.length; i++) {
-            await tag_functions.addEvent(newEvent.tags[i], data._id);
+            tag_functions.addEvent(newEvent.tags[i], data._id);
         }
 
         if (callback) {callback(null, data);}
     })
     .catch(err => {
-        //console.log(err);
         if (callback) {callback(err, null);}
     });
 };
 
 var deleteEvent = (eid, callback) => {
-    schemas.Event.findByIdAndDelete(eid, function(err, deletedEvent) {
+    schemas.Event.findByIdAndDelete(eid, async function(err, deletedEvent) {
         if(err) {
             if (callback) {callback(err, null);}
         } else {
             for(let i = 0; i < deletedEvent.tags.length; i++) {
-                tag_functions.removeEvent(deletedEvent.tags[i], deletedEvent._id);
+                await tag_functions.removeEvent(deletedEvent.tags[i], deletedEvent._id);
             }
 
             for(let i = 0; i < deletedEvent.updates.length; i++) {
-                update_functions.deleteUpdate(deletedEvent.update[i]);
+                await update_functions.deleteUpdate(deletedEvent.update[i]);
             }
 
             if (callback) {callback(null, deletedEvent);}
@@ -72,10 +75,22 @@ var updateEvent = (eid, update, callback) => {
                 updateEventDescription(eid, update.description, callback);
                 break;
             case "EVENT_ADD_TAG":
-                addTag(eid, update.Tag, callback);
+                addTag(eid, update.tag, callback);
                 break;
             case "EVENT_REMOVE_TAG":
                 removeTag(eid, update.tag, callback);
+                break;
+            case "EVENT_ADD_MEDIA":
+                addMedia(eid, update.media, callback);
+                break;
+            case "EVENT_REMOVE_MEDIA":
+                removeMedia(eid, update.media, callback);
+                break;
+            case "EVENT_CHANGE_IMAGE":
+                changeImage(eid, update.media, callback);
+                break;
+            case "EVENT_CHANGE_URL":
+                changeURL(eid, update.url, callback);
                 break;
             default:
                 if(callback) {callback({err: "Incorrect field"}, null);}
@@ -203,7 +218,7 @@ var updateEventEndDateTime = (eid, newDateTime, callback) => {
 };
 
 var updateEventLocation = (eid, newLocation, callback) => {
-    schemas.Event.findByIdAndUpdate(eid, {location: newLocation}, (err, res) => {
+    schemas.Event.findByIdAndUpdate(eid, {location: newLocation.location, latitude: newLocation.latitude, longitude: newLocation.longitude}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
@@ -225,7 +240,7 @@ var updateEventMaxStudents = (eid, newMaxStudents, callback) => {
 };
 
 var updateEventDescription = (eid, newDescription, callback) => {
-    schemas.Event.findByIdAndUpdate(eid, {location: newDescription}, (err, res) => {
+    schemas.Event.findByIdAndUpdate(eid, {description: newDescription}, (err, res) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
@@ -246,6 +261,46 @@ var deleteUpdateEvent = (eid, uid, callback) => {
     })
 };
 
+var addMedia = (eid, media, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {$addToSet: {media: media}}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+        } else {
+            if(callback) {callback(null, res);}
+        }
+    });
+};
+
+var removeMedia = (eid, media, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {$pull: {media: media}}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+        } else {
+            if(callback) {callback(null, res);}
+        }
+    });
+};
+
+var changeImage = (eid, media, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {imageURL: media}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+        } else {
+            if(callback) {callback(null, res);}
+        }
+    });
+};
+
+var changeURL = (eid, url, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, {url: url}, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null);}
+        } else {
+            if(callback) {callback(null, res);}
+        }
+    });
+};
+
 module.exports = {
     createEvent: createEvent,
     deleteEvent: deleteEvent,
@@ -263,5 +318,9 @@ module.exports = {
     updateEventLocation: updateEventLocation,
     updateEventMaxStudents: updateEventMaxStudents,
     updateEventDescription: updateEventDescription,
-    deleteUpdateEvent: deleteUpdateEvent
+    deleteUpdateEvent: deleteUpdateEvent,
+    addMedia: addMedia,
+    removeMedia: removeMedia,
+    changeImage: changeImage,
+    changeURL: changeURL
 };
