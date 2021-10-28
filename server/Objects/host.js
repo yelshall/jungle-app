@@ -4,6 +4,9 @@ const tag_functions = require("./tag");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+//Add functionality to check if an event's time has already
+//passed so it can be moved to archived events
+
 var hostSignup = (newHost, callback) => {
     let salt = bcrypt.genSaltSync(10);
     let hash = bcrypt.hashSync(newHost.password, salt);
@@ -14,11 +17,11 @@ var hostSignup = (newHost, callback) => {
         password: hash,
         hostName: newHost.hostName,
         description: newHost.description,
-        tags: newHost.tags
+        tags: newHost.tags,
+        phoneNumber: newHost.phoneNumber,
+        website: newHost.website,
+        imageURL: newHost.imageURL
     };
-
-    if(newHost.phoneNumber) {host.phoneNumber = newHost.phoneNumber;}
-    if(newHost.website) {host.website = newHost.website;}
 
     let hostSave = new schemas.Host(host);
 
@@ -150,6 +153,7 @@ var updateEventHost = (eid, update, callback) => {
     });
 };
 
+//Change this to archived events
 var deleteEventHost = (hid, eid, callback) => {
     schemas.Host.findByIdAndUpdate(hid, {$pull: {events: eid}}, (err, res) => {
         if(err) {
@@ -217,6 +221,9 @@ var removeTag = (hid, tid, callback) => {
         }
     });
 };
+
+//Update functions for hostName, hostEmail, phoneNumber, email,
+//password, description, website, imageURL
 
 module.exports = {
     hostSignup: hostSignup,

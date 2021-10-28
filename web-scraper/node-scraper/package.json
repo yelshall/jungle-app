@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "test.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node test.js"
@@ -11,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "^3.0.0"
+    "he": "^1.2.0",
+    "node-fetch": "^2.6.5",
+    "textversionjs": "^1.1.3"
   }
 }

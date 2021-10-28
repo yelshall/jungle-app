@@ -5,6 +5,7 @@ const student = require('./Objects/student');
 const event = require('./Objects/event');
 const tag = require('./Objects/tag');
 const verify = require('./utils/verify');
+const scraper = require('./utils/scraper');
 const app = express();
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -12,40 +13,18 @@ const schemas = require('./schemas/schemas');
 
 require('dotenv').config({ path: './config/.env' });
 
+mongoose.connect(process.env.DATABASE_ACCESS)
+
 //Start Server
 const server = app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
 });
+
 const io = require('socket.io')(server, {
     cors: {
         origin: "*"
     }
 });
-
-mongoose.connect(process.env.DATABASE_ACCESS)
-
-let newStudent = {
-    username: "test1",
-    email: "test@mail.net",
-    password: "testPassword",
-    fullName: {
-        firstName: "First",
-        lastName: "Last"
-    },
-    birthDate: new Date(2002, 6, 11),
-    gender: "Male"
-};
-
-let newHost = {
-    email: "testhost@mail.net",
-    hostEmail: "testhost@mail.net",
-    password: "testPassword",
-    hostName: "hostNameTest",
-    description: "descriptionTest",
-    phoneNumber: "+1 (999) 1234 567",
-    website: "www.host.com",
-    tags: []
-};
 
 io.on('connection', (socket) => {
     socket.on('verifyEmail', (request, callback) => {
@@ -89,7 +68,14 @@ io.on('connection', (socket) => {
             let decoded = jwt.verify(request.token, process.env.APP_SECRET);
             decoded.iat = undefined;
             decoded.exp = undefined;
-            callback(null, { email: decoded.email, id: decoded.id, signInType: decoded.signInType });
+
+            student.retreiveStudentInfo(decoded.id, (err, res) => {
+                if(err) {
+                    callback(err, null);
+                }
+
+                callback(null, { email: decoded.email, id: decoded.id, signInType: decoded.signInType });
+            });
         } catch (err) {
             callback(err, null);
         }
