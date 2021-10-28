@@ -79,7 +79,7 @@ const getEvents = async (startDate, endDate, callback) => {
                 url: "https://www.homeofpurdue.com" + data.docs.docs[j].url
             };
 
-            if(typeof data.docs.docs[j].media_raw != 'undefined' && data.docs.docs[j].media_raw.length > 0) {
+            if(typeof data.docs.docs[j].media_raw !== 'undefined' && data.docs.docs[j].media_raw.length > 0) {
                 event.imageURL = data.docs.docs[j].media_raw[0].mediaurl;
                 event.media = [];
                 for(let k = 0; k < data.docs.docs[j].media_raw.length; k++) {
