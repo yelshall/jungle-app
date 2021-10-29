@@ -11,8 +11,8 @@ var categories = [
     { label: "Food", value: "137", id: "616900567475d1f23c77617b" },
     { label: "Museums & Exhibits", value: "9", id: "616900567475d1f23c77625e" },
     { label: "Music/Concerts", value: "10", id: "616900567475d1f23c776139" },
-    { label: "Nightlife", value: "98", id: "616900567475d1f23c776270"},
-    { label: "Over 21", value: "11", id: "616900567475d1f23c776286"},
+    { label: "Nightlife", value: "98", id: "616900567475d1f23c776270" },
+    { label: "Over 21", value: "11", id: "616900567475d1f23c776286" },
     { label: "Parks & Recreation", value: "12", id: "616900567475d1f23c77629e" },
     { label: "Purdue Events", value: "13", id: "616900567475d1f23c77624a" },
     { label: "Run/Walk/Ride", value: "138", id: "616900567475d1f23c7762ba" },
@@ -37,6 +37,18 @@ const getEvents = async (startDate, endDate, callback) => {
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
 
+    let startMonth = startDate.getUTCMonth() + 1;
+    let startDay = startDate.getUTCDate();
+    let startYear = startDate.getUTCFullYear();
+
+    let startDateOnly = startYear + "-" + startMonth + "-" + startDay;
+    
+    let endMonth = endDate.getUTCMonth() + 1;
+    let endDay = endDate.getUTCDate();
+    let endYear = endDate.getUTCFullYear();
+
+    let endDateOnly = endYear + "-" + endMonth + "-" + endDay;
+
     let getToken = await fetch("https://www.homeofpurdue.com/plugins/core/get_simple_token/", {
         "referrer": "https://www.homeofpurdue.com/events/",
         "referrerPolicy": "unsafe-url",
@@ -50,23 +62,25 @@ const getEvents = async (startDate, endDate, callback) => {
     let events = [];
 
     for (let i = 0; i < categories.length; i++) {
-        let response = await fetch(`https://www.homeofpurdue.com/includes/rest_v2/plugins_events_events_by_date/find/?json=%7B%22filter%22%3A%7B%22active%22%3Atrue%2C%22%24and%22%3A%5B%7B%22categories.catId%22%3A%7B%22%24in%22%3A%5B%22136%22%2C%224%22%2C%225%22%2C%226%22%2C%227%22%2C%22137%22%2C%229%22%2C%2210%22%2C%2298%22%2C%2211%22%2C%2212%22%2C%2213%22%2C%22138%22%2C%2265%22%2C%2214%22%2C%2215%22%2C%22144%22%5D%7D%7D%5D%2C%22date_range%22%3A%7B%22start%22%3A%7B%22%24date%22%3A%22${startDate.toJSON()}%22%7D%2C%22end%22%3A%7B%22%24date%22%3A%22${endDate.toJSON()}%22%7D%7D%2C%22categories.catId%22%3A%7B%22%24in%22%3A%5B${categories[i].value}%5D%7D%7D%2C%22options%22%3A%7B%22limit%22%3A100%2C%22skip%22%3A0%2C%22count%22%3Atrue%2C%22castDocs%22%3Afalse%2C%22fields%22%3A%7B%22_id%22%3A1%2C%22location%22%3A1%2C%22date%22%3A1%2C%22startDate%22%3A1%2C%22address1%22%3A1%2C%22description%22%3A1%2C%22endDate%22%3A1%2C%22recurrence%22%3A1%2C%22recurType%22%3A1%2C%22latitude%22%3A1%2C%22longitude%22%3A1%2C%22media_raw%22%3A1%2C%22recid%22%3A1%2C%22title%22%3A1%2C%22url%22%3A1%2C%22listing.title%22%3A1%2C%22listing.url%22%3A1%7D%2C%22hooks%22%3A%5B%5D%2C%22sort%22%3A%7B%22date%22%3A1%2C%22rank%22%3A1%2C%22title_sort%22%3A1%7D%7D%7D&token=${token}`, {
-            "referrer": "https://www.homeofpurdue.com/events/?view=grid&sort=date&filter_daterange%5Bstart%5D=2021-10-31&filter_daterange%5Bend%5D=2021-10-31",
+        let response = await fetch(`https://www.homeofpurdue.com/includes/rest_v2/plugins_events_events_by_date/find/?json=%7B%22filter%22%3A%7B%22active%22%3Atrue%2C%22%24and%22%3A%5B%7B%22categories.catId%22%3A%7B%22%24in%22%3A%5B%22136%22%2C%224%22%2C%225%22%2C%226%22%2C%227%22%2C%22137%22%2C%229%22%2C%2210%22%2C%2298%22%2C%2211%22%2C%2212%22%2C%2213%22%2C%22138%22%2C%2265%22%2C%2214%22%2C%2215%22%2C%22144%22%5D%7D%7D%5D%2C%22date_range%22%3A%7B%22start%22%3A%7B%22%24date%22%3A%22${startDate.toJSON()}%22%7D%2C%22end%22%3A%7B%22%24date%22%3A%22${endDate.toJSON()}%22%7D%7D%2C%22categories.catId%22%3A%7B%22%24in%22%3A%5B${categories[i].value}%5D%7D%7D%2C%22options%22%3A%7B%22limit%22%3A12%2C%22skip%22%3A0%2C%22count%22%3Atrue%2C%22castDocs%22%3Afalse%2C%22fields%22%3A%7B%22_id%22%3A1%2C%22location%22%3A1%2C%22date%22%3A1%2C%22startDate%22%3A1%2C%22address1%22%3A1%2C%22description%22%3A1%2C%22endDate%22%3A1%2C%22recurrence%22%3A1%2C%22recurType%22%3A1%2C%22latitude%22%3A1%2C%22longitude%22%3A1%2C%22media_raw%22%3A1%2C%22recid%22%3A1%2C%22title%22%3A1%2C%22url%22%3A1%2C%22listing.title%22%3A1%2C%22listing.url%22%3A1%7D%2C%22hooks%22%3A%5B%5D%2C%22sort%22%3A%7B%22date%22%3A1%2C%22rank%22%3A1%2C%22title_sort%22%3A1%7D%7D%7D&token=${token}`, {
+            "headers":{"accept":"*/*","sec-ch-ua":"\"Chromium\";v=\"94\",\"GoogleChrome\";v=\"94\",\";NotABrand\";v=\"99\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"macOS\"","x-requested-with":"XMLHttpRequest"},    
+            "referrer": `https://www.homeofpurdue.com/events/?view=grid&sort=date&filter_daterange%5Bstart%5D=${startDateOnly}&filter_daterange%5Bend%5D=${endDateOnly}&filter_categories%5B0%5D=${categories[i].value}`,
             "referrerPolicy": "unsafe-url",
             "body": null,
             "method": "GET",
             "mode": "cors"
         });
+
         let data;
         try {
             data = await response.json();
         } catch (err) {
-            if(callback) {callback(err, null);}
+            if (callback) { callback(err, null); }
             return err;
         }
-        
+
         let formatted = [];
-        for(let j = 0; j < data.docs.docs.length; j++) {
+        for (let j = 0; j < data.docs.docs.length; j++) {
             let event = {
                 eventName: data.docs.docs[j].title,
                 dateTime: new Date(data.docs.docs[j].startDate),
@@ -79,22 +93,22 @@ const getEvents = async (startDate, endDate, callback) => {
                 url: "https://www.homeofpurdue.com" + data.docs.docs[j].url
             };
 
-            if(typeof data.docs.docs[j].media_raw !== 'undefined' && data.docs.docs[j].media_raw.length > 0) {
+            if (typeof data.docs.docs[j].media_raw !== 'undefined' && data.docs.docs[j].media_raw.length > 0) {
                 event.imageURL = data.docs.docs[j].media_raw[0].mediaurl;
                 event.media = [];
-                for(let k = 0; k < data.docs.docs[j].media_raw.length; k++) {
+                for (let k = 0; k < data.docs.docs[j].media_raw.length; k++) {
                     event.media.push(data.docs.docs[j].media_raw[k].mediaurl);
                 }
             }
 
             formatted.push(event);
         }
-        events.push({label:categories[i].label, id: categories[i].id, events: formatted});
+        events.push({ label: categories[i].label, id: categories[i].id, events: formatted });
     }
 
-    if(callback) {callback(null, events);}
+    if (callback) { callback(null, events); }
 
     return events;
 };
 
-module.exports = {getEvents: getEvents};
+module.exports = { getEvents: getEvents };
