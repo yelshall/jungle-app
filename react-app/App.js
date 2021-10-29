@@ -25,8 +25,8 @@ import users from "./assets/events-data/users";
 const Stack = createStackNavigator();
 
 export default function App() {
-  const socket = io("https://mighty-plateau-63166.herokuapp.com/");
-
+  //const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+  const socket = io("http://localhost:3000");
   const initialLoginState = {
     isLoading: true,
     token: null,

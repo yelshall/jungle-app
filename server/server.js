@@ -13,9 +13,8 @@ const schemas = require('./schemas/schemas');
 
 require('dotenv').config({ path: './config/.env' });
 
-mongoose.connect(process.env.DATABASE_ACCESS)
+mongoose.connect(process.env.DATABASE_ACCESS);
 
-//Start Server
 const server = app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
 });
@@ -72,6 +71,7 @@ io.on('connection', (socket) => {
             student.retreiveStudentInfo(decoded.id, (err, res) => {
                 if(err) {
                     callback(err, null);
+                    return;
                 }
 
                 callback(null, { email: decoded.email, id: decoded.id, signInType: decoded.signInType });
@@ -115,25 +115,24 @@ io.on('connection', (socket) => {
                 callback(err, null);
                 return;
             }
-            event.getEvents((err, res) => {
+
+            let eventIds = [];
+
+            for(let i = 0; i < res1.interestedEvents.length; i++) {
+                eventIds.push(res1.interestedEvents[i]._id);
+            }
+
+            for(let i = 0; i < res1.confirmedEvents.length; i++) {
+                eventIds.push(res1.confirmedEvents[i]._id);
+            }
+
+            event.getEvents(20, eventIds, (err, res) => {
                 if (err) {
                     callback(err, null);
                     return;
                 }
 
-                let arr = [];
-                for (let i = 0; i < res.length; i++) {
-                    if (res1.interestedEvents.filter(item => item._id.equals(res[i]._id)).length === 0 &&
-                        res1.confirmedEvents.filter(item => item._id.equals(res[i]._id)).length === 0) {
-                        if(res[i].maxStudents === -1 || res[i].maxStudents > res[i].confirmedStudents.length) {
-                            res[i].metadata = undefined;
-                            res[i].confirmedStudents = undefined;
-                            res[i].interestedStudents = undefined;
-    
-                            arr.push(res[i]);
-                        }
-                    }
-                }
+                let arr = res;
 
                 callback(null, arr);
             });
