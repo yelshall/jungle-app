@@ -21,6 +21,7 @@ import Host_info from "./src/screens/Host-info";
 import FollowedHosts from "./src/screens/FollowedHosts";
 import ChangePref from "./src/screens/ChangePref";
 import users from "./assets/events-data/users";
+import Profile from "./src/screens/Profile";
 
 const Stack = createStackNavigator();
 
@@ -282,6 +283,11 @@ export default function App() {
                 initialParams={{
                   users: users[0],
                 }}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={Profile}
+                initialParams={{ socket: socket, loginState: loginState }}
               />
             </Stack.Navigator>
           </NavigationContainer>

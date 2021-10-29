@@ -19,7 +19,7 @@ var { height, width } = Dimensions.get("window");
 const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
-export default function ChangePref({ route }) {
+export default function ChangePref({ route, navigation }) {
   const { tags } = route.params.users;
 
   useEffect(() => {
@@ -29,7 +29,8 @@ export default function ChangePref({ route }) {
   const [textValue, setTextValue] = React.useState("Update");
 
   let onPress = () => {
-    Alert.alert("Send to Prefrences page");
+    //Alert.alert("Send to Prefrences page");
+    navigation.navigate("UpdatePrefernces");
   };
 
   return (
@@ -51,8 +52,6 @@ export default function ChangePref({ route }) {
       </Pressable>
     </View>
   );
-  {
-  }
 }
 
 // prettier-ignore
