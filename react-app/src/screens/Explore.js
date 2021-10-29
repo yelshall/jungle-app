@@ -103,6 +103,8 @@ export default function Explore({ navigation, route }) {
           alignItems: "center",
           justifyContent: "center",
           marginBottom: 20,
+          flexShrink: true,
+          flexDirection: "row",
         }}
       >
         <TouchableOpacity onLongPress={() => onLongPress(event, "INTERESTED")}>
@@ -114,20 +116,49 @@ export default function Explore({ navigation, route }) {
                 width: smallSize,
                 opacity: 1,
                 resizeMode: "cover",
+                position: "relative",
+                //flex: 1,
               },
             ]}
           />
         </TouchableOpacity>
 
-        <View style={{ marginLeft: 20 }}>
+        <View
+          style={{
+            marginLeft: 20,
+            //flexDirection: "row",
+            width: width,
+            flex: 1,
+          }}
+        >
           <TouchableOpacity
             onLongPress={() => onLongPress(event, "INTERESTED")}
           >
-            <Text style={{ fontWeight: "600", fontSize: 16 }}>
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: 16,
+                flexShrink: true,
+                width: 300,
+                //flex: 1,
+                position: "relative",
+              }}
+            >
               {event.eventName}
             </Text>
           </TouchableOpacity>
-          <Text style={{ fontWeight: "300", fontSize: 12 }}>
+          <Text
+            style={{
+              fontWeight: "300",
+              fontSize: 12,
+              flexShrink: true,
+              //flex: 1,
+              //width: width,
+              position: "relative",
+              width: 200,
+              height: 20,
+            }}
+          >
             {event.description}
           </Text>
         </View>
@@ -253,7 +284,11 @@ export default function Explore({ navigation, route }) {
       ) : (
         <ScrollView
           contentContainerStyle={{ alignItems: "flex-start" }}
-          style={{ paddingHorizontal: 10, flex: 1, width: width }}
+          style={{
+            paddingHorizontal: 10,
+            flex: 1,
+            width: width,
+          }}
         >
           <View style={{ height: 20 + height / 2 }}>
             <SearchBar
