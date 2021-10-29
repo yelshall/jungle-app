@@ -81,6 +81,10 @@ var retreiveStudentInfo = (sid, callback) => {
             if (err) {
                 if (callback) { callback(err, null); }
             } else {
+                if(typeof res === 'undefined') {
+                    if (callback) { callback({err: 'No student found.'}, null); }
+                    return;
+                }
                 res.password = undefined;
                 if (callback) { callback(null, res); }
             }

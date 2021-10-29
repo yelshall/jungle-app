@@ -5,6 +5,7 @@ import React from "react";
 import HostData from "../../assets/events-data/HostData";
 import eventsData from "../../assets/events-data/eventsData";
 import LottieView from "lottie-react-native";
+import users from "../../assets/events-data/users";
 
 export default function Profile({ navigation, route }) {
   const socket = route.params.socket;
@@ -14,12 +15,18 @@ export default function Profile({ navigation, route }) {
     signOut();
   };
 
+  const onPref = () => {
+    navigation.navigate("ChangePref", {
+      users: users[0],
+    });
+  };
+
   const onFollowing = () => {
     navigation.navigate("FollowedHosts", {
       HostData: HostData[0],
       eventsData: eventsData,
       socket: socket,
-      loginState: loginState
+      loginState: loginState,
     });
   };
 
@@ -32,6 +39,9 @@ export default function Profile({ navigation, route }) {
         justifyContent: "center",
       }}
     >
+      <TouchableOpacity style={styles.signOutBtn} onPress={onPref}>
+        <Text style={styles.signOutBtnText}>Preferences</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.signOutBtn} onPress={onFollowing}>
         <Text style={styles.signOutBtnText}>Following</Text>
       </TouchableOpacity>
