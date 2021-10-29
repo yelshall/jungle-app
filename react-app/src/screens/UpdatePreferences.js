@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { LinearProgress } from "react-native-elements";
-import { AuthContext } from "../../utils/context";
+import { AuthContext } from "../utils/context";
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
@@ -30,11 +30,11 @@ const formatData = (data) => {
 };
 
 export default function UpdatePreferences({ navigation, route }) {
-  const { signUp } = React.useContext(AuthContext);
   const socket = route.params.socket;
   const [selectedIds, setSelectedIds] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [progress, setProgress] = React.useState(0);
+  const loginState = route.params.loginState;
 
   React.useEffect(() => {
     socket.emit("getTags", {}, (err, res) => {
@@ -85,12 +85,12 @@ export default function UpdatePreferences({ navigation, route }) {
   };
 
   const onContinue = () => {
-    let tagsArr = [];
-    for (let i = 0; i < selectedIds.length; i++) {
-      tagsArr.push(selectedIds[i].id);
-    }
-    route.params.newStudent.tags = tagsArr;
-    navigation.navigate("Profile");
+    // let tagsArr = [];
+    // for (let i = 0; i < selectedIds.length; i++) {
+    //   tagsArr.push(selectedIds[i].id);
+    // }
+    //route.params.newStudent.tags = tagsArr;
+    navigation.navigate("Home", { socket: socket, loginState: loginState });
   };
 
   return (
@@ -106,7 +106,7 @@ export default function UpdatePreferences({ navigation, route }) {
 
       {progress >= 1 && (
         <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
-          <Text style={styles.continueBtnText}>Finish sign up</Text>
+          <Text style={styles.continueBtnText}>Update</Text>
         </TouchableOpacity>
       )}
 
