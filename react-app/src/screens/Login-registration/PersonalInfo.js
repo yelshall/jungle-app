@@ -153,7 +153,7 @@ export default function Register({ navigation, route }) {
             <Text style={styles.secondaryText}>Gender</Text>
             <DropDownPicker
                 style={{
-                    backgroundColor: "#85ba7f",
+                    backgroundColor: "#51b375",
                     borderWidth: 0,
                 }}
                 containerStyle={{
@@ -162,7 +162,7 @@ export default function Register({ navigation, route }) {
                     paddingBottom: 20
                 }}
                 dropDownContainerStyle={{
-                    backgroundColor: "#85ba7f",
+                    backgroundColor: "#51b375",
                     borderWidth: 0
                 }}
                 placeholder="Choose an option"
@@ -177,7 +177,7 @@ export default function Register({ navigation, route }) {
             <Text style={styles.secondaryText}>Sign up as...</Text>
             <DropDownPicker
                 style={{
-                    backgroundColor: "#85ba7f",
+                    backgroundColor: "#51b375",
                     borderWidth: 0,
                 }}
                 containerStyle={{
@@ -187,7 +187,7 @@ export default function Register({ navigation, route }) {
                     zIndex: -1
                 }}
                 dropDownContainerStyle={{
-                    backgroundColor: "#85ba7f",
+                    backgroundColor: "#51b375",
                     borderWidth: 0
                 }}
                 placeholder="Choose an option"
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         height: "100%",
-        backgroundColor: "#96db8f",
+        backgroundColor: "#8acf82",
         justifyContent: "center",
         alignItems: "center",
     },
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         opacity: 0.8,
         width: '70%',
-        backgroundColor: '#85ba7f',
+        backgroundColor: '#51b375',
         padding: 15,
         borderRadius: 10,
         bottom: 100

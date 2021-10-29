@@ -111,62 +111,62 @@ export default function Register({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#96db8f",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  signUpText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    left: 50,
-    bottom: 200,
-  },
-  signInText: {
-    fontWeight: "bold",
-    bottom: 120,
-  },
-  secondaryText: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: "bold",
-    letterSpacing: 0.25,
-    color: "#3d3d3d",
-    alignSelf: "flex-start",
-    left: 50,
-    bottom: 180,
-  },
-  TextInput: {
-    color: "black",
-    padding: 10,
-    marginBottom: 10,
-    borderBottomColor: "#d8ffd4",
-    borderBottomWidth: 2,
-    width: "77%",
-    alignSelf: "flex-start",
-    left: 52,
-    bottom: 180,
-  },
-  continueBtn: {
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
-    opacity: 0.8,
-    width: "70%",
-    backgroundColor: "#85ba7f",
-    padding: 15,
-    borderRadius: 10,
-    bottom: 160,
-  },
-  continueBtnText: {
-    alignSelf: "center",
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    fontSize: 14,
-    color: "#2f402d",
-  },
-});
+	container: {
+		width: "100%",
+		height: "100%",
+		backgroundColor: "#8acf82",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	signUpText: {
+		fontSize: 30,
+		fontWeight: 'bold',
+		alignSelf: 'flex-start',
+		left: 50,
+		bottom: 200
+	},
+	signInText: {
+		fontWeight: 'bold',
+		bottom: 120
+	},
+	secondaryText: {
+		fontSize: 16,
+		lineHeight: 21,
+		fontWeight: "bold",
+		letterSpacing: 0.25,
+		color: "#3d3d3d",
+		alignSelf: 'flex-start',
+		left: 50,
+		bottom: 180
+	},
+	TextInput: {
+		color: "black",
+		padding: 10,
+		marginBottom: 10,
+		borderBottomColor: "#d8ffd4",
+		borderBottomWidth: 2,
+		width: '77%',
+		alignSelf: 'flex-start',
+		left: 52,
+		bottom: 180
+	},
+	continueBtn: {
+		shadowColor: 'black',
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.4,
+		shadowRadius: 5,
+		opacity: 0.8,
+		width: '70%',
+		backgroundColor: '#51b375',
+		padding: 15,
+		borderRadius: 10,
+		bottom: 160
+	},
+	continueBtnText: {
+		alignSelf: 'center',
+		textTransform: 'uppercase',
+		fontWeight: 'bold',
+		fontSize: 14,
+		color: "white"
+	}
+})
