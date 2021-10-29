@@ -23,6 +23,8 @@ import ChangePref from "./src/screens/ChangePref";
 import users from "./assets/events-data/users";
 import Profile from "./src/screens/Profile";
 
+import UpdatePreferences from "./src/screens/UpdatePreferences";
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -205,6 +207,11 @@ export default function App() {
               component={Preferences}
               initialParams={{ socket: socket }}
             />
+            <Stack.Screen
+              name="UpdatePreferences"
+              component={UpdatePreferences}
+              initialParams={{ socket: socket, loginState: loginState }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthContext.Provider>
@@ -287,6 +294,11 @@ export default function App() {
               <Stack.Screen
                 name="Profile"
                 component={Profile}
+                initialParams={{ socket: socket, loginState: loginState }}
+              />
+              <Stack.Screen
+                name="UpdatePreferences"
+                component={UpdatePreferences}
                 initialParams={{ socket: socket, loginState: loginState }}
               />
             </Stack.Navigator>
