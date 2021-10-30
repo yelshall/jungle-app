@@ -19,7 +19,7 @@ var { height, width } = Dimensions.get("window");
 const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
-export default function ChangePref({ route }) {
+export default function ChangePref({ route, navigation }) {
   const { tags } = route.params.users;
 
   useEffect(() => {
@@ -29,27 +29,34 @@ export default function ChangePref({ route }) {
   const [textValue, setTextValue] = React.useState("Update");
 
   let onPress = () => {
-    Alert.alert("Send to Prefrences page");
+    //Alert.alert("Send to Prefrences page");
+    navigation.navigate("UpdatePreferences");
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}></View>
-      <View style={styles.body}>
-        <View style={styles.bodyContent}>
-          <Text style={styles.name}> {"Current Preferences"} </Text>
-          <Divider orientation="vertical" width={5} />
+    <>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.bodyContent}>
+            <Text style={styles.name}> {"Current Preferences"} </Text>
+            <Divider orientation="vertical" width={10} />
+          </View>
         </View>
+        <View style={styles.body}></View>
       </View>
-      <View>
-        {tags.map((tags) => {
-          return <Text style={styles.item}>{tags}</Text>;
+      <View style={{ marginTop: 150, position: "relative" }}>
+        {tags.map((tags, i) => {
+          return (
+            <View style={styles.TextViewStyle}>
+              <Text style={styles.item}>{tags}</Text>
+            </View>
+          );
         })}
       </View>
       <Pressable style={styles.buttonContainer} onPress={onPress}>
         <Text style={styles.textButton}> {textValue}</Text>
       </Pressable>
-    </View>
+    </>
   );
   {
   }
@@ -90,25 +97,55 @@ const styles = StyleSheet.create({
              fontWeight: 'bold',
              letterSpacing: 0.25,
              color: 'white',
+             alignContent:"center",  
+             alignSelf:"center",     
             },
-            
+
+            TextViewStyle:{
+            borderWidth: 1, 
+            borderRadius: 20,
+            borderColor:"white",
+            //borderColor: '#E91E63',
+            //width: '80%',
+            //padding: 5,
+            marginTop: 12,
+      
+            fontSize: 24,
+            fontWeight: "bold",
+         
+            height:80,
+            color:"white",
+            marginLeft:1,
+            borderRadius:30,
+            backgroundColor: "#85ba7f",
+       
+            width: Dimensions.get('window').width /4+30,
+            alignContent:"center",  
+            alignSelf:"center",              
+            },
             item: {
-                marginTop: 18,
-                padding: 10,
+                
+                marginTop: 19,
+                //padding: 10,
                 fontSize: 24,
                 fontWeight: "bold",
-                paddingLeft: 20,
-                position: "relative",
-                marginLeft: (width /2) - 45,
-                borderRadius:5,
-                backgroundColor: "grey",
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '40%',
+                paddingLeft: 22,
+                paddingTop: 5,
+                //position: "relative",
+                height:40,
+                color:"white",
+                //marginLeft: (width /2) - 45,
+                borderRadius:30,
+                backgroundColor: "#85ba7f",
+                //flexDirection: 'row',
+                //justifyContent: "flex-start",
+                //alignItems: 'flex-start',
+                //height: '40%',
                 width: Dimensions.get('window').width /4,
-                borderWidth: 1,
-                
+                //borderWidth: 5,
+                //borderColor:""
+                alignContent:"center",  
+                alignSelf:"center",               
             },
           
             TextContainer: {
@@ -151,7 +188,7 @@ const styles = StyleSheet.create({
            
              header:{
               backgroundColor: "#85ba7f",
-              height:200,
+              height:160,
             },
             avatar: {
               width: 130,
@@ -172,11 +209,13 @@ const styles = StyleSheet.create({
             bodyContent: {
               //flex: 1,
               alignItems: 'center',
-              padding:30,
+              padding:50,
+              height:50,
+              marginTop:100,
             },
             name:{
               fontSize:28,
-              color: "#696969",
+              color: "white",
               fontWeight: "600",
               position:"absolute",
             },
@@ -195,18 +234,20 @@ const styles = StyleSheet.create({
             },
         
             buttonContainer: {
-              marginTop:300,
+              marginTop:800,
               marginLeft: 140,
               height:45,
               //flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              position:"relative",
+              position:"absolute",
               marginBottom:20,
               width:150
               ,
               borderRadius:30,
               backgroundColor: "#85ba7f",
+              alignContent:"center",  
+              alignSelf:"center",     
             },
         
             containerExplore: {
