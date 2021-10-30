@@ -51,6 +51,10 @@ const studentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
     }],
+    unlikedEvents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Event' 
+    }],
     following: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Host'
@@ -167,6 +171,10 @@ const eventSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student'
     }],
+    unlikedStudents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'
+    }],
     maxStudents: {
         type: Number,
         required: false,
@@ -185,6 +193,10 @@ const eventSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Update'
     }],
+    active: {
+        type: Boolean,
+        default: true
+    },
     metadata: {
         dateCreated: {
             type: Date,

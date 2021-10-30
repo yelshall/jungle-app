@@ -15,6 +15,19 @@ require('dotenv').config({ path: './config/.env' });
 
 mongoose.connect(process.env.DATABASE_ACCESS);
 
+// schemas.Event.deleteMany({}).exec();
+// schemas.Tag.updateMany({events: []}).exec();
+// schemas.Student.updateMany({interestedEvents: [], confirmedEvents: []}).exec();
+// schemas.Host.updateMany({events: []}).exec();
+
+// scraper.getEvents(new Date(), new Date('2022-06-01'), (err, res) => {
+//     for(let i = 0; i < res.length; i++) {
+//         for(let j = 0; j < res[i].events.length; j++) {
+//             event.createEvent(res[i].events[j]);
+//         }
+//     }
+// });
+
 const server = app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
 });
@@ -191,6 +204,17 @@ var studentListeners = (socket) => {
 
     socket.on('addConfirmedEvent', (request, callback) => {
         student.addConfirmedEvent(request.uid, request.eid, (err, ret) => {
+            if (err) {
+                if (callback) { callback(err, null) };
+                return;
+            }
+
+            if (callback) { callback(null, ret) };
+        });
+    });
+
+    socket.on('addUnlikedStudent', (request, callback) => {
+        student.addUnlikedEvent(request.uid, request.eid, (err, ret) => {
             if (err) {
                 if (callback) { callback(err, null) };
                 return;

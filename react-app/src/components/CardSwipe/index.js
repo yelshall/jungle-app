@@ -117,7 +117,7 @@ export default function CardSwipe({ navigation, route }) {
 			}
 			// NOPED EVENT
 			else if (gestureState.dx < -120) {
-				socket.emit('removeInterestedEvent', {uid: loginState.id, eid: events[0]._id});
+				socket.emit('addUnlikedStudent', {uid: loginState.id, eid: events[0]._id});
 
 				Animated.spring(position, {
 					toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
@@ -269,7 +269,7 @@ export default function CardSwipe({ navigation, route }) {
 									top: 50,
 									right: 40,
 									zIndex: 1000,
-									useNativeDriver: true,
+									useNativeDriver: true
 								}}
 							>
 								<Text
@@ -295,7 +295,6 @@ export default function CardSwipe({ navigation, route }) {
 			})
 			.reverse();
 	};
-
 
 	return (
 		<SafeAreaView style={styles.container}>

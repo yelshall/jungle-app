@@ -9,7 +9,7 @@ var studentSignup = (newStudent, callback) => {
     let hash = bcrypt.hashSync(newStudent.password, salt);
 
     let student = new schemas.Student({
-        email: newStudent.email,
+        email: newStudent.email.toLowerCase(),
         password: hash,
         fullName: {
             firstName: newStudent.fullName.firstName,
@@ -154,6 +154,23 @@ var addConfirmedEvent = (sid, eid, callback) => {
     });
 };
 
+var addUnlikedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { unlikedEvents: eid } }, (err, res) => {
+        if (err) {
+            if (callback) { callback(err, null); }
+        } else {
+            event_functions.addUnlikedStudent(eid, sid, (err, res2) => {
+                if (err) {
+                    if (callback) { callback(err, null); }
+                } else {
+                    if (res.password) { res.password = undefined; }
+                    if (callback) { callback(null, res); }
+                }
+            });
+        }
+    });
+};
+
 var removeInterestedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, { $pull: { interestedEvents: eid } }, (err, res) => {
         if (err) {
@@ -234,6 +251,7 @@ module.exports = {
     deleteStudent: deleteStudent,
     addConfirmedEvent: addConfirmedEvent,
     addInterestedEvent: addInterestedEvent,
+    addUnlikedEvent: addUnlikedEvent,
     removeConfirmedEvent: removeConfirmedEvent,
     removeInterestedEvent: removeInterestedEvent,
     followHost: followHost,
