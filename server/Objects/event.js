@@ -15,7 +15,7 @@ var createEvent = async (newEvent, callback) => {
         maxStudents: newEvent.maxStudents,
         latitude: newEvent.latitude,
         longitude: newEvent.longitude,
-        url: newEvent.url,
+        url: newEvent.url.toLowerCase(),
         media: newEvent.media,
         imageURL: newEvent.imageURL
     };
@@ -151,6 +151,16 @@ var addInterestedStudent = (eid, sid, callback) => {
 
 var addConfirmedStudent = (eid, sid, callback) => {
     schemas.Event.findByIdAndUpdate(eid, { $addToSet: { confirmedStudents: sid } }, (err, res) => {
+        if (err) {
+            if (callback) { callback(err, null); }
+        } else {
+            if (callback) { callback(null, res); }
+        }
+    });
+};
+
+var addUnlikedStudent = (eid, sid, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, { $addToSet: { unlikedStudents: sid } }, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
         } else {
@@ -326,6 +336,7 @@ module.exports = {
     retreiveEventInfo: retreiveEventInfo,
     addConfirmedStudent: addConfirmedStudent,
     addInterestedStudent: addInterestedStudent,
+    addUnlikedStudent: addUnlikedStudent,
     removeConfirmedStudent: removeConfirmedStudent,
     removeInterestedStudent: removeInterestedStudent,
     addTag: addTag,
