@@ -37,7 +37,6 @@ export default function CardSwipe({ navigation, route }) {
 
 	const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
 	const position = React.useRef(new Animated.ValueXY()).current;
-	const currentIndex = React.useRef({index: 0}).current;
 	const [rotate, setRotate] = React.useState(
 		position.x.interpolate({
 			inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
@@ -95,24 +94,47 @@ export default function CardSwipe({ navigation, route }) {
 		onPanResponderRelease: (evt, gestureState) => {
 			// LIKED EVENT
 			if (gestureState.dx > 120) {
-				socket.emit('addInterestedEvent', {uid: loginState.id, eid: events[currentIndex.index]._id});
+				socket.emit('addInterestedEvent', {uid: loginState.id, eid: events[0]._id});
+				
 				Animated.spring(position, {
 					toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
 				}).start(() => {
-					currentIndex.index += 1;
+					events.shift();
 					position.setValue({ x: 0, y: 0 });
+					if(events.length === 5) {
+						socket.emit('getEvents', {sid: loginState.id}, (err, res) => {
+							if (err) {
+								return;
+							}
+				
+							for(let i = 0; i < res.length; i++) {
+								events.push(res[i]);
+							}
+						});
+					}
 					forceUpdate();
 				});
 			}
 			// NOPED EVENT
 			else if (gestureState.dx < -120) {
-				socket.emit('removeInterestedEvent', {uid: loginState.id, eid: events[currentIndex.index]._id});
+				socket.emit('removeInterestedEvent', {uid: loginState.id, eid: events[0]._id});
 
 				Animated.spring(position, {
 					toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
 				}).start(() => {
-					currentIndex.index += 1;
+					events.shift();
 					position.setValue({ x: 0, y: 0 });
+					if(events.length === 5) {
+						socket.emit('getEvents', {sid: loginState.id}, (err, res) => {
+							if (err) {
+								return;
+							}
+				
+							for(let i = 0; i < res.length; i++) {
+								events.push(res[i]);
+							}
+						});
+					}
 					forceUpdate();
 				});
 			} else {
@@ -128,9 +150,7 @@ export default function CardSwipe({ navigation, route }) {
 	const renderUsers = () => {
 		return events
 			.map((item, i) => {
-				if (i < currentIndex.index) {
-					return null;
-				} else if (i == currentIndex.index) {
+				if (i == 0) {
 					return (
 						<Animated.View
 							{...panResponder.panHandlers}
