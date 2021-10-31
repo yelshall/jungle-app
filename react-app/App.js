@@ -24,6 +24,8 @@ import users from "./assets/events-data/users";
 import Profile from "./src/screens/Profile";
 
 import UpdatePreferences from "./src/screens/UpdatePreferences";
+import Chat from "./src/screens/Chat";
+import Messages from "./src/screens/Messages"
 
 const Stack = createStackNavigator();
 
@@ -301,6 +303,10 @@ export default function App() {
                 component={UpdatePreferences}
                 initialParams={{ socket: socket, loginState: loginState }}
               />
+              <Stack.Screen
+                name = "Messages"
+                component={Messages}
+                />
             </Stack.Navigator>
           </NavigationContainer>
         </AuthContext.Provider>
