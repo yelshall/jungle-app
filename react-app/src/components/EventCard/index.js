@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	View
 } from "react-native";
+import Tags from "react-native-tags";
 
 const Tag = ({ tag }) => {
 	return (<View style={styles.tagView}>
@@ -15,6 +16,12 @@ const Tag = ({ tag }) => {
 
 export default function Card(props) {
 	const event = props.eventData;
+	const date = new Date(event.dateTime);
+	let tags = [];
+
+	for(let i = 0; i < event.tags.length; i++) {
+		tags.push(event.tags[i].tagName);
+	}
 
 	return (
 		<SafeAreaView style={styles.card}>
@@ -31,16 +38,16 @@ export default function Card(props) {
 						<Text style={styles.event_host}>Host: {event.eventHost}</Text>
 					}
 					<Text style={styles.event_loc}>Loc: {event.location}</Text>
-					<Text style={styles.event_loc}>Date: {event.dateTime}</Text>
+					<Text style={styles.event_loc}>Date: {date.toDateString()}</Text>
 					{
 						typeof event.tags !== "undefined" &&
 						<View>
 							<Text style={styles.event_loc}>Tags:</Text>
-							{
-								event.tags.map(tag => {
-									return <Tag tag={tag} />
-								})
-							}
+							<Tags
+							initialTags={tags}
+							readonly={true}
+							deleteTagOnPress={false}
+							/>
 						</View>
 					}
 				</SafeAreaView>
