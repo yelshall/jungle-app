@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView } from "react-native";
 import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { LinearProgress } from 'react-native-elements';
+import { LinearProgress, Icon } from 'react-native-elements';
 import { AuthContext } from '../../utils/context';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
@@ -34,7 +34,7 @@ export default function Preferences({ navigation, route }) {
 			if (err) {
 				Alert.alert(
 					"Host signup",
-					"Error occurred.",
+					"Server error occurred, try again later",
 					[
 						{
 							text: "OK"
@@ -82,31 +82,45 @@ export default function Preferences({ navigation, route }) {
 
 	const onContinue = () => {
 		let tagsArr = [];
-		for(let i = 0; i < selectedIds.length; i++) {
+		for (let i = 0; i < selectedIds.length; i++) {
 			tagsArr.push(selectedIds[i].id);
 		}
 		route.params.newStudent.tags = tagsArr;
 
 		socket.emit('studentSignup', route.params.newStudent, (err, response) => {
 			if (err) {
-                Alert.alert(
-                    "Host sign up",
-                    "Error signing you up.",
-                    [
-                        {
-                            text: "OK"
-                        }
-                    ]
-                );
-                return;
-            }
+				Alert.alert(
+					"Host sign up",
+					"Error signing you up",
+					[
+						{
+							text: "OK"
+						}
+					]
+				);
+				return;
+			}
 
-            signUp(response);
+			signUp(response);
 		});
 	};
 
 	return (
 		<View style={styles.container}>
+			<Icon
+				type={"material"}
+				name={"chevron-left"}
+				size={45}
+				containerStyle={{
+					position: 'absolute',
+					top: 50,
+					left: 10,
+					zIndex: 10000
+				}}
+				onPress={() => {
+					navigation.goBack();
+				}}
+			/>
 			<Text style={styles.text}>Please pick 5 or more interests</Text>
 			<LinearProgress
 				style={styles.progress}
@@ -124,6 +138,7 @@ export default function Preferences({ navigation, route }) {
 			}
 
 			<ScrollView style={styles.listView}>
+				<View style={{ width: '100%', height: (50 + Dimensions.get('window').width - Dimensions.get('window').width * 0.1) / 3 }}></View>
 				<FlatList
 					numColumns={3}
 					style={styles.list}
@@ -132,6 +147,8 @@ export default function Preferences({ navigation, route }) {
 					keyExtractor={(item) => item.id}
 					extraData={selectedIds}
 				/>
+				<View style={{ width: '100%', height: (50 + Dimensions.get('window').width - Dimensions.get('window').width * 0.1) / 3 }}></View>
+
 			</ScrollView>
 		</View>
 	);
@@ -139,7 +156,6 @@ export default function Preferences({ navigation, route }) {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		width: "100%",
 		height: "100%",
 		backgroundColor: "#8acf82",
@@ -147,21 +163,23 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	text: {
-		fontSize: 22,
+		position: 'absolute',
+		fontSize: 20,
 		fontWeight: 'bold',
 		alignSelf: 'flex-start',
-		top: 100,
+		top: 90,
 		left: 30
 	},
 	progress: {
+		position: 'absolute',
 		top: 120,
-		width: '89%',
+		width: '88%',
 		borderRadius: 5
 	},
 	listView: {
-		top: 130,
 		width: '100%',
-		zIndex: -1,
+		height: '100%',
+		zIndex: -1
 	},
 	list: {
 		alignSelf: 'center',
@@ -174,19 +192,19 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 3 },
 		shadowOpacity: 0.4,
 		shadowRadius: 5,
-		width: '70%',
-		backgroundColor: '#8acf82',
+		opacity: 0.95,
+		width: '75%',
+		backgroundColor: '#51b375',
 		padding: 15,
 		borderRadius: 10,
-		bottom: 70,
-		alignSelf: 'center'
+		bottom: 60
 	},
 	continueBtnText: {
 		alignSelf: 'center',
 		textTransform: 'uppercase',
 		fontWeight: 'bold',
-		fontSize: 18,
-		color: "#2f402d"
+		fontSize: 14,
+		color: "white"
 	},
 	item: {
 		alignItems: 'center',
@@ -204,9 +222,12 @@ const styles = StyleSheet.create({
 	},
 	itemInvisible: {
 		backgroundColor: 'transparent',
+
 	},
 	itemText: {
-		fontSize: 14,
-		letterSpacing: 0.2
+		fontSize: 12,
+		letterSpacing: 0.2,
+		textAlign: 'center',
+		fontWeight: '700'
 	}
 });
