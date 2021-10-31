@@ -20,10 +20,10 @@ mongoose.connect(process.env.DATABASE_ACCESS);
 // schemas.Student.updateMany({interestedEvents: [], confirmedEvents: []}).exec();
 // schemas.Host.updateMany({events: []}).exec();
 
-// scraper.getEvents(new Date(), new Date('2022-06-01'), (err, res) => {
+// scraper.getEvents(new Date(), new Date('2022-06-01'),async (err, res) => {
 //     for(let i = 0; i < res.length; i++) {
 //         for(let j = 0; j < res[i].events.length; j++) {
-//             event.createEvent(res[i].events[j]);
+//             await event.createEvent(res[i].events[j]);
 //         }
 //     }
 // });
