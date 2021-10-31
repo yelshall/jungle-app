@@ -2,17 +2,16 @@ import React from "react";
 import {
     Text,
     View,
-    TextInput,
     TouchableOpacity,
-    StyleSheet,
-    Alert
+    StyleSheet
 } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import { Input, Icon } from 'react-native-elements';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default function Register({ navigation, route }) {
     const [name, setName] = React.useState("");
-    const [dateOfBirth, setDateOfBirth] = React.useState("");
+    const [dateOfBirth, setDateOfBirth] = React.useState("Date of birth");
 
     const [gender, setGender] = React.useState("");
     const [openGender, setOpenGender] = React.useState(false);
@@ -29,79 +28,46 @@ export default function Register({ navigation, route }) {
         { label: 'Host', value: 'Host' }
     ]);
 
-    // Validates that the input string is a valid date formatted as "mm/dd/yyyy"
-    var isValidDate = (dateString) => {
-        if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString))
-            return false;
+    const [errorName, setErrorName] = React.useState("");
+    const [errorDate, setErrorDate] = React.useState("");
+    const [errorGender, setErrorGender] = React.useState("");
+    const [errorType, setErrorType] = React.useState("");
 
-        var parts = dateString.split("/");
-        var day = parseInt(parts[1], 10);
-        var month = parseInt(parts[0], 10);
-        var year = parseInt(parts[2], 10);
-
-        if (year < 1000 || year > 3000 || month == 0 || month > 12)
-            return false;
-
-        var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-        if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
-            monthLength[1] = 29;
-
-        return day > 0 && day <= monthLength[month - 1];
-    };
+    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
 
     //Verify all fields are properly filled in before continuing
     var onContinue = () => {
+        let err = false;
         let fullName = name.trim().split(" ");
         if (fullName.length !== 2) {
-            Alert.alert(
-                "Sign up",
-                "Please enter your full name as first name and last name only, like 'John Smith'.",
-                [
-                    {
-                        text: "OK"
-                    }
-                ]
-            );
-            return;
+            setErrorName("Please enter a first and last name")
+            err = true;
+        } else {
+            setErrorName("");
         }
 
-        if (!isValidDate(dateOfBirth)) {
-            Alert.alert(
-                "Sign up",
-                "Please enter a valid date of birth in the form of mm/dd/yyyy.",
-                [
-                    {
-                        text: "OK"
-                    }
-                ]
-            );
-            return;
+        if(dateOfBirth === "Date of birth") {
+            setErrorDate("Please choose a date of birth");
+            err = true;
+        } else {
+            setErrorDate("");
         }
 
         if (gender === "") {
-            Alert.alert(
-                "Sign up",
-                "Please choose a gender option.",
-                [
-                    {
-                        text: "OK"
-                    }
-                ]
-            );
-            return;
+            setErrorGender("Please choose one of the gender options");
+            err = true;
+        } else {
+            setErrorGender("");
         }
 
         if (signupType === "") {
-            Alert.alert(
-                "Sign up",
-                "Please choose a sign up type.",
-                [
-                    {
-                        text: "OK"
-                    }
-                ]
-            );
+            setErrorType("Please choose a sign in type");
+            err = true;
+        } else {
+            setErrorType("");
+        }
+
+        if(err) {
             return;
         }
 
@@ -120,8 +86,8 @@ export default function Register({ navigation, route }) {
                 email: route.params.email,
                 password: route.params.password,
                 fullName: {
-                    firstName: fullName[0],
-                    lastName: fullName[1]
+                    firstName: name[0],
+                    lastName: name[1]
                 },
                 birthDate: new Date(dateOfBirth),
                 gender: gender
@@ -131,89 +97,229 @@ export default function Register({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-
-            <Text style={styles.secondaryText}>Full Name</Text>
-            <TextInput
-                autoCorrect={false}
-                style={styles.TextInput}
-                placeholder='Enter your name'
-                placeholderTextColor='#3d3d3d'
-                onChangeText={(name) => setName(name)}
-            />
-
-            <Text style={styles.secondaryText}>Date of birth</Text>
-            <TextInput
-                autoCorrect={false}
-                style={styles.TextInput}
-                placeholder='mm/dd/yyyy'
-                placeholderTextColor='#3d3d3d'
-                onChangeText={(dateOfBirth) => setDateOfBirth(dateOfBirth)}
-            />
-
-            <Text style={styles.secondaryText}>Gender</Text>
-            <DropDownPicker
-                style={{
-                    backgroundColor: "#51b375",
-                    borderWidth: 0,
-                }}
+            <Icon
+                type={"material"}
+                name={"chevron-left"}
+                size={45}
                 containerStyle={{
-                    bottom: 175,
-                    width: '77%',
-                    paddingBottom: 20
+                    position: 'absolute',
+                    top: 50,
+                    left: 10,
+                    zIndex: 10000
                 }}
-                dropDownContainerStyle={{
-                    backgroundColor: "#51b375",
-                    borderWidth: 0
+                onPress={() => {
+                    navigation.goBack();
                 }}
-                placeholder="Choose an option"
-                open={openGender}
-                value={gender}
-                items={genders}
-                setOpen={setOpenGender}
-                setValue={setGender}
-                setItems={setGenders}
             />
+            <View style={styles.smallContainer}>
+                <Text style={styles.personal}>Personal information</Text>
 
-            <Text style={styles.secondaryText}>Sign up as...</Text>
-            <DropDownPicker
-                style={{
-                    backgroundColor: "#51b375",
-                    borderWidth: 0,
-                }}
-                containerStyle={{
-                    bottom: 175,
-                    width: '77%',
-                    paddingBottom: 20,
-                    zIndex: -1
-                }}
-                dropDownContainerStyle={{
-                    backgroundColor: "#51b375",
-                    borderWidth: 0
-                }}
-                placeholder="Choose an option"
-                open={openType}
-                value={signupType}
-                items={signupTypes}
-                setOpen={setOpenType}
-                setValue={setSignupType}
-                setItems={setSignupTypes}
-            />
+                <Input
+                    autoCorrect={false}
+                    placeholder='Full name'
+                    placeholderTextColor='#3d3d3d'
+                    containerStyle={{
+                        width: '77%',
+                        margin: 5
+                    }}
+                    inputStyle={{
+                        fontSize: 14
+                    }}
+                    inputContainerStyle={{
+                        borderColor: 'white',
+                        borderBottomWidth: 1.5
+                    }}
+                    label={"Full Name"}
+                    labelStyle={{
+                        fontSize: 16,
+                        lineHeight: 21,
+                        fontWeight: "bold",
+                        letterSpacing: 0.25,
+                        color: "#3d3d3d",
+                    }}
+                    onChangeText={(name) => setName(name)}
+                    onEndEditing={() => {
+                        if (name.split(" ").length !== 2) {
+                            setErrorName("Please enter a first and last name")
+                            return;
+                        }
+                        setErrorName("");
+                    }}
+                    errorMessage={errorName}
+                    errorStyle={{
+                        fontSize: 13,
+                        fontWeight: '500'
+                    }}
+                />
+
+                <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    onConfirm={(date) => {
+                        setDatePickerVisibility(false);
+                        setDateOfBirth((date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear());
+                    }}
+                    onCancel={() => setDatePickerVisibility(false)}
+                />
+
+                <Input
+                    containerStyle={{
+                        width: '77%',
+                        margin: 5
+                    }}
+                    inputStyle={{
+                        fontSize: 14
+                    }}
+                    inputContainerStyle={{
+                        borderColor: 'white',
+                        borderBottomWidth: 1.5
+                    }}
+                    InputComponent={({ }) => (
+                        <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
+                            <Text style={{ padding: 10, color: "#404040" }}>{dateOfBirth}</Text>
+                        </TouchableOpacity>
+                    )
+                    }
+                    label={"Date of birth"}
+                    labelStyle={{
+                        fontSize: 16,
+                        lineHeight: 21,
+                        fontWeight: "bold",
+                        letterSpacing: 0.25,
+                        color: "#3d3d3d",
+                    }}
+                    errorMessage={errorDate}
+                    errorStyle={{
+                        fontSize: 13,
+                        fontWeight: '500'
+                    }}
+                    disabled={true}
+                />
+
+                <Text style={styles.secondaryText}>Gender</Text>
+                <DropDownPicker
+                    style={{
+                        backgroundColor: "#51b375",
+                        borderWidth: 0,
+                    }}
+                    containerStyle={{
+                        width: '75%',
+                        paddingBottom: 20,
+                        margin: 10
+                    }}
+                    dropDownContainerStyle={{
+                        backgroundColor: "#51b375",
+                        borderWidth: 0,
+                        zIndex: 2
+                    }}
+                    placeholder="Choose an option"
+                    open={openGender}
+                    value={gender}
+                    items={genders}
+                    setOpen={setOpenGender}
+                    setValue={setGender}
+                    setItems={setGenders}
+                />
+
+                {
+                    errorGender.length !== 0 &&
+                    <Text
+                        style={{
+                            fontSize: 13,
+                            fontWeight: '500',
+                            color: 'red',
+                            position: 'absolute',
+                            top: 325,
+                            left: 64
+                        }}
+                    >{errorGender}</Text>
+                }
+
+                <Text style={styles.secondaryText}>Sign up as...</Text>
+                <DropDownPicker
+                    style={{
+                        backgroundColor: "#51b375",
+                        borderWidth: 0,
+                    }}
+                    containerStyle={{
+                        width: '75%',
+                        paddingBottom: 20,
+                        zIndex: 1,
+                        margin: 10
+                    }}
+                    dropDownContainerStyle={{
+                        backgroundColor: "#51b375",
+                        borderWidth: 0,
+                        zIndex: 1
+                    }}
+                    placeholder="Choose an option"
+                    open={openType}
+                    value={signupType}
+                    items={signupTypes}
+                    setOpen={setOpenType}
+                    setValue={setSignupType}
+                    setItems={setSignupTypes}
+                />
+                {
+                    errorType.length !== 0 &&
+                    <Text
+                        style={{
+                            fontSize: 13,
+                            fontWeight: '500',
+                            color: 'red',
+                            position: 'absolute',
+                            top: 440,
+                            left: 64
+                        }}
+                    >{errorType}</Text>
+                }
+            </View>
 
             <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
                 <Text style={styles.continueBtnText}>Continue</Text>
             </TouchableOpacity>
-        </View>
+        </View >
     );
 }
 
 
 const styles = StyleSheet.create({
+    personal: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 15
+    },
     container: {
         width: "100%",
         height: "100%",
         backgroundColor: "#8acf82",
         justifyContent: "center",
         alignItems: "center",
+    },
+    smallContainer: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        bottom: 110
+    },
+    continueBtn: {
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.4,
+        shadowRadius: 5,
+        opacity: 0.8,
+        width: '75%',
+        backgroundColor: '#51b375',
+        padding: 15,
+        borderRadius: 10,
+        bottom: 50
+    },
+    continueBtnText: {
+        alignSelf: 'center',
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: "white"
     },
     secondaryText: {
         fontSize: 16,
@@ -223,36 +329,5 @@ const styles = StyleSheet.create({
         color: "#3d3d3d",
         alignSelf: 'flex-start',
         left: 50,
-        bottom: 180
     },
-    TextInput: {
-        color: "black",
-        padding: 10,
-        marginBottom: 10,
-        borderBottomColor: "#d8ffd4",
-        borderBottomWidth: 2,
-        width: '77%',
-        alignSelf: 'flex-start',
-        left: 52,
-        bottom: 180
-    },
-    continueBtn: {
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.4,
-        shadowRadius: 5,
-        opacity: 0.8,
-        width: '70%',
-        backgroundColor: '#51b375',
-        padding: 15,
-        borderRadius: 10,
-        bottom: 100
-    },
-    continueBtnText: {
-        alignSelf: 'center',
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        fontSize: 14,
-        color: "#2f402d"
-    }
 })

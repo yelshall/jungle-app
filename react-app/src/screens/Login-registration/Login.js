@@ -24,10 +24,9 @@ export default function Login({ navigation, route }) {
 		let re = /^(([^<>()[\]\ \.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		if (!re.test(String(email).toLowerCase())) {
 			setErrorEmail("Please enter a valid email");
-			return false;
+			return;
 		}
 		setErrorEmail("");
-		return true;
 	}
 
 	const onLogin = () => {
@@ -220,22 +219,22 @@ const styles = StyleSheet.create({
 		bottom: 80
 	},
 	loginBtn: {
-		shadowColor: 'black',
-		shadowOffset: { width: 0, height: 3 },
-		shadowOpacity: 0.4,
-		shadowRadius: 5,
-		opacity: 0.8,
-		width: '70%',
-		backgroundColor: '#85ba7f',
-		padding: 15,
-		borderRadius: 10
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.4,
+        shadowRadius: 5,
+        opacity: 0.8,
+        width: '75%',
+        backgroundColor: '#51b375',
+        padding: 15,
+        borderRadius: 10,
 	},
 	signInButtonText: {
 		alignSelf: 'center',
-		textTransform: 'uppercase',
-		fontWeight: 'bold',
-		fontSize: 18,
-		color: "#2f402d"
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: "white"
 	},
 	align: {
 		width: '70%',
