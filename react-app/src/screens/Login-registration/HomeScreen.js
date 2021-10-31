@@ -7,7 +7,6 @@ import {
     Image
 } from 'react-native'
 import { Video } from 'expo-av';
-import logo from "../../../assets/logo/Logo-light.png";
 
 export default function HomeScreen({ navigation }) {
     return (
@@ -24,7 +23,7 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.container}>
                 <Image
-                    source={logo}
+                    source={require("../../../assets/logo/Logo-light.png")}
                     style={styles.logo}
                 />
 

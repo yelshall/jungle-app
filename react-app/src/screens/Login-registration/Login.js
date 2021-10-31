@@ -1,166 +1,187 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {
 	Text,
 	View,
 	Image,
-	TextInput,
 	TouchableOpacity,
-	Alert,
 	StyleSheet
 } from 'react-native'
-
+import { Input } from 'react-native-elements';
 import { AuthContext } from '../../utils/context';
 
 export default function Login({ navigation, route }) {
 	const socket = route.params.socket;
 	const [email, setEmail] = React.useState("");
 	const [password, setPassword] = React.useState("");
+	const [hidePassword, setHidePassword] = React.useState(true);
+	const [icon, setIcon] = React.useState("eye-outline");
+	const [errorEmail, setErrorEmail] = React.useState("");
+	const [errorPassword, setErrorPassword] = React.useState("");
 
 	const { signIn } = React.useContext(AuthContext);
 
-	let verifyValidEmail = () => {
+	const verifyValidEmail = () => {
 		let re = /^(([^<>()[\]\ \.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		if (!re.test(String(email).toLowerCase())) {
-			Alert.alert(
-				"Login",
-				"Please enter a valid email.",
-				[
-					{
-						text: "OK"
-					}
-				]
-			);
+			setErrorEmail("Please enter a valid email");
 			return false;
 		}
+		setErrorEmail("");
 		return true;
 	}
 
-	let onLogin = () => {
-		if (!verifyValidEmail()) {
-			return;
-		}
-
-		if (password.length === 0) {
-			Alert.alert(
-				"Login",
-				"Please enter a password.",
-				[
-					{
-						text: "OK"
-					}
-				]
-			);
-			return;
-		}
-
+	const onLogin = () => {
+		//Add loading animation while verifying login info with server
+		//Use the lottie library
 		socket.emit("login", { email: email, password: password }, (err, response) => {
 			if (err) {
-				if (err.err === 'INCORRECT_EMAIL') {
-					Alert.alert(
-						"Login",
-						"The email you entered was incorrect.",
-						[
-							{
-								text: "OK"
-							}
-						]
-					);
-				} else if (err.err === 'INCORRECT_PASSWORD') {
-					Alert.alert(
-						"Login",
-						"The password you entered was incorrect.",
-						[
-							{
-								text: "OK"
-							}
-						]
-					);
+				if (err.err === 'INCORRECT_EMAIL' || err.err === 'INCORRECT_PASSWORD') {
+					setErrorPassword("Your email or password was incorrect");
 				} else {
-					Alert.alert(
-						"Login",
-						"Error logging you in.",
-						[
-							{
-								text: "OK"
-							}
-						]
-					);
+					setErrorPassword("Error logging you in");
 				}
 				return;
 			}
+
+			setErrorPassword("");
 			signIn(response);
 		});
 	}
 
-	let onForgotPassword = () => {
-
+	const onForgotPassword = () => {
+		return;
 	}
 
-	let onSignUp = () => {
+	const onSignUp = () => {
 		navigation.navigate('Register')
 	}
 
 	return (
 		<View style={styles.container}>
-			<Image
-				style={styles.image}
-				source={require('../../../assets/placeholder.png')}
-			/>
+			<View style={styles.inputs}>
+				<Image
+					style={styles.image}
+					source={require("../../../assets/logo/Logo-dark.png")}
+				/>
 
-			<Text style={styles.signInText}>Sign in </Text>
+				<Text style={styles.signInText}>Sign in</Text>
 
-			<Text style={styles.secondaryText}> Email</Text>
-			<TextInput
-				autoCorrect={false}
-				autoCapitalize='none'
-				onEndEditing={verifyValidEmail}
-				style={styles.TextInput}
-				placeholder='Enter your email'
-				placeholderTextColor='#3d3d3d'
-				onChangeText={(email) => setEmail(email.toLowerCase())}
-			/>
-
-			{/*Add show/hide password option using the eye*/}
-			<Text style={styles.secondaryText}> Password</Text>
-			<TextInput
-				autoCorrect={false}
-				autoCapitalize='none'
-				style={styles.TextInput}
-				placeholder='Enter your password'
-				placeholderTextColor='#3d3d3d'
-				secureTextEntry={true}
-				onChangeText={(password) => setPassword(password)}
-			/>
-
-			<TouchableOpacity style={styles.loginBtn} onPress={onLogin}>
-				<Text style={styles.signInButtonText}>Sign In</Text>
-			</TouchableOpacity>
-
-			<View style={styles.align}>
-				<TouchableOpacity
-					style={{
-						height: 15
+				<Input
+					autoCorrect={false}
+					autoCapitalize='none'
+					placeholder='Email'
+					placeholderTextColor='#3d3d3d'
+					leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 20 }}
+					containerStyle={{
+						width: '77%',
+						margin: 5
 					}}
-					onPress={onForgotPassword}
-				>
-					<Text style={{
-						fontWeight: 'bold',
-						color: 'white'
-					}}>Forgot Password?</Text>
+					inputStyle={{
+						fontSize: 14
+					}}
+					inputContainerStyle={{
+						borderColor: 'white',
+						borderBottomWidth: 1.5
+					}}
+					label={"Email"}
+					labelStyle={{
+						fontSize: 16,
+						lineHeight: 21,
+						fontWeight: "bold",
+						letterSpacing: 0.25,
+						color: "#3d3d3d",
+					}}
+					onChangeText={(email) => setEmail(email.toLowerCase())}
+					onEndEditing={verifyValidEmail}
+					errorMessage={errorEmail}
+					errorStyle={{
+						fontSize: 13,
+						fontWeight: '500'
+					}}
+				/>
+
+				<Input
+					placeholder='Password'
+					autoCorrect={false}
+					autoCapitalize='none'
+					placeholderTextColor='#3d3d3d'
+					secureTextEntry={hidePassword}
+					leftIcon={{ type: 'font-awesome', name: 'lock', size: 20 }}
+					containerStyle={{
+						width: '77%',
+						margin: 5
+					}}
+					inputStyle={{
+						fontSize: 14
+					}}
+					inputContainerStyle={{
+						borderColor: 'white',
+						borderBottomWidth: 1.5
+					}}
+					label={"Password"}
+					labelStyle={{
+						fontSize: 16,
+						lineHeight: 21,
+						fontWeight: "bold",
+						letterSpacing: 0.25,
+						color: "#3d3d3d",
+					}}
+					onChangeText={(password) => setPassword(password)}
+					onEndEditing={() => {
+						if (password.length == 0) {
+							setErrorPassword("Please enter a password");
+							return;
+						}
+						setErrorPassword("");
+					}}
+					rightIcon={{
+						type: "ionicon",
+						name: icon,
+						size: "20",
+						onPress: () => {
+							setHidePassword(x => !x);
+							setIcon(icon => icon === "eye-outline" ? "eye-off-outline" : "eye-outline")
+						}
+					}}
+					errorMessage={errorPassword}
+					errorStyle={{
+						fontSize: 13,
+						fontWeight: '500'
+					}}
+				/>
+			</View>
+
+			<View style={styles.buttons}>
+				<TouchableOpacity style={styles.loginBtn} onPress={onLogin}>
+					<Text style={styles.signInButtonText}>Sign In</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity
-					style={{
-						height: 15,
-						fontWeight: 'bold'
-					}}
-					onPress={onSignUp}
-				>
-					<Text style={{
-						fontWeight: 'bold',
-						color: 'white'
-					}}>Sign up</Text>
-				</TouchableOpacity>
+				<View style={styles.align}>
+					<TouchableOpacity
+						style={{
+							height: 20
+						}}
+						onPress={onForgotPassword}
+					>
+						<Text style={{
+							fontWeight: 'bold',
+							color: 'white'
+						}}>Forgot Password?</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						style={{
+							height: 20,
+							fontWeight: 'bold'
+						}}
+						onPress={onSignUp}
+					>
+						<Text style={{
+							fontWeight: 'bold',
+							color: 'white'
+						}}>Sign up</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 		</View>
 	)
@@ -174,41 +195,31 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
+	inputs: {
+		width: '100%',
+		justifyContent: "center",
+		alignItems: "center",
+		bottom: 100
+	},
 	image: {
-		position: 'absolute',
-		width: 150,
-		height: 150,
-		top: 100
+		width: 125,
+		height: 125,
+		marginBottom: 20
 	},
 	signInText: {
 		fontSize: 30,
 		fontWeight: 'bold',
 		alignSelf: 'flex-start',
-		left: 50
-	},
-	secondaryText: {
-		fontSize: 16,
-		lineHeight: 21,
-		fontWeight: "bold",
-		letterSpacing: 0.25,
-		color: "#3d3d3d",
-		alignSelf: 'flex-start',
 		left: 50,
-		top: 20
+		marginBottom: 15
 	},
-	TextInput: {
-		color: "black",
-		padding: 10,
-		marginBottom: 10,
-		borderBottomColor: "#d8ffd4",
-		borderBottomWidth: 2,
-		width: '77%',
-		alignSelf: 'flex-start',
-		left: 52,
-		top: 20
+	buttons: {
+		width: '100%',
+		justifyContent: "center",
+		alignItems: "center",
+		bottom: 80
 	},
 	loginBtn: {
-		top: 40,
 		shadowColor: 'black',
 		shadowOffset: { width: 0, height: 3 },
 		shadowOpacity: 0.4,
@@ -229,7 +240,7 @@ const styles = StyleSheet.create({
 	align: {
 		width: '70%',
 		justifyContent: 'space-between',
-		top: 70,
 		flexDirection: 'row',
+		marginTop: 10
 	}
 })
