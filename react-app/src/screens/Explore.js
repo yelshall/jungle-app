@@ -103,7 +103,7 @@ export default function Explore({ navigation, route }) {
           alignItems: "center",
           justifyContent: "center",
           marginBottom: 20,
-          flexShrink: true,
+          flexShrink: 1,
           flexDirection: "row",
         }}
       >
@@ -138,7 +138,7 @@ export default function Explore({ navigation, route }) {
               style={{
                 fontWeight: "600",
                 fontSize: 16,
-                flexShrink: true,
+                flexShrink: 1,
                 width: 300,
                 //flex: 1,
                 position: "relative",
@@ -151,7 +151,7 @@ export default function Explore({ navigation, route }) {
             style={{
               fontWeight: "300",
               fontSize: 12,
-              flexShrink: true,
+              flexShrink: 1,
               //flex: 1,
               //width: width,
               position: "relative",

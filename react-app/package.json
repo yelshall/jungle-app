@@ -31,6 +31,7 @@
     "react-native-reanimated": "^2.2.2",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
+    "react-native-tags": "^2.2.1",
     "react-native-unimodules": "0.14.10",
     "react-native-video": "^5.2.0-alpha1",
     "react-native-web": "~0.13.12",
