@@ -4,7 +4,6 @@ import React from "react";
 
 import HostData from "../../assets/events-data/HostData";
 import eventsData from "../../assets/events-data/eventsData";
-import LottieView from "lottie-react-native";
 import users from "../../assets/events-data/users";
 
 export default function Profile({ navigation, route }) {
