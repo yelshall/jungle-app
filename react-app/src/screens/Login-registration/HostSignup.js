@@ -363,6 +363,7 @@ export default function Register({ navigation, route }) {
 
                 <View style={{
                     width: '100%',
+                    zindex: -1,
                     height: 150
                 }}></View>
 

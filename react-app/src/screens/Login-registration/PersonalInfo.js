@@ -210,7 +210,7 @@ export default function Register({ navigation, route }) {
                     dropDownContainerStyle={{
                         backgroundColor: "#51b375",
                         borderWidth: 0,
-                        zIndex: 2
+                        zIndex: 200
                     }}
                     placeholder="Choose an option"
                     open={openGender}
@@ -244,13 +244,13 @@ export default function Register({ navigation, route }) {
                     containerStyle={{
                         width: '75%',
                         paddingBottom: 20,
-                        zIndex: 1,
+                        zIndex: 100,
                         margin: 10
                     }}
                     dropDownContainerStyle={{
                         backgroundColor: "#51b375",
                         borderWidth: 0,
-                        zIndex: 1
+                        zIndex: 100
                     }}
                     placeholder="Choose an option"
                     open={openType}
