@@ -323,7 +323,7 @@ export default function Register({ navigation, route }) {
                 <Text style={styles.secondaryText}>Your tags are...</Text>
                 <DropDownPicker
                     style={{
-                        backgroundColor: "#51b375",
+                        backgroundColor: "#71bd69",
                         borderWidth: 0,
                     }}
                     containerStyle={{
@@ -332,7 +332,7 @@ export default function Register({ navigation, route }) {
                         zIndex: 1
                     }}
                     dropDownContainerStyle={{
-                        backgroundColor: "#51b375",
+                        backgroundColor: "#71bd69",
                         borderWidth: 0,
                     }}
                     dropDownDirection="BOTTOM"
@@ -363,6 +363,7 @@ export default function Register({ navigation, route }) {
 
                 <View style={{
                     width: '100%',
+                    zindex: -1,
                     height: 150
                 }}></View>
 
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         opacity: 0.8,
         width: '75%',
-        backgroundColor: '#51b375',
+        backgroundColor: '#71bd69',
         padding: 15,
         borderRadius: 10,
         zIndex: -1
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         fontSize: 14,
-        color: "white"
+        color: "black"
     },
     host: {
         fontSize: 30,

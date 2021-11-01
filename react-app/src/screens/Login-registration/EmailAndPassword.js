@@ -175,7 +175,7 @@ export default function EmailAndPassword({ navigation, route }) {
                     rightIcon={{
                         type: "ionicon",
                         name: icon1,
-                        size: "20",
+                        size: 20,
                         onPress: () => {
                             setHidePassword1(x => !x);
                             setIcon1(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")
@@ -245,7 +245,7 @@ export default function EmailAndPassword({ navigation, route }) {
                     rightIcon={{
                         type: "ionicon",
                         name: icon2,
-                        size: "20",
+                        size: 20,
                         onPress: () => {
                             setHidePassword2(x => !x);
                             setIcon2(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         opacity: 0.8,
         width: '75%',
-        backgroundColor: '#51b375',
+        backgroundColor: '#71bd69',
         padding: 15,
         borderRadius: 10,
         margin: 20
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         fontSize: 14,
-        color: "white"
+        color: "black"
     },
     progress: {
 		width: '73%',
