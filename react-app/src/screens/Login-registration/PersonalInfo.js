@@ -24,8 +24,8 @@ export default function Register({ navigation, route }) {
     const [signupType, setSignupType] = React.useState("");
     const [openType, setOpenType] = React.useState(false);
     const [signupTypes, setSignupTypes] = React.useState([
-        { label: 'Student', value: 'Student' },
-        { label: 'Host', value: 'Host' }
+        { label: 'Host', value: 'Host' },
+        { label: 'Student', value: 'Student' }
     ]);
 
     const [errorName, setErrorName] = React.useState("");
@@ -199,7 +199,7 @@ export default function Register({ navigation, route }) {
                 <Text style={styles.secondaryText}>Gender</Text>
                 <DropDownPicker
                     style={{
-                        backgroundColor: "#51b375",
+                        backgroundColor: "#71bd69",
                         borderWidth: 0,
                     }}
                     containerStyle={{
@@ -208,7 +208,7 @@ export default function Register({ navigation, route }) {
                         margin: 10
                     }}
                     dropDownContainerStyle={{
-                        backgroundColor: "#51b375",
+                        backgroundColor: "#71bd69",
                         borderWidth: 0,
                         zIndex: 200
                     }}
@@ -238,7 +238,7 @@ export default function Register({ navigation, route }) {
                 <Text style={styles.secondaryText}>Sign up as...</Text>
                 <DropDownPicker
                     style={{
-                        backgroundColor: "#51b375",
+                        backgroundColor: "#71bd69",
                         borderWidth: 0,
                     }}
                     containerStyle={{
@@ -248,7 +248,7 @@ export default function Register({ navigation, route }) {
                         margin: 10
                     }}
                     dropDownContainerStyle={{
-                        backgroundColor: "#51b375",
+                        backgroundColor: "#71bd69",
                         borderWidth: 0,
                         zIndex: 100
                     }}
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         opacity: 0.8,
         width: '75%',
-        backgroundColor: '#51b375',
+        backgroundColor: '#71bd69',
         padding: 15,
         borderRadius: 10,
         bottom: 50
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         fontSize: 14,
-        color: "white"
+        color: "black"
     },
     secondaryText: {
         fontSize: 16,
