@@ -5378,6 +5378,14 @@
   dependencies:
     "warn-once" "^0.1.0"
 
+"react-native-settings-list@^1.8.0":
+  "integrity" "sha1-iQiVRuhOb987nkIf6HDwwmJoaNo="
+  "resolved" "https://registry.npmjs.org/react-native-settings-list/-/react-native-settings-list-1.8.0.tgz"
+  "version" "1.8.0"
+  dependencies:
+    "create-react-class" "^15.6.2"
+    "prop-types" "^15.5.10"
+
 "react-native-size-matters@^0.3.1":
   "integrity" "sha512-mKOfBLIBFBcs9br1rlZDvxD5+mAl8Gfr5CounwJtxI6Z82rGrMO+Kgl9EIg3RMVf3G855a85YVqHJL2f5EDRlw=="
   "resolved" "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.3.1.tgz"
