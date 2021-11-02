@@ -30,5 +30,15 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
-  }
+  },
+  "plugins": [
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "Allow Jungle to access all your photos",
+        "cameraPermission": "Allow Jungle to access your camera",
+        "microphonePermission": "Allow Jungle to access your microphone"
+      }
+    ]
+  ]
 }

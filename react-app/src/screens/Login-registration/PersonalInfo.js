@@ -183,7 +183,7 @@ export default function Register({ navigation, route }) {
                 <Text style={styles.secondaryText}>Gender</Text>
                 <DropDownPicker
                     style={{
-                        backgroundColor: "#51b375",
+                        backgroundColor: "#71bd69",
                         borderWidth: 0
                     }}
                     containerStyle={{
