@@ -107,28 +107,32 @@ export default function Preferences({ navigation, route }) {
 
 	return (
 		<View style={styles.container}>
-			<Icon
-				type={"material"}
-				name={"chevron-left"}
-				size={45}
-				containerStyle={{
-					position: 'absolute',
-					top: 50,
-					left: 10,
-					zIndex: 10000
-				}}
-				onPress={() => {
-					navigation.goBack();
-				}}
-			/>
-			<Text style={styles.text}>Please pick 5 or more interests</Text>
-			<LinearProgress
-				style={styles.progress}
-				color='black'
-				trackColor='white'
-				variant='determinate'
-				value={progress}
-			/>
+			<View style={{
+				width: '88%',
+				alignItems: 'center',
+				marginTop: '5%',
+				marginBottom: '5%',
+				shadowColor: "#000",
+				shadowOffset: {
+					width: 0,
+					height: 2,
+				},
+				shadowOpacity: 0.25,
+				shadowRadius: 3.84,
+				
+				elevation: 5,
+			}}>
+				<Text style={styles.text}>Please pick 5 or more interests</Text>
+				<LinearProgress
+					style={{
+						borderRadius: 5
+					}}
+					color='#51b375'
+					trackColor='white'
+					variant='determinate'
+					value={progress}
+				/>
+			</View>
 
 			{
 				progress >= 1 &&
@@ -137,19 +141,14 @@ export default function Preferences({ navigation, route }) {
 				</TouchableOpacity>
 			}
 
-			<ScrollView style={styles.listView}>
-				<View style={{ width: '100%', height: (50 + Dimensions.get('window').width - Dimensions.get('window').width * 0.1) / 3 }}></View>
-				<FlatList
-					numColumns={3}
-					style={styles.list}
-					data={formatData(tags)}
-					renderItem={renderItem}
-					keyExtractor={(item) => item.id}
-					extraData={selectedIds}
-				/>
-				<View style={{ width: '100%', height: (50 + Dimensions.get('window').width - Dimensions.get('window').width * 0.1) / 3 }}></View>
-
-			</ScrollView>
+			<FlatList
+				numColumns={3}
+				style={styles.list}
+				data={formatData(tags)}
+				renderItem={renderItem}
+				keyExtractor={(item) => item.id}
+				extraData={selectedIds}
+			/>
 		</View>
 	);
 };
@@ -158,33 +157,19 @@ const styles = StyleSheet.create({
 	container: {
 		width: "100%",
 		height: "100%",
-		backgroundColor: "#8acf82",
-		justifyContent: "center",
+		backgroundColor: "#96db8f",
 		alignItems: "center",
 	},
 	text: {
-		position: 'absolute',
 		fontSize: 20,
 		fontWeight: 'bold',
-		alignSelf: 'flex-start',
-		top: 90,
-		left: 30
-	},
-	progress: {
-		position: 'absolute',
-		top: 120,
-		width: '88%',
-		borderRadius: 5
-	},
-	listView: {
-		width: '100%',
-		height: '100%',
-		zIndex: -1
+		marginBottom: '2.5%',
+		alignSelf: 'flex-start'
 	},
 	list: {
 		alignSelf: 'center',
 		width: '90%',
-		flexGrow: 0
+		zIndex: -1
 	},
 	continueBtn: {
 		position: 'absolute',

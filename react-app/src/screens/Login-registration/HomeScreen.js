@@ -34,7 +34,7 @@ export default function HomeScreen({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.createAccount}
-                    onPress={() => navigation.navigate("Register")}
+                    onPress={() => navigation.navigate("EmailAndPassword")}
                 >
                     <Text style={styles.createAccountText}>Create Account</Text>
                 </TouchableOpacity>
