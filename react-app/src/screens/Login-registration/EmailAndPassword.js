@@ -175,7 +175,7 @@ export default function EmailAndPassword({ navigation, route }) {
                     rightIcon={{
                         type: "ionicon",
                         name: icon1,
-                        size: "20",
+                        size: 20,
                         onPress: () => {
                             setHidePassword1(x => !x);
                             setIcon1(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")
@@ -245,7 +245,7 @@ export default function EmailAndPassword({ navigation, route }) {
                     rightIcon={{
                         type: "ionicon",
                         name: icon2,
-                        size: "20",
+                        size: 20,
                         onPress: () => {
                             setHidePassword2(x => !x);
                             setIcon2(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")

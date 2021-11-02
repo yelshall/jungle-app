@@ -136,7 +136,7 @@ export default function Login({ navigation, route }) {
 					rightIcon={{
 						type: "ionicon",
 						name: icon,
-						size: "20",
+						size: 20,
 						onPress: () => {
 							setHidePassword(x => !x);
 							setIcon(icon => icon === "eye-outline" ? "eye-off-outline" : "eye-outline")
