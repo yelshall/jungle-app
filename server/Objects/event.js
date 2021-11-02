@@ -2,7 +2,7 @@ const schemas = require('../schemas/schemas');
 const tag_functions = require('../Objects/tag');
 const update_functions = require('../Objects/update');
 
-var createEvent = (newEvent, callback) => {
+var createEvent = async (newEvent, callback) => {
     let event = {
         eventName: newEvent.eventName,
         dateTime: newEvent.dateTime,
@@ -15,24 +15,29 @@ var createEvent = (newEvent, callback) => {
         maxStudents: newEvent.maxStudents,
         latitude: newEvent.latitude,
         longitude: newEvent.longitude,
-        url: newEvent.url,
+        url: newEvent.url.toLowerCase(),
         media: newEvent.media,
         imageURL: newEvent.imageURL
     };
 
     let eventSave = new schemas.Event(event);
 
-    eventSave.save()
-        .then(async data => {
+    try {
+        let events = await schemas.Event.find({ eventName: newEvent.eventName });
+
+        if (events == null || events.length == 0) {
+            let ev = await eventSave.save()
+
             for (let i = 0; i < newEvent.tags.length; i++) {
-                tag_functions.addEvent(newEvent.tags[i], data._id);
+                tag_functions.addEvent(newEvent.tags[i], ev._id);
             }
 
-            if (callback) { callback(null, data); }
-        })
-        .catch(err => {
-            if (callback) { callback(err, null); }
-        });
+            if (callback) { callback(null, ev); }
+        }
+    } catch (err) {
+        if (callback) { callback(err, null); }
+        return;
+    }
 };
 
 var deleteEvent = (eid, callback) => {
@@ -114,7 +119,7 @@ var retreiveEventInfo = (eid, callback) => {
 var getEvents = (count, eventIds, callback) => {
     schemas.Event.aggregate([
         {
-            $match: {"_id": {$nin: eventIds} }
+            $match: { "_id": { $nin: eventIds } }
         },
         { $sample: { size: count } },
         {
@@ -146,6 +151,16 @@ var addInterestedStudent = (eid, sid, callback) => {
 
 var addConfirmedStudent = (eid, sid, callback) => {
     schemas.Event.findByIdAndUpdate(eid, { $addToSet: { confirmedStudents: sid } }, (err, res) => {
+        if (err) {
+            if (callback) { callback(err, null); }
+        } else {
+            if (callback) { callback(null, res); }
+        }
+    });
+};
+
+var addUnlikedStudent = (eid, sid, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, { $addToSet: { unlikedStudents: sid } }, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
         } else {
@@ -321,6 +336,7 @@ module.exports = {
     retreiveEventInfo: retreiveEventInfo,
     addConfirmedStudent: addConfirmedStudent,
     addInterestedStudent: addInterestedStudent,
+    addUnlikedStudent: addUnlikedStudent,
     removeConfirmedStudent: removeConfirmedStudent,
     removeInterestedStudent: removeInterestedStudent,
     addTag: addTag,

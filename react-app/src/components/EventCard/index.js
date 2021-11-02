@@ -1,84 +1,205 @@
 import React from "react";
 import {
-	Text,
-	ImageBackground,
-	SafeAreaView,
-	StyleSheet,
-	View
+  Text,
+  ImageBackground,
+  SafeAreaView,
+  StyleSheet,
+  View,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import Tags from "react-native-tags";
+import DropDownPicker from "react-native-dropdown-picker";
+import { useState, useCallback } from "react";
 
 const Tag = ({ tag }) => {
-	return (<View style={styles.tagView}>
-		<Text style={styles.tagText}>{tag.tagName}</Text>
-	</View>)
+  return (
+    <View style={styles.tagView}>
+      <Text style={styles.tagText}>{tag.tagName}</Text>
+    </View>
+  );
 };
 
 export default function Card(props) {
-  const event = props.eventData;
+  const [TagF, setTagF] = useState(false);
+  const [LocF, setLocF] = useState(false);
+  const [DateF, setDateF] = useState(false);
 
-	return (
-		<SafeAreaView style={styles.card}>
-			<TouchableOpacity
-				activeOpacity={1}
-			>
-				<ImageBackground
-					source={{
-						uri: event.imageURL,
-					}}
-					style={styles.image}
-				>
-					<SafeAreaView style={styles.cardInner}>
-						<Text style={styles.event_name}>{event.eventName} </Text>
-						{
-							event.evenHost &&
-							<Text style={styles.event_host}>Host: {event.eventHost}</Text>
-						}
-						<Text style={styles.event_loc}>Loc: {event.location}</Text>
-						<Text style={styles.event_loc}>Date: {event.dateTime}</Text>
-						{
-							typeof event.tags !== "undefined" &&
-							<View>
-								<Text style={styles.event_loc}>Tags:</Text>
-								{
-									event.tags.map(tag => {
-										return <Tag tag={tag} />
-									})
-								}
-							</View>
-						}
-					</SafeAreaView>
-				</ImageBackground>
-			</TouchableOpacity>
-		</SafeAreaView>
-	);
-};
+  const [value, setValue] = useState(null);
+  const [Tagitems, setTagItems] = useState([
+    { label: "Sport", value: "Sport" },
+    { label: "Yoga", value: "Yoga" },
+    { label: "track", value: "track" },
+  ]);
+  const [Locitems, setLocItems] = useState([
+    { label: "On-Campus", value: "On-Campus" },
+    { label: "Off-Campus", value: "Off-Campus" },
+  ]);
+  const [Dateitems, setDateItems] = useState([
+    { label: "Today", value: "Today" },
+    { label: "This Week", value: "This Week" },
+    { label: "This Month", value: "This Month" },
+  ]);
+  const event = props.eventData;
+  const date = new Date(event.dateTime);
+  let tags = [];
+
+  const onDate = useCallback(() => {
+    setTagF(false);
+    setLocF(false);
+  }, []);
+
+  for (let i = 0; i < event.tags.length; i++) {
+    tags.push(event.tags[i].tagName);
+  }
+
+  return (
+    <SafeAreaView style={styles.card}>
+      <ImageBackground
+        source={{
+          uri: event.imageURL,
+        }}
+        style={styles.image}
+      >
+        <SafeAreaView style={styles.cardInner}>
+          <Text style={styles.event_name}>{event.eventName} </Text>
+          {event.evenHost && (
+            <Text style={styles.event_host}>Host: {event.eventHost}</Text>
+          )}
+          <Text style={styles.event_loc}>Loc: {event.location}</Text>
+          <Text style={styles.event_loc}>Date: {date.toDateString()}</Text>
+          {typeof event.tags !== "undefined" && (
+            <View>
+              <Text style={styles.event_loc}>Tags:</Text>
+              <Tags
+                initialTags={tags}
+                readonly={true}
+                deleteTagOnPress={false}
+              />
+            </View>
+          )}
+        </SafeAreaView>
+      </ImageBackground>
+
+      <View style={styles.row}>
+        <DropDownPicker
+          style={{
+            backgroundColor: "white",
+            borderWidth: 0,
+          }}
+          containerStyle={{
+            width: "25%",
+            margin: 10,
+            zIndex: 1,
+          }}
+          dropDownContainerStyle={{
+            backgroundColor: "white",
+            borderWidth: 0,
+          }}
+          dropDownDirection="TOP"
+          multiple={true}
+          min={0}
+          max={3}
+          placeholder="Tags"
+          showArrowIcon={1}
+          listMode="MODAL"
+          bottomOffset={100}
+          open={TagF}
+          disabledItemLabelStyle={1}
+          disabledItemContainerStyle={1}
+          value={value}
+          items={Tagitems}
+          setOpen={setTagF}
+          setValue={setValue}
+          setItems={setTagItems}
+        />
+        <DropDownPicker
+          style={{
+            backgroundColor: "white",
+            borderWidth: 0,
+          }}
+          containerStyle={{
+            width: "30%",
+            margin: 10,
+            zIndex: 2,
+          }}
+          dropDownContainerStyle={{
+            backgroundColor: "white",
+            borderWidth: 0,
+          }}
+          dropDownDirection="TOP"
+          multiple={true}
+          min={0}
+          max={3}
+          placeholder="Location"
+          showArrowIcon={1}
+          bottomOffset={100}
+          open={LocF}
+          disabledItemLabelStyle={1}
+          disabledItemContainerStyle={1}
+          value={value}
+          items={Locitems}
+          setOpen={setLocF}
+          setValue={setValue}
+          setItems={setLocItems}
+        />
+        <DropDownPicker
+          style={{
+            backgroundColor: "white",
+            borderWidth: 0,
+          }}
+          containerStyle={{
+            width: "30%",
+            margin: 10,
+            zIndex: 3,
+          }}
+          dropDownContainerStyle={{
+            backgroundColor: "white",
+            borderWidth: 0,
+          }}
+          dropDownDirection="TOP"
+          multiple={true}
+          min={0}
+          max={3}
+          placeholder="Date"
+          showArrowIcon={1}
+          bottomOffset={100}
+          open={DateF}
+          close={null}
+          disabledItemLabelStyle={1}
+          disabledItemContainerStyle={1}
+          value={value}
+          items={Dateitems}
+          setOpen={setDateF}
+          setValue={setValue}
+          setItems={setDateItems}
+          onOpen={onDate}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
 
 const styles = StyleSheet.create({
-	tagView: {
-		backgroundColor: '#fefefe',
-		borderRadius: 10
-	},
-	card: {
-		width: "90%",
-		height: "80%",
-		borderRadius: 20,
-		backgroundColor: "#fefefe",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.36,
-    shadowRadius: 6.68,
-    elevation: 11,
+  tagView: {
+    backgroundColor: "#fefefe",
+    borderRadius: 10,
+  },
+
+  row: {
+    flex: 1,
+    flexDirection: "row",
+  },
+
+  card: {
+    width: "92%",
+    height: "85%",
+    borderRadius: 20,
+    backgroundColor: "white",
   },
   image: {
     width: "100%",
     height: "100%",
     borderRadius: 10,
     overflow: "hidden",
-
     justifyContent: "flex-end",
   },
   cardInner: {
@@ -89,16 +210,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     marginBottom: 20,
-  },
-  image_button: {
-    //marginBottom: 280,
-    //marginLeft: 280,
-    //width: "90%",
-    borderRadius: 5,
-    height: 500,
-    alignItems: "center",
-    justifyContent: "center",
-    //marginTop: 40,
   },
   event_desc: {
     fontSize: 24,

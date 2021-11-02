@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import HostData from "../../assets/events-data/HostData";
 import eventsData from "../../assets/events-data/eventsData";
-import LottieView from "lottie-react-native";
 import users from "../../assets/events-data/users";
 import SettingsList from "react-native-settings-list";
 import { Slider } from "react-native-elements";

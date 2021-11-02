@@ -1,12 +1,38 @@
 import React from "react";
-import { ScrollView } from "react-native";
-import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { LinearProgress } from 'react-native-elements';
+import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity, ImageBackground, SafeAreaView } from "react-native";
+import { LinearProgress, Icon } from 'react-native-elements';
 import { AuthContext } from '../../utils/context';
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-	<TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
-		<Text style={[styles.itemText, textColor]}>{item.title}</Text>
+const Item = ({ item, onPress, selected }) => (
+	<TouchableOpacity onPress={onPress} style={[styles.item]}>
+		<ImageBackground
+			source={{
+				uri: item.imageURL,
+			}}
+			style={{
+				overflow: "hidden",
+				width: '100%',
+				height: '100%',
+				justifyContent: 'center',
+				alignItems: 'center',
+				borderRadius: '10'
+			}}
+			blurRadius={10}
+		>
+			{selected &&
+				<Icon
+					name={"check-square"}
+					type={"font-awesome"}
+					size={20}
+					containerStyle={{
+						position: 'absolute',
+						top: 5,
+						right: 5
+					}}
+				/>
+			}
+			<Text style={styles.itemText}>{item.title}</Text>
+		</ImageBackground>
 	</TouchableOpacity>
 );
 
@@ -18,6 +44,11 @@ const formatData = (data) => {
 		data.push({ title: `blank-${numberOfElementsLastRow}`, empty: true });
 		numberOfElementsLastRow++;
 	}
+
+	data.push({ title: `blank-${numberOfElementsLastRow + 1}`, empty: true });
+	data.push({ title: `blank-${numberOfElementsLastRow + 2}`, empty: true });
+	data.push({ title: `blank-${numberOfElementsLastRow + 3}`, empty: true });
+
 
 	return data;
 };
@@ -34,7 +65,7 @@ export default function Preferences({ navigation, route }) {
 			if (err) {
 				Alert.alert(
 					"Host signup",
-					"Error occurred.",
+					"Server error occurred, try again later",
 					[
 						{
 							text: "OK"
@@ -48,7 +79,7 @@ export default function Preferences({ navigation, route }) {
 			let tag = [];
 
 			for (let i = 0; i < res.length; i++) {
-				tag.push({ title: res[i].tagName, id: res[i]._id });
+				tag.push({ title: res[i].tagName, imageURL: res[i].imageURL, id: res[i]._id });
 			}
 
 			setTags(tag);
@@ -56,8 +87,7 @@ export default function Preferences({ navigation, route }) {
 	}, []);
 
 	const renderItem = ({ item }) => {
-		const backgroundColor = selectedIds.some(i => i.id === item.id) ? "#61aa7c" : "#51b375";
-		const color = selectedIds.some(i => i.id === item.id) ? 'white' : 'black';
+		const selected = selectedIds.some(i => i.id === item.id) ? true : false;
 
 		if (item.empty === true) {
 			return <View style={[styles.item, styles.itemInvisible]} />;
@@ -74,47 +104,56 @@ export default function Preferences({ navigation, route }) {
 					setProgress(progress + 0.2);
 					setSelectedIds(oldArr => [...oldArr, item])
 				}}
-				backgroundColor={{ backgroundColor }}
-				textColor={{ color }}
+				selected={selected}
 			/>
 		);
 	};
 
 	const onContinue = () => {
 		let tagsArr = [];
-		for(let i = 0; i < selectedIds.length; i++) {
+		for (let i = 0; i < selectedIds.length; i++) {
 			tagsArr.push(selectedIds[i].id);
 		}
 		route.params.newStudent.tags = tagsArr;
 
 		socket.emit('studentSignup', route.params.newStudent, (err, response) => {
 			if (err) {
-                Alert.alert(
-                    "Host sign up",
-                    "Error signing you up.",
-                    [
-                        {
-                            text: "OK"
-                        }
-                    ]
-                );
-                return;
-            }
+				Alert.alert(
+					"Host sign up",
+					"Error signing you up",
+					[
+						{
+							text: "OK"
+						}
+					]
+				);
+				return;
+			}
 
-            signUp(response);
+			signUp(response);
 		});
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.text}>Please pick 5 or more interests</Text>
-			<LinearProgress
-				style={styles.progress}
-				color='black'
-				trackColor='white'
-				variant='determinate'
-				value={progress}
-			/>
+
+		<SafeAreaView style={styles.container}>
+			<View style={{
+				width: '88%',
+				alignItems: 'center',
+				marginTop: '5%',
+				marginBottom: '5%'
+			}}>
+				<Text style={styles.text}>Please pick 5 or more interests</Text>
+				<LinearProgress
+					style={{
+						borderRadius: 5
+					}}
+					color='#51b375'
+					trackColor='white'
+					variant='determinate'
+					value={progress}
+				/>
+			</View>
 
 			{
 				progress >= 1 &&
@@ -123,50 +162,35 @@ export default function Preferences({ navigation, route }) {
 				</TouchableOpacity>
 			}
 
-			<ScrollView style={styles.listView}>
-				<FlatList
-					numColumns={3}
-					style={styles.list}
-					data={formatData(tags)}
-					renderItem={renderItem}
-					keyExtractor={(item) => item.id}
-					extraData={selectedIds}
-				/>
-			</ScrollView>
-		</View>
+			<FlatList
+				numColumns={3}
+				style={styles.list}
+				data={formatData(tags)}
+				renderItem={renderItem}
+				keyExtractor={(item) => item.id}
+				extraData={selectedIds}
+			/>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		width: "100%",
 		height: "100%",
-		backgroundColor: "#8acf82",
-		justifyContent: "center",
+		backgroundColor: "#96db8f",
 		alignItems: "center",
 	},
 	text: {
-		fontSize: 22,
+		fontSize: 20,
 		fontWeight: 'bold',
-		alignSelf: 'flex-start',
-		top: 100,
-		left: 30
-	},
-	progress: {
-		top: 120,
-		width: '89%',
-		borderRadius: 5
-	},
-	listView: {
-		top: 130,
-		width: '100%',
-		zIndex: -1,
+		marginBottom: '2.5%',
+		alignSelf: 'flex-start'
 	},
 	list: {
 		alignSelf: 'center',
 		width: '90%',
-		flexGrow: 0
+		zIndex: -1
 	},
 	continueBtn: {
 		position: 'absolute',
@@ -174,19 +198,19 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 3 },
 		shadowOpacity: 0.4,
 		shadowRadius: 5,
-		width: '70%',
-		backgroundColor: '#8acf82',
+		opacity: 0.95,
+		width: '75%',
+		backgroundColor: '#51b375',
 		padding: 15,
 		borderRadius: 10,
-		bottom: 70,
-		alignSelf: 'center'
+		bottom: 60
 	},
 	continueBtnText: {
 		alignSelf: 'center',
 		textTransform: 'uppercase',
 		fontWeight: 'bold',
-		fontSize: 18,
-		color: "#2f402d"
+		fontSize: 14,
+		color: "white"
 	},
 	item: {
 		alignItems: 'center',
@@ -196,7 +220,7 @@ const styles = StyleSheet.create({
 		height: (Dimensions.get('window').width - Dimensions.get('window').width * 0.1) / 3,
 		borderRadius: 10,
 		opacity: 0.8,
-		padding: 20,
+		padding: 0,
 		shadowColor: 'black',
 		shadowOffset: { width: 0, height: 3 },
 		shadowOpacity: 0.1,
@@ -204,9 +228,12 @@ const styles = StyleSheet.create({
 	},
 	itemInvisible: {
 		backgroundColor: 'transparent',
+
 	},
 	itemText: {
 		fontSize: 14,
-		letterSpacing: 0.2
+		textAlign: 'center',
+		fontWeight: 'bold',
+		color: 'white'
 	}
 });

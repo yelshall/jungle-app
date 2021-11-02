@@ -12,14 +12,14 @@ var hostSignup = (newHost, callback) => {
     let hash = bcrypt.hashSync(newHost.password, salt);
 
     let host = {
-        email: newHost.email,
-        hostEmail: newHost.hostEmail,
+        email: newHost.email.toLowerCase(),
+        hostEmail: newHost.hostEmail.toLowerCase(),
         password: hash,
         hostName: newHost.hostName,
         description: newHost.description,
         tags: newHost.tags,
         phoneNumber: newHost.phoneNumber,
-        website: newHost.website,
+        website: newHost.website.toLowerCase(),
         imageURL: newHost.imageURL
     };
 

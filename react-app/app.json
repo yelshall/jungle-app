@@ -4,6 +4,7 @@
     "slug": "junglejungle",
     "version": "1.0.0",
     "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -29,5 +30,15 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
-  }
+  },
+  "plugins": [
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "Allow Jungle to access all your photos",
+        "cameraPermission": "Allow Jungle to access your camera",
+        "microphonePermission": "Allow Jungle to access your microphone"
+      }
+    ]
+  ]
 }

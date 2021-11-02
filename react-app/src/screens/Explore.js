@@ -9,6 +9,7 @@ import {
   ImageBackground,
   ActivityIndicator,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useEffect } from "react";
 import Constants from "expo-constants";
@@ -63,6 +64,11 @@ export default function Explore({ navigation, route }) {
       loginState: loginState,
     });
   };
+
+  const OnSearch = (search) => {
+    Alert.alert("user is searching");
+    setSearch(search);
+  };
   useEffect(() => {
     LayoutAnimation.spring();
   }, []);
@@ -83,7 +89,12 @@ export default function Explore({ navigation, route }) {
         ])}
       >
         {confirmedEvents.map((event, i) => {
-          return renderRow(event, i, scrollX);
+          {
+            let search_confirmed = search.toLowerCase();
+            if (event.eventName.toLowerCase().includes(search_confirmed)) {
+              return renderRow(event, i, scrollX);
+            }
+          }
         })}
       </Animated.ScrollView>
     );
@@ -103,7 +114,7 @@ export default function Explore({ navigation, route }) {
           alignItems: "center",
           justifyContent: "center",
           marginBottom: 20,
-          flexShrink: true,
+          flexShrink: 1,
           flexDirection: "row",
         }}
       >
@@ -138,7 +149,7 @@ export default function Explore({ navigation, route }) {
               style={{
                 fontWeight: "600",
                 fontSize: 16,
-                flexShrink: true,
+                flexShrink: 1,
                 width: 300,
                 //flex: 1,
                 position: "relative",
@@ -151,7 +162,7 @@ export default function Explore({ navigation, route }) {
             style={{
               fontWeight: "300",
               fontSize: 12,
-              flexShrink: true,
+              flexShrink: 1,
               //flex: 1,
               //width: width,
               position: "relative",
@@ -305,7 +316,12 @@ export default function Explore({ navigation, route }) {
           <View style={{ flex: 1 }}>
             <Text style={styles.heading}>Liked</Text>
             {interestedEvents.map((event, i) => {
-              return renderNormal(event, i);
+              {
+                let search_text = search.toLowerCase();
+                if (event.eventName.toLowerCase().includes(search_text)) {
+                  return renderNormal(event, i);
+                }
+              }
             })}
           </View>
         </ScrollView>

@@ -3,16 +3,14 @@ import {
     Text,
     View,
     StyleSheet,
-    Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    Image
 } from 'react-native'
 import { Video } from 'expo-av';
 
-const { height } = Dimensions.get('window')
-
 export default function HomeScreen({ navigation }) {
     return (
-        <View>
+        <View style={styles.view}>
             <Video
                 source={require('../../../assets/homescreenloop.mp4')}
                 style={styles.backgroundVideo}
@@ -22,7 +20,13 @@ export default function HomeScreen({ navigation }) {
                 resizeMode={Video.RESIZE_MODE_COVER}
             />
 
+
             <View style={styles.container}>
+                <Image
+                    source={require("../../../assets/logo/Logo-light.png")}
+                    style={styles.logo}
+                />
+
                 <Text style={styles.title}>Jungle</Text>
                 <Text style={styles.description}>
                     We bring events to you
@@ -30,7 +34,7 @@ export default function HomeScreen({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.createAccount}
-                    onPress={() => navigation.navigate("Register")}
+                    onPress={() => navigation.navigate("EmailAndPassword")}
                 >
                     <Text style={styles.createAccountText}>Create Account</Text>
                 </TouchableOpacity>
@@ -46,19 +50,29 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        top: 300,
+    view: {
         width: '100%',
-        height: '50%',
+        height: '100%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1
+    },
+    container: {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        bottom: 50,
+    },
+    logo: {
+        width: 120,
+        height: 120,
+        marginBottom: 15,
+        opacity: 0.8
     },
     backgroundVideo: {
-        height: height,
         position: 'absolute',
         top: 0,
         left: 0,
-        alignItems: 'stretch',
         bottom: 0,
         right: 0
     },
@@ -76,11 +90,20 @@ const styles = StyleSheet.create({
     },
     createAccount: {
         opacity: 0.8,
-        top: 20,
         width: '60%',
         backgroundColor: '#bfffb8',
         padding: 15,
-        borderRadius: 10
+        borderRadius: 10,
+        margin: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+
+        elevation: 10,
     },
     createAccountText: {
         alignSelf: 'center',
@@ -91,11 +114,20 @@ const styles = StyleSheet.create({
     },
     login: {
         opacity: 0.8,
-        top: 40,
         width: '60%',
         backgroundColor: '#85ba7f',
         padding: 15,
-        borderRadius: 10
+        borderRadius: 10,
+        margin: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+
+        elevation: 10,
     },
     loginText: {
         alignSelf: 'center',
@@ -104,4 +136,4 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#bfffb8"
     }
-})
+});
