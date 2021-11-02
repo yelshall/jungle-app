@@ -162,7 +162,7 @@ export default function Login({ navigation, route }) {
 					>
 						<Text style={{
 							fontWeight: 'bold',
-							color: 'white'
+							color: 'black'
 						}}>Forgot Password?</Text>
 					</TouchableOpacity>
 
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         fontSize: 14,
-        color: "white"
+        color: "black"
 	},
 	align: {
 		width: '100%',
