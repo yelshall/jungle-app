@@ -178,15 +178,6 @@ export default function App() {
 						}}
 					>
 						<Stack.Screen
-							name="HomeScreen"
-							component={HomeScreen}
-						/>
-						<Stack.Screen
-							name="Login"
-							component={Login}
-							initialParams={{ socket: socket }}
-						/>
-						<Stack.Screen
 							name="Register"
 							component={Register}
 							initialParams={{ socket: socket }}

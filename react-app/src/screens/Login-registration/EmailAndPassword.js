@@ -6,7 +6,7 @@ import {
     StyleSheet,
 } from "react-native";
 import { Input, Icon, LinearProgress } from 'react-native-elements';
-import {passwordStrength} from 'check-password-strength';
+import { passwordStrength } from 'check-password-strength';
 
 export default function EmailAndPassword({ navigation, route }) {
     const socket = route.params.socket;
@@ -51,7 +51,7 @@ export default function EmailAndPassword({ navigation, route }) {
             err = true;
         }
 
-        if(err) {
+        if (err) {
             return;
         }
 
@@ -67,217 +67,198 @@ export default function EmailAndPassword({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            <Icon
-                type={"material"}
-                name={"chevron-left"}
-                size={45}
+            <Input
+                autoCorrect={false}
+                autoCapitalize='none'
+                placeholder='Email'
+                placeholderTextColor='#3d3d3d'
+                leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 20 }}
                 containerStyle={{
-                    position: 'absolute',
-                    top: 50,
-                    left: 10,
-                    zIndex: 10000
+                    width: '77%',
+                    marginTop: '5%'
                 }}
-                onPress={() => {
-                    navigation.goBack();
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Email"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(email) => setEmail(email.toLowerCase())}
+                onEndEditing={verifyValidEmail}
+                errorMessage={errorEmail}
+                errorStyle={{
+                    fontSize: 13,
+                    fontWeight: '500'
                 }}
             />
-            <View style={styles.smallContainer}>
-                <Text style={styles.email}>Email</Text>
 
-                <Input
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    placeholder='Email'
-                    placeholderTextColor='#3d3d3d'
-                    leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 20 }}
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Email"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(email) => setEmail(email.toLowerCase())}
-                    onEndEditing={verifyValidEmail}
-                    errorMessage={errorEmail}
-                    errorStyle={{
-                        fontSize: 13,
-                        fontWeight: '500'
-                    }}
-                />
+            <Input
+                placeholder='Password'
+                autoCorrect={false}
+                autoCapitalize='none'
+                placeholderTextColor='#3d3d3d'
+                secureTextEntry={hidePassword1}
+                leftIcon={{ type: 'font-awesome', name: 'lock', size: 20 }}
+                containerStyle={{
+                    width: '77%',
+                }}
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Password"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(password) => {
+                    if (password.length === 0) {
+                        setErrorPassword1("Your password is too weak");
+                        setProgress(0);
+                    } else if (passwordStrength(password).id === 0) {
+                        setErrorPassword1("Your password is too weak");
+                        setColor('red');
+                        setProgress(0.25);
+                    } else if (passwordStrength(password).id === 1) {
+                        setErrorPassword1("");
+                        setColor('orange');
+                        setProgress(0.50);
+                    } else if (passwordStrength(password).id === 2) {
+                        setErrorPassword1("");
+                        setColor('mediumseagreen');
+                        setProgress(0.75);
+                    } else if (passwordStrength(password).id === 3) {
+                        setErrorPassword1("");
+                        setColor('green');
+                        setProgress(1);
+                    }
+                    setPassword1(password);
+                }}
+                onEndEditing={() => {
+                    if (progress < 0.5) {
+                        setErrorPassword1("Your password is too weak");
+                    }
+                }}
+                rightIcon={{
+                    type: "ionicon",
+                    name: icon1,
+                    size: 20,
+                    onPress: () => {
+                        setHidePassword1(x => !x);
+                        setIcon1(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")
+                    }
+                }}
+                errorMessage={errorPassword1}
+                errorStyle={{
+                    fontSize: 13,
+                    fontWeight: '500'
+                }}
+            />
 
-                <Input
-                    placeholder='Password'
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    placeholderTextColor='#3d3d3d'
-                    secureTextEntry={hidePassword1}
-                    leftIcon={{ type: 'font-awesome', name: 'lock', size: 20 }}
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Password"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(password) => {
-                        if (password.length === 0) {
-                            setErrorPassword1("Your password is too weak");
-                            setProgress(0);
-                        } else if (passwordStrength(password).id === 0) {
-                            setErrorPassword1("Your password is too weak");
-                            setColor('red');
-                            setProgress(0.25);
-                        } else if (passwordStrength(password).id === 1) {
-                            setErrorPassword1("");
-                            setColor('orange');
-                            setProgress(0.50);
-                        } else if (passwordStrength(password).id === 2) {
-                            setErrorPassword1("");
-                            setColor('mediumseagreen');
-                            setProgress(0.75);
-                        } else if (passwordStrength(password).id === 3) {
-                            setErrorPassword1("");
-                            setColor('green');
-                            setProgress(1);
-                        }
-                        setPassword1(password);
-                    }}
-                    onEndEditing={() => {
-                        if (progress < 0.5) {
-                            setErrorPassword1("Your password is too weak");
-                        }
-                    }}
-                    rightIcon={{
-                        type: "ionicon",
-                        name: icon1,
-                        size: 20,
-                        onPress: () => {
-                            setHidePassword1(x => !x);
-                            setIcon1(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")
-                        }
-                    }}
-                    errorMessage={errorPassword1}
-                    errorStyle={{
-                        fontSize: 13,
-                        fontWeight: '500'
-                    }}
-                />
+            <LinearProgress
+                style={{
+                    width: '73%',
+                    borderRadius: 5
+                }}
+                color='black'
+                trackColor='white'
+                color={color}
+                variant='determinate'
+                value={progress}
+            />
 
-                <LinearProgress
-                    style={styles.progress}
-                    color='black'
-                    trackColor='white'
-                    color={color}
-                    variant='determinate'
-                    value={progress}
-                />
-
-                <Input
-                    placeholder='Re-enter password'
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    placeholderTextColor='#3d3d3d'
-                    secureTextEntry={hidePassword2}
-                    leftIcon={{ type: 'font-awesome', name: 'lock', size: 20 }}
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5,
-                        marginTop: 40
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Re-enter password"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(password) => {
-                        if(password2 === password1) {
-                            setErrorPassword2("");
-                        }
-                        setPassword2(password)
-                    }}
-                    onEndEditing={() => {
-                        if (password2 !== password1) {
-                            setErrorPassword2("The passwords are not the same");
-                            return;
-                        }
+            <Input
+                placeholder='Re-enter password'
+                autoCorrect={false}
+                autoCapitalize='none'
+                placeholderTextColor='#3d3d3d'
+                secureTextEntry={hidePassword2}
+                leftIcon={{ type: 'font-awesome', name: 'lock', size: 20 }}
+                containerStyle={{
+                    width: '77%',
+                    marginTop: '5%'
+                }}
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Re-enter password"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(password) => {
+                    if (password2 === password1) {
                         setErrorPassword2("");
-                    }}
-                    errorMessage={errorPassword2}
-                    errorStyle={{
-                        fontSize: 13,
-                        fontWeight: '500'
-                    }}
-                    rightIcon={{
-                        type: "ionicon",
-                        name: icon2,
-                        size: 20,
-                        onPress: () => {
-                            setHidePassword2(x => !x);
-                            setIcon2(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")
-                        }
-                    }}
-                />
-            </View>
+                    }
+                    setPassword2(password)
+                }}
+                onEndEditing={() => {
+                    if (password2 !== password1) {
+                        setErrorPassword2("The passwords are not the same");
+                        return;
+                    }
+                    setErrorPassword2("");
+                }}
+                errorMessage={errorPassword2}
+                errorStyle={{
+                    fontSize: 13,
+                    fontWeight: '500'
+                }}
+                rightIcon={{
+                    type: "ionicon",
+                    name: icon2,
+                    size: 20,
+                    onPress: () => {
+                        setHidePassword2(x => !x);
+                        setIcon2(icon => icon === "eye-off-outline" ? "eye-outline" : "eye-off-outline")
+                    }
+                }}
+            />
 
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
-                    <Text style={styles.continueBtnText}>Continue</Text>
-                </TouchableOpacity>
+            <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
+                <Text style={styles.continueBtnText}>Continue</Text>
+            </TouchableOpacity>
 
-                <Text style={{
-                    fontWeight: 'bold'
-                }}>
-                    Have an account?
+            <Text style={{
+                fontWeight: 'bold'
+            }}>
+                Have an account?
 
-                    <Text
-                        style={{
-                            fontWeight: "bold",
-                            color: "white",
-                        }}
-                        onPress={() => {
-                            navigation.navigate("Login");
-                        }}
-                    >
-                        {" "}
-                        Sign in
-                    </Text>
+                <Text
+                    style={{
+                        fontWeight: "bold",
+                        color: "white",
+                    }}
+                    onPress={() => {
+                        navigation.navigate("Login");
+                    }}
+                >
+                    {" "}
+                    Sign in
                 </Text>
-            </View>
+            </Text>
         </View>
     );
 };
@@ -286,26 +267,8 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         height: "100%",
-        backgroundColor: "#8acf82",
-        justifyContent: "center",
+        backgroundColor: "#96db8f",
         alignItems: "center",
-    },
-    smallContainer: {
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        bottom: 110
-    },
-    buttonContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-        width: '100%',
-        top: 50
-    },
-    email: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        marginBottom: 15
     },
     continueBtn: {
         shadowColor: 'black',
@@ -324,10 +287,6 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         fontSize: 14,
-        color: "black"
-    },
-    progress: {
-		width: '73%',
-		borderRadius: 5
-	},
+        color: "white"
+    }
 })

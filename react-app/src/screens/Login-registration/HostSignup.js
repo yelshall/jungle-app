@@ -37,14 +37,14 @@ export default function Register({ navigation, route }) {
         socket.emit('getTags', {}, (err, res) => {
             if (err) {
                 Alert.alert(
-					"Host signup",
-					"Server error occurred, try again later",
-					[
-						{
-							text: "OK"
-						}
-					]
-				);
+                    "Host signup",
+                    "Server error occurred, try again later",
+                    [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                );
                 navigation.navigate('HomeScreen');
                 return;
             }
@@ -78,7 +78,7 @@ export default function Register({ navigation, route }) {
         } else {
             setErrorEmail("");
         }
-    
+
         if (name.length === 0) {
             setErrorName("Please enter a name for your organization");
             err = true;
@@ -100,7 +100,7 @@ export default function Register({ navigation, route }) {
             setErrorTags("");
         }
 
-        if(err) {
+        if (err) {
             return;
         }
 
@@ -114,14 +114,14 @@ export default function Register({ navigation, route }) {
         socket.emit('hostSignup', { newHost: route.params.newHost }, (err, response) => {
             if (err) {
                 Alert.alert(
-					"Host sign up",
-					"Error signing you up",
-					[
-						{
-							text: "OK"
-						}
-					]
-				);
+                    "Host sign up",
+                    "Error signing you up",
+                    [
+                        {
+                            text: "OK"
+                        }
+                    ]
+                );
                 return
             }
             signUp(response);
@@ -129,168 +129,145 @@ export default function Register({ navigation, route }) {
     };
 
     return (
-        <View style={styles.container}>
-            <Icon
-                type={"material"}
-                name={"chevron-left"}
-                size={45}
+        <ScrollView
+            contentContainerStyle={{
+                alignItems: "center"
+            }}
+            style={{
+                backgroundColor: "#96db8f",
+                width: "100%",
+                height: "100%"
+            }}
+        >
+            <Input
+                autoCorrect={false}
+                placeholder='Organization name'
+                placeholderTextColor='#3d3d3d'
                 containerStyle={{
-                    position: 'absolute',
-                    top: 50,
-                    left: 10,
-                    zIndex: 10000
+                    width: '80%',
+                    margin: "1.5%"
                 }}
-                onPress={() => {
-                    navigation.goBack();
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Organization name"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(name) => setName(name)}
+                onEndEditing={() => {
+                    if (name.length === 0) {
+                        setErrorName("Please enter a name for your organization")
+                        return;
+                    }
+                    setErrorName("");
+                }}
+                errorMessage={errorName}
+                errorStyle={{
+                    fontSize: 13,
+                    fontWeight: '500'
                 }}
             />
-            <Text style={styles.host}>Host information</Text>
 
-            <ScrollView
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    position: 'absolute'
+            <Input
+                autoCorrect={false}
+                autoCapitalize='none'
+                placeholder='Email'
+                placeholderTextColor='#3d3d3d'
+                leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 20 }}
+                containerStyle={{
+                    width: '80%',
+                    margin: "1.5%"
                 }}
-                contentContainerStyle={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                inputStyle={{
+                    fontSize: 14
                 }}
-            >
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Organization email"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(email) => setEmail(email.toLowerCase())}
+                onEndEditing={verifyValidEmail}
+                errorMessage={errorEmail}
+                errorStyle={{
+                    fontSize: 13,
+                    fontWeight: '500'
+                }}
+            />
 
-                <View style={{
-                    width: '100%',
-                    height: 150
-                }}></View>
+            <Input
+                autoCorrect={false}
+                autoCapitalize='none'
+                placeholder='Phone number'
+                placeholderTextColor='#3d3d3d'
+                leftIcon={{ type: 'ionicon', name: 'call-outline', size: 20 }}
+                containerStyle={{
+                    width: '80%',
+                    margin: "1.5%"
+                }}
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Organization phone number (optional)"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+            />
 
-                <Input
-                    autoCorrect={false}
-                    placeholder='Organization name'
-                    placeholderTextColor='#3d3d3d'
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Organization name"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(name) => setName(name)}
-                    onEndEditing={() => {
-                        if (name.length === 0) {
-                            setErrorName("Please enter a name for your organization")
-                            return;
-                        }
-                        setErrorName("");
-                    }}
-                    errorMessage={errorName}
-                    errorStyle={{
-                        fontSize: 13,
-                        fontWeight: '500'
-                    }}
-                />
+            <Input
+                autoCorrect={false}
+                autoCapitalize='none'
+                placeholder='Website'
+                placeholderTextColor='#3d3d3d'
+                leftIcon={{ type: 'ionicon', name: 'globe-outline', size: 20 }}
+                containerStyle={{
+                    width: '80%',
+                    margin: "1.5%"
+                }}
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Organization website (optional)"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(website) => setWebsite(website)}
+            />
 
-                <Input
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    placeholder='Email'
-                    placeholderTextColor='#3d3d3d'
-                    leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 20 }}
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Organization email"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(email) => setEmail(email.toLowerCase())}
-                    onEndEditing={verifyValidEmail}
-                    errorMessage={errorEmail}
-                    errorStyle={{
-                        fontSize: 13,
-                        fontWeight: '500'
-                    }}
-                />
-
-                <Input
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    placeholder='Phone number'
-                    placeholderTextColor='#3d3d3d'
-                    leftIcon={{ type: 'ionicon', name: 'call-outline', size: 20 }}
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Organization phone number (optional)"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
-                />
-
-                <Input
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    placeholder='Website'
-                    placeholderTextColor='#3d3d3d'
-                    leftIcon={{ type: 'ionicon', name: 'globe-outline', size: 20 }}
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Organization website (optional)"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(website) => setWebsite(website)}
-                />
-
+            <View style={{ width: '80%', margin: '2.5%' }}>
                 <Text style={styles.secondaryText}>Description</Text>
                 <TextInput
                     multiline
@@ -300,7 +277,7 @@ export default function Register({ navigation, route }) {
                     placeholderTextColor='#3d3d3d'
                     onChangeText={(description) => setDescription(description)}
                     onEndEditing={() => {
-                        if(description.length < 50) {
+                        if (description.length < 50) {
                             setErrorDescription("Write at least 50 characters");
                             return;
                         }
@@ -314,12 +291,13 @@ export default function Register({ navigation, route }) {
                             fontSize: 13,
                             fontWeight: '500',
                             color: 'red',
-                            bottom: 20,
-                            right: 50
+                            marginLeft: '2.5%'
                         }}
                     >{errorDescription}</Text>
                 }
+            </View>
 
+            < View style={{ width: '80%', margin: '2.5%' }}>
                 <Text style={styles.secondaryText}>Your tags are...</Text>
                 <DropDownPicker
                     style={{
@@ -327,8 +305,7 @@ export default function Register({ navigation, route }) {
                         borderWidth: 0,
                     }}
                     containerStyle={{
-                        width: '76%',
-                        margin: 10,
+                        margin: '2.5%',
                         zIndex: 1
                     }}
                     dropDownContainerStyle={{
@@ -355,40 +332,21 @@ export default function Register({ navigation, route }) {
                             fontSize: 13,
                             fontWeight: '500',
                             color: 'red',
-                            bottom: 20,
-                            right: 50
+                            marginLeft: '2.5%'
                         }}
                     >{errorTags}</Text>
                 }
+            </View>
 
-                <View style={{
-                    width: '100%',
-                    zindex: -1,
-                    height: 150
-                }}></View>
-
-                <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
-                    <Text style={styles.continueBtnText}>Continue</Text>
-                </TouchableOpacity>
-
-                <View style={{
-                    width: '100%',
-                    height: 140
-                }}></View>
-            </ScrollView>
-        </View>
+            <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
+                <Text style={styles.continueBtnText}>Continue</Text>
+            </TouchableOpacity>
+        </ScrollView>
     );
 }
 
 
 const styles = StyleSheet.create({
-    container: {
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#8acf82",
-        justifyContent: "center",
-        alignItems: "center"
-    },
     secondaryText: {
         fontSize: 16,
         lineHeight: 21,
@@ -396,17 +354,15 @@ const styles = StyleSheet.create({
         letterSpacing: 0.25,
         color: "#3d3d3d",
         alignSelf: 'flex-start',
-        left: 50,
+        marginLeft: '2.5%'
     },
     TextBox: {
         backgroundColor: "#e6ffef",
         borderRadius: 5,
         color: "black",
-        margin: 10,
-        marginBottom: 24,
+        margin: '2.5%',
         borderBottomColor: "#d8ffd4",
         borderBottomWidth: 2,
-        width: '75%',
         height: 100
     },
     continueBtn: {
@@ -419,7 +375,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#71bd69',
         padding: 15,
         borderRadius: 10,
-        zIndex: -1
+        zIndex: -1,
+        margin: '10%'
     },
     continueBtnText: {
         alignSelf: 'center',
@@ -427,12 +384,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 14,
         color: "black"
-    },
-    host: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        zIndex: 10000,
-        bottom: 339
     },
 })

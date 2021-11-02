@@ -72,7 +72,6 @@ export default function Login({ navigation, route }) {
 					placeholderTextColor='#3d3d3d'
 					leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 20 }}
 					containerStyle={{
-						width: '77%',
 						margin: 5
 					}}
 					inputStyle={{
@@ -107,7 +106,6 @@ export default function Login({ navigation, route }) {
 					secureTextEntry={hidePassword}
 					leftIcon={{ type: 'font-awesome', name: 'lock', size: 20 }}
 					containerStyle={{
-						width: '77%',
 						margin: 5
 					}}
 					inputStyle={{
@@ -190,42 +188,38 @@ const styles = StyleSheet.create({
 	container: {
 		width: "100%",
 		height: "100%",
-		backgroundColor: "#8acf82",
-		justifyContent: "center",
+		backgroundColor: "#96db8f",
 		alignItems: "center",
 	},
 	inputs: {
-		width: '100%',
+		width: '77%',
 		justifyContent: "center",
 		alignItems: "center",
-		bottom: 100
 	},
 	image: {
 		width: 125,
 		height: 125,
-		marginBottom: 20
+		margin: 20
 	},
 	signInText: {
 		fontSize: 30,
 		fontWeight: 'bold',
 		alignSelf: 'flex-start',
-		left: 50,
 		marginBottom: 15
 	},
 	buttons: {
-		width: '100%',
+		width: '75%',
 		justifyContent: "center",
 		alignItems: "center",
-		bottom: 80
 	},
 	loginBtn: {
+		width: '100%',
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.4,
         shadowRadius: 5,
         opacity: 0.8,
-        width: '75%',
-        backgroundColor: '#71bd69',
+        backgroundColor: '#51b375',
         padding: 15,
         borderRadius: 10,
 	},
@@ -237,7 +231,7 @@ const styles = StyleSheet.create({
         color: "black"
 	},
 	align: {
-		width: '70%',
+		width: '100%',
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 		marginTop: 10

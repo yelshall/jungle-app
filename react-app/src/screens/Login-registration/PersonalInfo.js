@@ -46,7 +46,7 @@ export default function Register({ navigation, route }) {
             setErrorName("");
         }
 
-        if(dateOfBirth === "Date of birth") {
+        if (dateOfBirth === "Date of birth") {
             setErrorDate("Please choose a date of birth");
             err = true;
         } else {
@@ -67,7 +67,7 @@ export default function Register({ navigation, route }) {
             setErrorType("");
         }
 
-        if(err) {
+        if (err) {
             return;
         }
 
@@ -97,115 +97,98 @@ export default function Register({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            <Icon
-                type={"material"}
-                name={"chevron-left"}
-                size={45}
+            <Input
+                autoCorrect={false}
+                placeholder='Full name'
+                placeholderTextColor='#3d3d3d'
                 containerStyle={{
-                    position: 'absolute',
-                    top: 50,
-                    left: 10,
-                    zIndex: 10000
+                    width: '80%',
+                    margin: '1.5%'
                 }}
-                onPress={() => {
-                    navigation.goBack();
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                label={"Full Name"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                onChangeText={(name) => setName(name)}
+                onEndEditing={() => {
+                    if (name.split(" ").length !== 2) {
+                        setErrorName("Please enter a first and last name")
+                        return;
+                    }
+                    setErrorName("");
+                }}
+                errorMessage={errorName}
+                errorStyle={{
+                    fontSize: 13,
+                    fontWeight: '500'
                 }}
             />
-            <View style={styles.smallContainer}>
-                <Text style={styles.personal}>Personal information</Text>
 
-                <Input
-                    autoCorrect={false}
-                    placeholder='Full name'
-                    placeholderTextColor='#3d3d3d'
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    label={"Full Name"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    onChangeText={(name) => setName(name)}
-                    onEndEditing={() => {
-                        if (name.split(" ").length !== 2) {
-                            setErrorName("Please enter a first and last name")
-                            return;
-                        }
-                        setErrorName("");
-                    }}
-                    errorMessage={errorName}
-                    errorStyle={{
-                        fontSize: 13,
-                        fontWeight: '500'
-                    }}
-                />
+            <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={(date) => {
+                    setDatePickerVisibility(false);
+                    setDateOfBirth((date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear());
+                }}
+                onCancel={() => setDatePickerVisibility(false)}
+            />
 
-                <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    onConfirm={(date) => {
-                        setDatePickerVisibility(false);
-                        setDateOfBirth((date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear());
-                    }}
-                    onCancel={() => setDatePickerVisibility(false)}
-                />
+            <Input
+                containerStyle={{
+                    width: '80%',
+                    margin: '1.5%'
+                }}
+                inputStyle={{
+                    fontSize: 14
+                }}
+                inputContainerStyle={{
+                    borderColor: 'white',
+                    borderBottomWidth: 1.5
+                }}
+                InputComponent={({ }) => (
+                    <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
+                        <Text style={{ padding: 10, color: "#404040" }}>{dateOfBirth}</Text>
+                    </TouchableOpacity>
+                )
+                }
+                label={"Date of birth"}
+                labelStyle={{
+                    fontSize: 16,
+                    lineHeight: 21,
+                    fontWeight: "bold",
+                    letterSpacing: 0.25,
+                    color: "#3d3d3d",
+                }}
+                errorMessage={errorDate}
+                errorStyle={{
+                    fontSize: 13,
+                    fontWeight: '500'
+                }}
+                disabled={true}
+            />
 
-                <Input
-                    containerStyle={{
-                        width: '77%',
-                        margin: 5
-                    }}
-                    inputStyle={{
-                        fontSize: 14
-                    }}
-                    inputContainerStyle={{
-                        borderColor: 'white',
-                        borderBottomWidth: 1.5
-                    }}
-                    InputComponent={({ }) => (
-                        <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
-                            <Text style={{ padding: 10, color: "#404040" }}>{dateOfBirth}</Text>
-                        </TouchableOpacity>
-                    )
-                    }
-                    label={"Date of birth"}
-                    labelStyle={{
-                        fontSize: 16,
-                        lineHeight: 21,
-                        fontWeight: "bold",
-                        letterSpacing: 0.25,
-                        color: "#3d3d3d",
-                    }}
-                    errorMessage={errorDate}
-                    errorStyle={{
-                        fontSize: 13,
-                        fontWeight: '500'
-                    }}
-                    disabled={true}
-                />
-
+            <View style={{ zIndex: 2, height: '15%' }}>
                 <Text style={styles.secondaryText}>Gender</Text>
                 <DropDownPicker
                     style={{
-                        backgroundColor: "#71bd69",
-                        borderWidth: 0,
+                        backgroundColor: "#51b375",
+                        borderWidth: 0
                     }}
                     containerStyle={{
-                        width: '75%',
-                        paddingBottom: 20,
-                        margin: 10
+                        width: '76%',
+                        marginTop: '4%'
                     }}
                     dropDownContainerStyle={{
                         backgroundColor: "#71bd69",
@@ -228,13 +211,15 @@ export default function Register({ navigation, route }) {
                             fontSize: 13,
                             fontWeight: '500',
                             color: 'red',
-                            position: 'absolute',
-                            top: 325,
-                            left: 64
+                            marginTop: '1.5%',
+                            alignSelf: 'flex-start',
+                            marginLeft: '3%'
                         }}
                     >{errorGender}</Text>
                 }
+            </View>
 
+            <View style={{ zIndex: 1, height: '15%' }}>
                 <Text style={styles.secondaryText}>Sign up as...</Text>
                 <DropDownPicker
                     style={{
@@ -242,15 +227,12 @@ export default function Register({ navigation, route }) {
                         borderWidth: 0,
                     }}
                     containerStyle={{
-                        width: '75%',
-                        paddingBottom: 20,
-                        zIndex: 100,
-                        margin: 10
+                        width: '76%',
+                        marginTop: '4%'
                     }}
                     dropDownContainerStyle={{
                         backgroundColor: "#71bd69",
                         borderWidth: 0,
-                        zIndex: 100
                     }}
                     placeholder="Choose an option"
                     open={openType}
@@ -267,9 +249,9 @@ export default function Register({ navigation, route }) {
                             fontSize: 13,
                             fontWeight: '500',
                             color: 'red',
-                            position: 'absolute',
-                            top: 440,
-                            left: 64
+                            marginTop: '1.5%',
+                            alignSelf: 'flex-start',
+                            marginLeft: '3%'
                         }}
                     >{errorType}</Text>
                 }
@@ -292,15 +274,8 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         height: "100%",
-        backgroundColor: "#8acf82",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    smallContainer: {
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        bottom: 110
+        backgroundColor: "#96db8f",
+        alignItems: "center"
     },
     continueBtn: {
         shadowColor: 'black',
@@ -312,7 +287,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#71bd69',
         padding: 15,
         borderRadius: 10,
-        bottom: 50
+        marginTop: '10%'
     },
     continueBtnText: {
         alignSelf: 'center',
@@ -327,7 +302,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         letterSpacing: 0.25,
         color: "#3d3d3d",
-        alignSelf: 'flex-start',
-        left: 50,
+        marginLeft: '1.5%'
     },
 })
