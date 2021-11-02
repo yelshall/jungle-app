@@ -5,7 +5,7 @@ import PersonalInfo from "./PersonalInfo";
 import Preferences from "./Preferences";
 import HostSignup from './HostSignup';
 
-export default function Register({ navigation, route }) {
+export default function Register({ route }) {
 	const socket = route.params.socket;
 	const Stack = createStackNavigator();
 
