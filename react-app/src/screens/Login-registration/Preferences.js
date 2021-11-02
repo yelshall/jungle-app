@@ -1,12 +1,38 @@
 import React from "react";
-import { ScrollView } from "react-native";
-import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity, ImageBackground, SafeAreaView } from "react-native";
 import { LinearProgress, Icon } from 'react-native-elements';
 import { AuthContext } from '../../utils/context';
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-	<TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
-		<Text style={[styles.itemText, textColor]}>{item.title}</Text>
+const Item = ({ item, onPress, selected }) => (
+	<TouchableOpacity onPress={onPress} style={[styles.item]}>
+		<ImageBackground
+			source={{
+				uri: item.imageURL,
+			}}
+			style={{
+				overflow: "hidden",
+				width: '100%',
+				height: '100%',
+				justifyContent: 'center',
+				alignItems: 'center',
+				borderRadius: '10'
+			}}
+			blurRadius={10}
+		>
+			{selected &&
+				<Icon
+					name={"check-square"}
+					type={"font-awesome"}
+					size={20}
+					containerStyle={{
+						position: 'absolute',
+						top: 5,
+						right: 5
+					}}
+				/>
+			}
+			<Text style={styles.itemText}>{item.title}</Text>
+		</ImageBackground>
 	</TouchableOpacity>
 );
 
@@ -18,6 +44,11 @@ const formatData = (data) => {
 		data.push({ title: `blank-${numberOfElementsLastRow}`, empty: true });
 		numberOfElementsLastRow++;
 	}
+
+	data.push({ title: `blank-${numberOfElementsLastRow + 1}`, empty: true });
+	data.push({ title: `blank-${numberOfElementsLastRow + 2}`, empty: true });
+	data.push({ title: `blank-${numberOfElementsLastRow + 3}`, empty: true });
+
 
 	return data;
 };
@@ -48,7 +79,7 @@ export default function Preferences({ navigation, route }) {
 			let tag = [];
 
 			for (let i = 0; i < res.length; i++) {
-				tag.push({ title: res[i].tagName, id: res[i]._id });
+				tag.push({ title: res[i].tagName, imageURL: res[i].imageURL, id: res[i]._id });
 			}
 
 			setTags(tag);
@@ -56,8 +87,7 @@ export default function Preferences({ navigation, route }) {
 	}, []);
 
 	const renderItem = ({ item }) => {
-		const backgroundColor = selectedIds.some(i => i.id === item.id) ? "#61aa7c" : "#51b375";
-		const color = selectedIds.some(i => i.id === item.id) ? 'white' : 'black';
+		const selected = selectedIds.some(i => i.id === item.id) ? true : false;
 
 		if (item.empty === true) {
 			return <View style={[styles.item, styles.itemInvisible]} />;
@@ -74,8 +104,7 @@ export default function Preferences({ navigation, route }) {
 					setProgress(progress + 0.2);
 					setSelectedIds(oldArr => [...oldArr, item])
 				}}
-				backgroundColor={{ backgroundColor }}
-				textColor={{ color }}
+				selected={selected}
 			/>
 		);
 	};
@@ -106,21 +135,13 @@ export default function Preferences({ navigation, route }) {
 	};
 
 	return (
-		<View style={styles.container}>
+
+		<SafeAreaView style={styles.container}>
 			<View style={{
 				width: '88%',
 				alignItems: 'center',
 				marginTop: '5%',
-				marginBottom: '5%',
-				shadowColor: "#000",
-				shadowOffset: {
-					width: 0,
-					height: 2,
-				},
-				shadowOpacity: 0.25,
-				shadowRadius: 3.84,
-				
-				elevation: 5,
+				marginBottom: '5%'
 			}}>
 				<Text style={styles.text}>Please pick 5 or more interests</Text>
 				<LinearProgress
@@ -149,7 +170,7 @@ export default function Preferences({ navigation, route }) {
 				keyExtractor={(item) => item.id}
 				extraData={selectedIds}
 			/>
-		</View>
+		</SafeAreaView>
 	);
 };
 
@@ -199,7 +220,7 @@ const styles = StyleSheet.create({
 		height: (Dimensions.get('window').width - Dimensions.get('window').width * 0.1) / 3,
 		borderRadius: 10,
 		opacity: 0.8,
-		padding: 20,
+		padding: 0,
 		shadowColor: 'black',
 		shadowOffset: { width: 0, height: 3 },
 		shadowOpacity: 0.1,
@@ -210,9 +231,9 @@ const styles = StyleSheet.create({
 
 	},
 	itemText: {
-		fontSize: 12,
-		letterSpacing: 0.2,
+		fontSize: 14,
 		textAlign: 'center',
-		fontWeight: '700'
+		fontWeight: 'bold',
+		color: 'white'
 	}
 });

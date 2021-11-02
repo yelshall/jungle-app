@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { AuthContext } from '../../utils/context';
-import { Input, Icon } from 'react-native-elements';
+import { Input } from 'react-native-elements';
 
 export default function Register({ navigation, route }) {
     const socket = route.params.socket;
@@ -297,11 +297,11 @@ export default function Register({ navigation, route }) {
                 }
             </View>
 
-            < View style={{ width: '80%', margin: '2.5%' }}>
+            < View style={{ width: '80%', margin: '2.5%', alignItems: 'center' }}>
                 <Text style={styles.secondaryText}>Your tags are...</Text>
                 <DropDownPicker
                     style={{
-                        backgroundColor: "#71bd69",
+                        backgroundColor: "#51b375",
                         borderWidth: 0,
                     }}
                     containerStyle={{
@@ -309,10 +309,10 @@ export default function Register({ navigation, route }) {
                         zIndex: 1
                     }}
                     dropDownContainerStyle={{
-                        backgroundColor: "#71bd69",
+                        backgroundColor: "#51b375",
                         borderWidth: 0,
                     }}
-                    dropDownDirection="BOTTOM"
+                    dropDownDirection="AUTO"
                     multiple={true}
                     min={0}
                     max={3}
@@ -323,7 +323,7 @@ export default function Register({ navigation, route }) {
                     setOpen={setOpenTags}
                     setValue={setTags}
                     setItems={setTagTypes}
-                    bottomOffset={100}
+                    bottomOffset={50}
                 />
                 {
                     errorTags.length !== 0 &&
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         opacity: 0.8,
         width: '75%',
-        backgroundColor: '#71bd69',
+        backgroundColor: '#51b375',
         padding: 15,
         borderRadius: 10,
         zIndex: -1,
@@ -383,6 +383,6 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         fontSize: 14,
-        color: "black"
+        color: "white"
     },
 })

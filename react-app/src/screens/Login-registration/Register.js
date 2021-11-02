@@ -8,7 +8,7 @@ import Preferences from "./Preferences";
 import HostSignup from './HostSignup';
 import HomeScreen from "./HomeScreen";
 import Login from "./Login";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import ProfilePic from "./ProfilePic";
 
 export default function Register({ navigation, route }) {
 	const socket = route.params.socket;
@@ -58,6 +58,7 @@ export default function Register({ navigation, route }) {
 			<Stack.Screen name="PersonalInfo" component={PersonalInfo} options={defaultOptions('Personal information')} />
 			<Stack.Screen name="Preferences" component={Preferences} initialParams={{ socket: socket }} options={defaultOptions('Preferences')} />
 			<Stack.Screen name="HostSignup" component={HostSignup} initialParams={{ socket: socket }} options={defaultOptions('Host information')} />
+			<Stack.Screen name="ProfilePic" component={ProfilePic} initialParams={{socket: socket}} options={defaultOptions('Profile picture')} />
 		</Stack.Navigator>
 	);
 };
