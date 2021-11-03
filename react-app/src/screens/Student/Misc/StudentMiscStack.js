@@ -8,61 +8,26 @@ import FollowedHosts from "./FollowedHosts";
 import ChangePref from "./ChangePref";
 import UpdatePreferences from "./UpdatePreferences";
 import users from "../../../../assets/events-data/users";
+import {defaultOptions} from '../../../components/Header';
 
 export default function StudentMiscStack({ navigation, route }) {
     const Stack = createStackNavigator();
     const socket = route.params.socket;
     const loginState = route.params.loginState;
   
-    const BackButton = ({ }) => (
-        <Icon
-            type={"material"}
-            name={"chevron-left"}
-            size={40}
-            style={{ margin: 0, padding: 0 }}
-            onPress={() => {
-                navigation.goBack();
-            }}
-        />
-    );
-
-    const headerBackground = ({ }) => (
-        <View
-            style={{
-                backgroundColor: 'white',
-                height: '100%',
-                width: '100%',
-                borderBottomWidth: 0.5,
-                borderColor: '#84cf7c'
-            }}
-        ></View>
-    )
-
-    const defaultOptions = (title) => {
-        return {
-            title: title,
-            headerLeft: BackButton,
-            headerTitleStyle: {
-                fontSize: 20,
-                fontWeight: 'bold'
-            },
-            headerBackground: headerBackground
-        }
-    }
-
     return (
         <Stack.Navigator>
             <Stack.Screen
                 name="EventInfo"
                 component={EventInfo}
                 initialParams={{ socket: socket, loginState: loginState }}
-                options={defaultOptions('Event information')}
+                options={defaultOptions('Event information', 'white', '#cccccc')}
             />
             <Stack.Screen
                 name="HostInfo"
                 component={HostInfo}
                 initialParams={{ socket: socket, loginState: loginState }}
-                options={defaultOptions('Host information')}
+                options={defaultOptions('Host information', 'white', '#cccccc')}
             />
             <Stack.Screen
                 name="FollowedHosts"
@@ -71,7 +36,7 @@ export default function StudentMiscStack({ navigation, route }) {
                     loginState: loginState,
                     socket: socket,
                 }}
-                options={defaultOptions('Following')}
+                options={defaultOptions('Following', 'white', '#cccccc')}
             />
             <Stack.Screen
                 name="ChangePref"
@@ -79,7 +44,7 @@ export default function StudentMiscStack({ navigation, route }) {
                 initialParams={{
                     users: users[0],
                 }}
-                options={defaultOptions('Settings')}
+                options={defaultOptions('Settings', 'white', '#cccccc')}
             />
             <Stack.Screen
                 name="UpdatePreferences"

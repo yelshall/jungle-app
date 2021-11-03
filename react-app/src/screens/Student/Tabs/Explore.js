@@ -152,7 +152,7 @@ export default function Explore({ navigation, route }) {
 								let search_text = search.toLowerCase();
 								if (event.eventName.toLowerCase().includes(search_text)) {
 									return (
-										<CardItem event={event} onPress={() => onPress(event, "INTERESTED")} />
+										<CardItem event={event} onPress={() => onPress(event, "INTERESTED")} edit={false} />
 									);
 								}
 							})
