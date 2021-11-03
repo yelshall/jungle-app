@@ -18,7 +18,7 @@ const smallSize = width / 5;
 const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
-export const CardItem = ({ event, onPress }) => (
+export const CardItem = ({ event, onPress, edit }) => (
     <TouchableOpacity
         activeOpacity={1}
         onPress={onPress}
@@ -30,7 +30,6 @@ export const CardItem = ({ event, onPress }) => (
                 justifyContent: 'center',
                 marginVertical: '1%',
                 padding: '2%',
-
                 borderRadius: 1,
                 backgroundColor: 'white',
                 borderColor: '#cccccc',
@@ -88,24 +87,26 @@ export const CardItem = ({ event, onPress }) => (
                         <Text>{(new Date(event.dateTime)).toDateString()}</Text>
                     </Flex>
                 </Flex>
-                <Flex
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        alignSelf: 'flex-end'
-                    }}
-                >
-                    <Text style={{ color: '#0a84ff' }}>Learn more</Text>
-                    <Icon
-                        type={"ionicon"}
-                        name={"chevron-forward-outline"}
-                        size={14}
-                        containerStyle={{
-                            marginRight: '1%'
+                {!edit &&
+                    <Flex
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            alignSelf: 'flex-end'
                         }}
-                        color={"#0a84ff"}
-                    />
-                </Flex>
+                    >
+                        <Text style={{ color: '#0a84ff' }}>Learn more</Text>
+                        <Icon
+                            type={"ionicon"}
+                            name={"chevron-forward-outline"}
+                            size={14}
+                            containerStyle={{
+                                marginRight: '1%'
+                            }}
+                            color={"#0a84ff"}
+                        />
+                    </Flex>
+                }
             </Stack>
         </Flex>
     </TouchableOpacity>
@@ -136,7 +137,7 @@ export const CardRow = ({ event, onPress }) => (
                     justifyContent: 'flex-end'
                 }}
             >
-                <Stack direction={'column'} style={{ width: '100%', margin: '3%'}}>
+                <Stack direction={'column'} style={{ width: '100%', margin: '3%' }}>
                     <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>{event.eventName.length > 18 ?
                         event.eventName.substring(0, 18) + '...' : event.eventName}</Text>
                     <Flex>

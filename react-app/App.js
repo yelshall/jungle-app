@@ -9,10 +9,11 @@ import { getData, storeData, removeData } from "./src/utils/asyncStorage";
 import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "./src/utils/context";
 import eventsData from "./assets/events-data/eventsData";
-import editEvents from "./src/screens/Host/editEvents";
+import EditEvents from "./src/screens/Host/EditEvents";
 
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import { NativeBaseProvider } from "native-base";
+import { defaultOptions } from "./src/components/Header";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -158,25 +159,7 @@ export default function App() {
 
 	if (loginState.token === null) {
 		return (
-			<AuthContext.Provider value={authContext}>
-				<NavigationContainer>
-					<Stack.Navigator
-						screenOptions={{
-							headerShown: false,
-						}}
-					>
-						<Stack.Screen
-							name="Register"
-							component={Register}
-							initialParams={{ socket: socket }}
-						/>
-					</Stack.Navigator>
-				</NavigationContainer>
-			</AuthContext.Provider>
-		);
-	} else {
-		if (loginState.signInType === "HOST") {
-			return (
+			<NativeBaseProvider>
 				<AuthContext.Provider value={authContext}>
 					<NavigationContainer>
 						<Stack.Navigator
@@ -185,22 +168,45 @@ export default function App() {
 							}}
 						>
 							<Stack.Screen
-								name="HostHome"
-								component={HostHome}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="editEvents"
-								component={editEvents}
-								initialParams={{
-									event: eventsData[0],
-									socket: socket,
-									loginState: loginState,
-								}}
+								name="Register"
+								component={Register}
+								initialParams={{ socket: socket }}
 							/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</AuthContext.Provider>
+			</NativeBaseProvider>
+		);
+	} else {
+		if (loginState.signInType === "HOST") {
+			return (
+				<NativeBaseProvider>
+					<AuthContext.Provider value={authContext}>
+						<NavigationContainer>
+							<Stack.Navigator
+								screenOptions={{
+									headerShown: false,
+								}}
+							>
+								<Stack.Screen
+									name="HostHome"
+									component={HostHome}
+									initialParams={{ socket: socket, loginState: loginState }}
+								/>
+								<Stack.Screen
+									name="EditEvents"
+									component={EditEvents}
+									initialParams={{
+										event: eventsData[0],
+										socket: socket,
+										loginState: loginState,
+									}}
+									options={defaultOptions('Event information', 'white', '#cccccc')}
+								/>
+							</Stack.Navigator>
+						</NavigationContainer>
+					</AuthContext.Provider>
+				</NativeBaseProvider>
 			);
 		} else {
 			return (

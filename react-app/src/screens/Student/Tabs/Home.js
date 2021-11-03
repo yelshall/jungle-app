@@ -1,7 +1,6 @@
 import { StyleSheet, Image } from "react-native";
-
 import React from "react";
-
+import { defaultOptions } from '../../../components/Header';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Explore from "./Explore";
 import Profile from "./Profile";
@@ -69,7 +68,7 @@ export default function Home({ route }) {
         name="Swipe"
         component={CardSwipe}
         initialParams={{ socket: socket, loginState: loginState }}
-        options={{ unmountOnBlur: true, headerShown: false }}
+        options={{ headerShown: false }}
         listeners={({ navigation }) => ({
           blur: () => navigation.setParams({ screen: undefined }),
         })}
@@ -78,14 +77,19 @@ export default function Home({ route }) {
         name="Explore"
         component={Explore}
         initialParams={{ socket: socket, loginState: loginState }}
-        options={{ unmountOnBlur: true, headerShown: false }}
+        options={{ headerShown: false }}
         listeners={({ navigation }) => ({
           blur: () => navigation.setParams({ screen: undefined }),
         })}
       />
-      <Tabs.Screen name="Chat" component={Chat} />
+      <Tabs.Screen
+        name="Chat"
+        component={Chat}
+        options={defaultOptions('Chat', 'white', '#cccccc')}
+      />
       <Tabs.Screen
         name="Profile"
+        options={defaultOptions('Profile', 'white', '#cccccc')}
         component={Profile}
         initialParams={{ socket: socket, loginState: loginState }}
       />
