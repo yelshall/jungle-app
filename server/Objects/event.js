@@ -15,10 +15,12 @@ var createEvent = async (newEvent, callback) => {
         maxStudents: newEvent.maxStudents,
         latitude: newEvent.latitude,
         longitude: newEvent.longitude,
-        url: newEvent.url.toLowerCase(),
+        url: newEvent.url,
         media: newEvent.media,
         imageURL: newEvent.imageURL
     };
+
+    if(event.url) event.url = event.url.toLowerCase();
 
     let eventSave = new schemas.Event(event);
 

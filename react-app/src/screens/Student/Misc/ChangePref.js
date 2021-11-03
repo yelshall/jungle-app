@@ -29,8 +29,9 @@ export default function ChangePref({ route, navigation }) {
   const [textValue, setTextValue] = React.useState("Update");
 
   let onPress = () => {
-    //Alert.alert("Send to Prefrences page");
-    navigation.navigate("UpdatePreferences");
+    navigation.navigate("StudentMiscStack", {
+      screen: "UpdatePreferences"
+    });
   };
 
   return (
@@ -58,8 +59,6 @@ export default function ChangePref({ route, navigation }) {
       </Pressable>
     </>
   );
-  {
-  }
 }
 
 // prettier-ignore

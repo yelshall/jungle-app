@@ -5,8 +5,8 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Explore from "./Explore";
 import Profile from "./Profile";
-import CardSwipe from "../components/CardSwipe/index";
-import Chat from "./Chat";
+import CardSwipe from "../../../components/CardSwipe/index";
+import Chat from "../../Chat";
 
 const Tabs = createBottomTabNavigator();
 
@@ -31,21 +31,20 @@ export default function Home({ route }) {
         },
       }}
       screenOptions={({ route }) => ({
-        headerShown: false,
         tabBarIcon: ({ focused }) => {
           let filePath;
           switch (route.name) {
             case "Swipe":
-              filePath = require("../../assets/up-arrow.png");
+              filePath = require("../../../../assets/up-arrow.png");
               break;
             case "Explore":
-              filePath = require("../../assets/menu.png");
+              filePath = require("../../../../assets/menu.png");
               break;
             case "Chat":
-              filePath = require("../../assets/chat.png");
+              filePath = require("../../../../assets/chat.png");
               break;
             case "Profile":
-              filePath = require("../../assets/user.png");
+              filePath = require("../../../../assets/user.png");
               break;
             default:
               iconName = focused

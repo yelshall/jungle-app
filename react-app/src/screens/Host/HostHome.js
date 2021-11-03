@@ -38,13 +38,13 @@ export default function HostHome({ navigation, route }) {
           let filePath;
           switch (route.name) {
             case "HostManage":
-              filePath = require("../../assets/menu.png");
+              filePath = require("../../../assets/menu.png");
               break;
             case "HostChat":
-              filePath = require("../../assets/chat.png");
+              filePath = require("../../../assets/chat.png");
               break;
             case "HostProfile":
-              filePath = require("../../assets/user.png");
+              filePath = require("../../../assets/user.png");
               break;
             default:
               iconName = focused

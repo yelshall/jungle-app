@@ -9,7 +9,7 @@ function Forgot_Password() {
     <View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
       <Text style={{ margin: 90, fontSize: 28 }}>Profile</Text>
       <LottieView
-        source={require("../../assets/Lottie/Profile.json")}
+        source={require("../../../assets/Lottie/Profile.json")}
         autoPlay
       />
     </View>

@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { LinearProgress } from "react-native-elements";
-import { AuthContext } from "../utils/context";
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
@@ -85,12 +84,7 @@ export default function UpdatePreferences({ navigation, route }) {
   };
 
   const onContinue = () => {
-    // let tagsArr = [];
-    // for (let i = 0; i < selectedIds.length; i++) {
-    //   tagsArr.push(selectedIds[i].id);
-    // }
-    //route.params.newStudent.tags = tagsArr;
-    navigation.navigate("Home", { socket: socket, loginState: loginState });
+    navigation.navigate("StudentMiscStack", {screen: "Profile", params: {socket: socket, loginState: loginState }});
   };
 
   return (

@@ -1,29 +1,17 @@
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Login from "./src/screens/Login-registration/Login";
-import Home from "./src/screens/Home";
-import HostHome from "./src/screens/HostHome";
+import Home from "./src/screens/Student/Tabs/Home";
+import HostHome from "./src/screens/Host/HostHome";
 import Register from "./src/screens/Login-registration/Register";
-import Preferences from "./src/screens/Login-registration/Preferences";
-import HomeScreen from "./src/screens/Login-registration/HomeScreen";
-import PersonalInfo from "./src/screens/Login-registration/PersonalInfo";
-import HostSignup from "./src/screens/Login-registration/HostSignup";
 import { io } from "socket.io-client";
 import { getData, storeData, removeData } from "./src/utils/asyncStorage";
-import { ActivityIndicator, View, Text, Alert } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "./src/utils/context";
-import event_info from "./src/screens/event_info";
 import eventsData from "./assets/events-data/eventsData";
-import editEvents from "./src/screens/editEvents";
-import Explore from "./src/screens/Explore";
-import Host_info from "./src/screens/Host-info";
-import FollowedHosts from "./src/screens/FollowedHosts";
-import ChangePref from "./src/screens/ChangePref";
-import users from "./assets/events-data/users";
-import Profile from "./src/screens/Profile";
+import editEvents from "./src/screens/Host/editEvents";
 
-import UpdatePreferences from "./src/screens/UpdatePreferences";
+import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 
 const Stack = createStackNavigator();
 
@@ -232,44 +220,12 @@ export default function App() {
 								}}
 							/>
 							<Stack.Screen
-								name="event_info"
-								component={event_info}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="Explore"
-								component={Explore}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="Host-info"
-								component={Host_info}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="FollowedHosts"
-								component={FollowedHosts}
+								name="StudentMiscStack"
+								component={StudentMiscStack}
 								initialParams={{
-									loginState: loginState,
 									socket: socket,
+									loginState: loginState
 								}}
-							/>
-							<Stack.Screen
-								name="ChangePref"
-								component={ChangePref}
-								initialParams={{
-									users: users[0],
-								}}
-							/>
-							<Stack.Screen
-								name="Profile"
-								component={Profile}
-								initialParams={{ socket: socket, loginState: loginState }}
-							/>
-							<Stack.Screen
-								name="UpdatePreferences"
-								component={UpdatePreferences}
-								initialParams={{ socket: socket, loginState: loginState }}
 							/>
 						</Stack.Navigator>
 					</NavigationContainer>
