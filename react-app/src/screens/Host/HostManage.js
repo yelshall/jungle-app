@@ -13,7 +13,6 @@ import {
 
 import { AntDesign } from "@expo/vector-icons";
 import { Header } from "react-native-elements";
-import eventsData from "../../assets/events-data/eventsData";
 import React, { useEffect } from "react";
 import { TextInput } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -92,9 +91,7 @@ export default function HostManage({ navigation, route }) {
         events.push(res.events[i]);
       }
       forceUpdate();
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+      setIsLoading(false);
     });
   }, []);
   const onCreateEvent = () => {
@@ -188,6 +185,7 @@ export default function HostManage({ navigation, route }) {
       "createEventHost",
       { hid: loginState.id, newEvent: newEvent },
       (err, res) => {
+        console.log(err, res);
         if (err) {
           Alert.alert("Error", "Could not create new event.", [
             {
@@ -251,7 +249,7 @@ export default function HostManage({ navigation, route }) {
   );
 
   const renderItem = ({ item }) => {
-    return <Item item={item} onPress={() => {}} />;
+    return <Item item={item} onPress={() => { }} />;
   };
 
   return (

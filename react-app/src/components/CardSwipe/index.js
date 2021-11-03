@@ -39,9 +39,7 @@ export default function CardSwipe({ navigation, route }) {
       for (let i = 0; i < res.length; i++) {
         events.push(res[i]);
       }
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+      setIsLoading(false);
     });
   }, []);
 

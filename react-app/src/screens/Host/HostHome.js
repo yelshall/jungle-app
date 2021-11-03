@@ -3,18 +3,20 @@ import { StyleSheet, Image } from "react-native";
 import React from "react";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Explore from "./Explore";
-import Profile from "./Profile";
-import CardSwipe from "../components/CardSwipe/index";
-import Chat from "./Chat";
+
+import HostManage from "./HostManage";
+import HostChat from "./HostChat";
+import HostProfile from "./HostProfile";
 
 const Tabs = createBottomTabNavigator();
 
-export default function Home({ route }) {
+// main function
+export default function HostHome({ navigation, route }) {
   const socket = route.params.socket;
   const loginState = route.params.loginState;
 
   return (
+    //Navigation container used to contain all the screens on the tabBar and naviagte between them
     <Tabs.Navigator
       tabBarOptions={{
         showLabel: false,
@@ -35,17 +37,14 @@ export default function Home({ route }) {
         tabBarIcon: ({ focused }) => {
           let filePath;
           switch (route.name) {
-            case "Swipe":
-              filePath = require("../../assets/up-arrow.png");
+            case "HostManage":
+              filePath = require("../../../assets/menu.png");
               break;
-            case "Explore":
-              filePath = require("../../assets/menu.png");
+            case "HostChat":
+              filePath = require("../../../assets/chat.png");
               break;
-            case "Chat":
-              filePath = require("../../assets/chat.png");
-              break;
-            case "Profile":
-              filePath = require("../../assets/user.png");
+            case "HostProfile":
+              filePath = require("../../../assets/user.png");
               break;
             default:
               iconName = focused
@@ -53,22 +52,24 @@ export default function Home({ route }) {
                 : "ios-information-circle-outline";
           }
           return (
-            <Image
-              source={filePath}
-              resizeMode="contain"
-              style={{
-                width: 25,
-                height: 25,
-                tintColor: focused ? "#e32f45" : "#748c94",
-              }}
-            />
+            <>
+              <Image
+                source={filePath}
+                resizeMode="contain"
+                style={{
+                  width: 25,
+                  height: 25,
+                  tintColor: focused ? "#e32f45" : "#748c94",
+                }}
+              />
+            </>
           );
         },
       })}
     >
       <Tabs.Screen
-        name="Swipe"
-        component={CardSwipe}
+        name="HostManage"
+        component={HostManage}
         initialParams={{ socket: socket, loginState: loginState }}
         options={{ unmountOnBlur: true }}
         listeners={({ navigation }) => ({
@@ -76,19 +77,22 @@ export default function Home({ route }) {
         })}
       />
       <Tabs.Screen
-        name="Explore"
-        component={Explore}
+        name="HostChat"
+        component={HostChat}
         initialParams={{ socket: socket, loginState: loginState }}
         options={{ unmountOnBlur: true }}
         listeners={({ navigation }) => ({
           blur: () => navigation.setParams({ screen: undefined }),
         })}
       />
-      <Tabs.Screen name="Chat" component={Chat} />
       <Tabs.Screen
-        name="Profile"
-        component={Profile}
+        name="HostProfile"
+        component={HostProfile}
         initialParams={{ socket: socket, loginState: loginState }}
+        options={{ unmountOnBlur: true }}
+        listeners={({ navigation }) => ({
+          blur: () => navigation.setParams({ screen: undefined }),
+        })}
       />
     </Tabs.Navigator>
   );

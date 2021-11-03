@@ -61,9 +61,9 @@ export default function Card(props) {
 				style={styles.image}
 			>
 				<LinearGradient
-					colors={['#000000', 'transparent']}
-					start={{ x: 0.1, y: 1 }}
-					end={{x: 0, y: 0}}
+					colors={['#000000', 'transparent', 'transparent']}
+					start={{ x: 0, y: 0.9 }}
+					end={{ x: 0, y: 0 }}
 					style={{
 						height: '100%',
 						width: '100%',
