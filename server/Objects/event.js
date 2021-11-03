@@ -19,6 +19,8 @@ var createEvent = async (newEvent, callback) => {
         media: newEvent.media,
         imageURL: newEvent.imageURL
     };
+    
+    if(event.url) event.url = event.url.toLowerCase();
 
     if(event.url) event.url = event.url.toLowerCase();
 

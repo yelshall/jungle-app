@@ -91,9 +91,7 @@ export default function HostManage({ navigation, route }) {
         events.push(res.events[i]);
       }
       forceUpdate();
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+      setIsLoading(false);
     });
   }, []);
   const onCreateEvent = () => {

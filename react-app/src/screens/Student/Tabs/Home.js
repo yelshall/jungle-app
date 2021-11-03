@@ -58,7 +58,7 @@ export default function Home({ route }) {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: focused ? "#e32f45" : "#748c94",
+                tintColor: focused ? "#51b375" : "#748c94",
               }}
             />
           );
@@ -69,7 +69,7 @@ export default function Home({ route }) {
         name="Swipe"
         component={CardSwipe}
         initialParams={{ socket: socket, loginState: loginState }}
-        options={{ unmountOnBlur: true }}
+        options={{ unmountOnBlur: true, headerShown: false }}
         listeners={({ navigation }) => ({
           blur: () => navigation.setParams({ screen: undefined }),
         })}
@@ -78,7 +78,7 @@ export default function Home({ route }) {
         name="Explore"
         component={Explore}
         initialParams={{ socket: socket, loginState: loginState }}
-        options={{ unmountOnBlur: true }}
+        options={{ unmountOnBlur: true, headerShown: false }}
         listeners={({ navigation }) => ({
           blur: () => navigation.setParams({ screen: undefined }),
         })}

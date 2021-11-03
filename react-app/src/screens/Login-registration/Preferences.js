@@ -15,7 +15,7 @@ const Item = ({ item, onPress, selected }) => (
 				height: '100%',
 				justifyContent: 'center',
 				alignItems: 'center',
-				borderRadius: '10'
+				borderRadius: 10
 			}}
 			blurRadius={10}
 		>

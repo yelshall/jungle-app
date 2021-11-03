@@ -50,9 +50,7 @@ export default function FollowedHosts({ navigation, route }) {
 
 			forceUpdate();
 
-			setTimeout(() => {
-				setIsLoading(false);
-			}, 500);
+			setIsLoading(false);
 		});
 	}, []);
 

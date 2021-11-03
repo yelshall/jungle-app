@@ -12,7 +12,7 @@ import eventsData from "./assets/events-data/eventsData";
 import editEvents from "./src/screens/Host/editEvents";
 
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
-
+import { NativeBaseProvider } from "native-base";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -204,32 +204,34 @@ export default function App() {
 			);
 		} else {
 			return (
-				<AuthContext.Provider value={authContext}>
-					<NavigationContainer>
-						<Stack.Navigator
-							screenOptions={{
-								headerShown: false,
-							}}
-						>
-							<Stack.Screen
-								name="Home"
-								component={Home}
-								initialParams={{
-									socket: socket,
-									loginState: loginState,
+				<NativeBaseProvider>
+					<AuthContext.Provider value={authContext}>
+						<NavigationContainer>
+							<Stack.Navigator
+								screenOptions={{
+									headerShown: false,
 								}}
-							/>
-							<Stack.Screen
-								name="StudentMiscStack"
-								component={StudentMiscStack}
-								initialParams={{
-									socket: socket,
-									loginState: loginState
-								}}
-							/>
-						</Stack.Navigator>
-					</NavigationContainer>
-				</AuthContext.Provider>
+							>
+								<Stack.Screen
+									name="Home"
+									component={Home}
+									initialParams={{
+										socket: socket,
+										loginState: loginState,
+									}}
+								/>
+								<Stack.Screen
+									name="StudentMiscStack"
+									component={StudentMiscStack}
+									initialParams={{
+										socket: socket,
+										loginState: loginState
+									}}
+								/>
+							</Stack.Navigator>
+						</NavigationContainer>
+					</AuthContext.Provider>
+				</NativeBaseProvider>
 			);
 		}
 	}
