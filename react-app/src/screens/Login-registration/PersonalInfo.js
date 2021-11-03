@@ -24,8 +24,8 @@ export default function Register({ navigation, route }) {
     const [signupType, setSignupType] = React.useState("");
     const [openType, setOpenType] = React.useState(false);
     const [signupTypes, setSignupTypes] = React.useState([
-        { label: 'Host', value: 'Host' },
-        { label: 'Student', value: 'Student' }
+        { label: 'Student', value: 'Student' },
+        { label: 'Host', value: 'Host' }
     ]);
 
     const [errorName, setErrorName] = React.useState("");
