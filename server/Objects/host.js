@@ -116,6 +116,10 @@ var retreiveHostInfo = (hid, callback) => {
         if(err) {
             if(callback) {callback(err, null);}
         } else {
+            if(res == undefined) {
+                if (callback) { callback({err: 'No host found.'}, null); }
+                return;
+            }
             if(res) {res.password = undefined;}
             let ret = [];
             for(let i = 0; i < res.events.length; i++) {
