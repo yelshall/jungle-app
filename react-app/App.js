@@ -162,13 +162,10 @@ export default function App() {
 			<NativeBaseProvider>
 				<AuthContext.Provider value={authContext}>
 					<NavigationContainer>
-						<Stack.Navigator
-							screenOptions={{
-								headerShown: false,
-							}}
-						>
+						<Stack.Navigator>
 							<Stack.Screen
 								name="Register"
+								options={{headerShown: false}}
 								component={Register}
 								initialParams={{ socket: socket }}
 							/>
@@ -183,14 +180,11 @@ export default function App() {
 				<NativeBaseProvider>
 					<AuthContext.Provider value={authContext}>
 						<NavigationContainer>
-							<Stack.Navigator
-								screenOptions={{
-									headerShown: false,
-								}}
-							>
+							<Stack.Navigator>
 								<Stack.Screen
 									name="HostHome"
 									component={HostHome}
+									options={{headerShown: false}}
 									initialParams={{ socket: socket, loginState: loginState }}
 								/>
 								<Stack.Screen
@@ -213,14 +207,11 @@ export default function App() {
 				<NativeBaseProvider>
 					<AuthContext.Provider value={authContext}>
 						<NavigationContainer>
-							<Stack.Navigator
-								screenOptions={{
-									headerShown: false,
-								}}
-							>
+							<Stack.Navigator>
 								<Stack.Screen
 									name="Home"
 									component={Home}
+									options={{headerShown: false}}
 									initialParams={{
 										socket: socket,
 										loginState: loginState,
@@ -229,6 +220,7 @@ export default function App() {
 								<Stack.Screen
 									name="StudentMiscStack"
 									component={StudentMiscStack}
+									options={{headerShown: false}}
 									initialParams={{
 										socket: socket,
 										loginState: loginState
