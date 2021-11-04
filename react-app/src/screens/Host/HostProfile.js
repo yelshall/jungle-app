@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { AuthContext } from "../utils/context";
+import { AuthContext } from "../../utils/context";
 import React from "react";
 
 export default function HostProfile() {

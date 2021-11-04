@@ -8,7 +8,7 @@ function HostChat() {
   return (
     <View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
       <Text style={{ margin: 90, fontSize: 28 }}>Host Chat</Text>
-      <LottieView source={require("../../assets/Lottie/Chat.json")} autoPlay />
+      <LottieView source={require("../../../assets/Lottie/Chat.json")} autoPlay />
     </View>
   );
 }

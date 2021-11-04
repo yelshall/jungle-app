@@ -7,28 +7,23 @@ import {
   PanResponder,
   ActivityIndicator,
   View,
+  Button,
+  Alert,
 } from "react-native";
 
 import React, { useEffect } from "react";
 import Card from "../EventCard/index";
-import { TextInput } from "react-native-gesture-handler";
-import DropDownPicker from "react-native-dropdown-picker";
 import { useState } from "react";
+import { BottomSheet, ListItem } from "react-native-elements";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-export default function CardSwipe({ navigation, route }) {
+export default function CardSwipe({ route }) {
   const socket = route.params.socket;
   const loginState = route.params.loginState;
-  const events = React.useRef([]).current;
+  const events = React.useRef([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-  ]);
 
   useEffect(() => {
     socket.emit("getEvents", { sid: loginState.id }, (err, res) => {
@@ -36,16 +31,11 @@ export default function CardSwipe({ navigation, route }) {
         return;
       }
 
-      for (let i = 0; i < res.length; i++) {
-        events.push(res[i]);
-      }
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+      events.current = [...res];
+      setIsLoading(false);
     });
   }, []);
 
-  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
   const position = React.useRef(new Animated.ValueXY()).current;
   const [rotate, setRotate] = React.useState(
     position.x.interpolate({
@@ -91,12 +81,13 @@ export default function CardSwipe({ navigation, route }) {
       extrapolate: "clamp",
     })
   );
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
   const panResponder = React.useRef(
     PanResponder.create({
       useNativeDriver: true,
 
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (evt, gestureState) => {
         position.setValue({ x: gestureState.dx, y: gestureState.dy });
       },
@@ -105,13 +96,13 @@ export default function CardSwipe({ navigation, route }) {
         if (gestureState.dx > 120) {
           socket.emit("addInterestedEvent", {
             uid: loginState.id,
-            eid: events[0]._id,
+            eid: events.current[0]._id,
           });
 
           Animated.spring(position, {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
           }).start(() => {
-            events.shift();
+            events.current.shift();
             position.setValue({ x: 0, y: 0 });
             if (events.length === 5) {
               socket.emit("getEvents", { sid: loginState.id }, (err, res) => {
@@ -119,9 +110,7 @@ export default function CardSwipe({ navigation, route }) {
                   return;
                 }
 
-                for (let i = 0; i < res.length; i++) {
-                  events.push(res[i]);
-                }
+                events.current = [...events, ...res];
               });
             }
             forceUpdate();
@@ -131,23 +120,21 @@ export default function CardSwipe({ navigation, route }) {
         else if (gestureState.dx < -120) {
           socket.emit("addUnlikedStudent", {
             uid: loginState.id,
-            eid: events[0]._id,
+            eid: events.current[0]._id,
           });
 
           Animated.spring(position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
           }).start(() => {
-            events.shift();
+            events.current.shift();
             position.setValue({ x: 0, y: 0 });
-            if (events.length === 5) {
+            if (events.current.length === 5) {
               socket.emit("getEvents", { sid: loginState.id }, (err, res) => {
                 if (err) {
                   return;
                 }
 
-                for (let i = 0; i < res.length; i++) {
-                  events.push(res[i]);
-                }
+                events.current = [...events, ...res];
               });
             }
             forceUpdate();
@@ -163,7 +150,7 @@ export default function CardSwipe({ navigation, route }) {
   ).current;
 
   const renderUsers = () => {
-    return events
+    return events.current
       .map((item, i) => {
         if (i == 0) {
           return (
@@ -173,10 +160,11 @@ export default function CardSwipe({ navigation, route }) {
               style={[
                 rotateAndTranslate,
                 {
-                  height: SCREEN_HEIGHT - 120,
+                  height: SCREEN_HEIGHT,
                   width: SCREEN_WIDTH,
                   padding: 10,
                   position: "absolute",
+                  zIndex: 1,
                 },
               ]}
             >
@@ -243,11 +231,12 @@ export default function CardSwipe({ navigation, route }) {
                 {
                   opacity: nextCardOpacity,
                   transform: [{ scale: nextCardScale }],
-                  height: SCREEN_HEIGHT - 120,
+                  height: SCREEN_HEIGHT,
                   width: SCREEN_WIDTH,
                   padding: 10,
                   position: "absolute",
                   useNativeDriver: true,
+                  zIndex: -1,
                 },
               ]}
             >
@@ -310,22 +299,182 @@ export default function CardSwipe({ navigation, route }) {
       })
       .reverse();
   };
+  const [isVisible, setIsVisible] = useState(false);
+  const listTags = [
+    { title: "Swimming", onPress: () => Alert.alert("chose swimming") },
+    { title: "cycling", onPress: () => Alert.alert("chose cycling") },
+    { title: "Running", onPress: () => Alert.alert("chose running") },
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: "lightgreen" },
+      titleStyle: { color: "white" },
+      onPress: () => setIsVisible(false),
+    },
+  ];
+
+  onPressTags = () => {
+    setIsVisible(true);
+  };
+
+  const [isVisibleLocation, setIsVisibleLocation] = useState(false);
+  const listLocations = [
+    { title: "On-Campus", onPress: () => Alert.alert("chose On-Campus") },
+    { title: "Off-Campus", onPress: () => Alert.alert("chose Off-Campus") },
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: "lightgreen" },
+      titleStyle: { color: "white" },
+      onPress: () => setIsVisibleLocation(false),
+    },
+  ];
+
+  onPressLocation = () => {
+    setIsVisibleLocation(true);
+  };
+
+  const [isVisibleDate, setIsVisibleDate] = useState(false);
+  const listDates = [
+    { title: "Today", onPress: () => Alert.alert("chose Today") },
+    { title: "This Week", onPress: () => Alert.alert("chose Week") },
+    { title: "This Month", onPress: () => Alert.alert("chose Month") },
+
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: "lightgreen" },
+      titleStyle: { color: "white" },
+      onPress: () => setIsVisibleDate(false),
+    },
+  ];
+
+  onPressDate = () => {
+    setIsVisibleDate(true);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {isLoading ? <ActivityIndicator size="large" /> : renderUsers()}
+      <View style={styles.row}>
+        <Text
+          style={{
+            marginRight: 10,
+            marginTop: 10,
+            fontSize: 18,
+            fontWeight: "700",
+          }}
+        >
+          {" "}
+          Filter by:{" "}
+        </Text>
+        <View style={{ backgroundColor: "#fefefe", borderRadius: 10 }}>
+          <Button
+            style={{ height: 100, width: 100 }}
+            title='Tags'
+            color='black'
+            onPress={onPressTags}
+          >
+            {" "}
+          </Button>
+        </View>
+        <BottomSheet
+          isVisible={isVisible}
+          containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}
+        >
+          {listTags.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={l.onPress}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </BottomSheet>
+
+        <View
+          style={{
+            backgroundColor: "#fefefe",
+            borderRadius: 10,
+            marginLeft: 25,
+          }}
+        >
+          <Button
+            style={{ height: 100, width: 100 }}
+            title='Location'
+            onPress={onPressLocation}
+            color='black'
+          >
+            {" "}
+          </Button>
+        </View>
+        <BottomSheet
+          isVisible={isVisibleLocation}
+          containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}
+        >
+          {listLocations.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={l.onPress}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </BottomSheet>
+        <View
+          style={{
+            backgroundColor: "#fefefe",
+            borderRadius: 10,
+            marginLeft: 25,
+          }}
+        >
+          <Button
+            style={{ height: 100, width: 100 }}
+            title='Date'
+            color='black'
+            onPress={onPressDate}
+          >
+            {" "}
+          </Button>
+        </View>
+        <BottomSheet
+          isVisible={isVisibleDate}
+          containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}
+        >
+          {listDates.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={l.onPress}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </BottomSheet>
+      </View>
+      <View
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        {isLoading ? <ActivityIndicator size='large' /> : renderUsers()}
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
-    justifyContent: "center",
   },
   row: {
-    flex: 2,
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignContent: "space-between",
   },
 });

@@ -6,13 +6,14 @@ import {
   Image,
   FlatList,
 } from "react-native";
-import { AuthContext } from "../utils/context";
 import React from "react";
 import { ListItem, Avatar } from "react-native-elements";
 
-import HostData from "../../assets/events-data/HostData";
-import eventsData from "../../assets/events-data/eventsData";
-import users from "../../assets/events-data/users";
+import { AuthContext } from "../../../utils/context";
+
+import HostData from "../../../../assets/events-data/HostData";
+import eventsData from "../../../../assets/events-data/eventsData";
+import users from "../../../../assets/events-data/users";
 
 export default function Profile({ navigation, route }) {
   const socket = route.params.socket;
@@ -23,17 +24,23 @@ export default function Profile({ navigation, route }) {
   };
 
   const onPref = () => {
-    navigation.navigate("ChangePref", {
-      users: users[0],
+    navigation.navigate("StudentMiscStack", {
+      screen: "ChangePref",
+      params: {
+        users: users[0],
+      },
     });
   };
 
   const onFollowing = () => {
-    navigation.navigate("FollowedHosts", {
-      HostData: HostData[0],
-      eventsData: eventsData,
-      socket: socket,
-      loginState: loginState,
+    navigation.navigate("StudentMiscStack", {
+      screen: "FollowedHosts",
+      params: {
+        HostData: HostData[0],
+        eventsData: eventsData,
+        socket: socket,
+        loginState: loginState,
+      },
     });
   };
 

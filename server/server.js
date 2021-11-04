@@ -83,7 +83,14 @@ io.on('connection', (socket) => {
 
             student.retreiveStudentInfo(decoded.id, (err, res) => {
                 if(err) {
-                    callback(err, null);
+                    host.retreiveHostInfo(decoded.id, (err, res) => {
+                        if(err) {
+                            callback(err, null);
+                            return;
+                        }
+
+                        callback(null, { email: decoded.email, id: decoded.id, signInType: decoded.signInType });
+                    });
                     return;
                 }
 

@@ -29,8 +29,9 @@ export default function ChangePref({ route, navigation }) {
   const [textValue, setTextValue] = React.useState("Update");
 
   let onPress = () => {
-    //Alert.alert("Send to Prefrences page");
-    navigation.navigate("UpdatePreferences");
+    navigation.navigate("StudentMiscStack", {
+      screen: "UpdatePreferences",
+    });
   };
 
   return (
@@ -39,12 +40,14 @@ export default function ChangePref({ route, navigation }) {
         <View style={styles.header}>
           <View style={styles.bodyContent}>
             <Text style={styles.name}> {"Current Preferences"} </Text>
-            <Divider orientation="vertical" width={10} />
+            <Divider orientation='vertical' width={10} />
           </View>
         </View>
         <View style={styles.body}></View>
       </View>
-      <View style={{ marginTop: 150, position: "relative" }}>
+      <View
+        style={{ marginTop: 150, position: "relative", flexDirection: "row" }}
+      >
         {tags.map((tags, i) => {
           return (
             <View style={styles.TextViewStyle}>
@@ -58,8 +61,6 @@ export default function ChangePref({ route, navigation }) {
       </Pressable>
     </>
   );
-  {
-  }
 }
 
 // prettier-ignore
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
             },
         
             buttonContainer: {
-              marginTop:800,
+              marginTop:700,
               marginLeft: 140,
               height:45,
               //flexDirection: 'row',
