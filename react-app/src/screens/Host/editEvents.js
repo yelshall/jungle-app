@@ -344,7 +344,7 @@ import { Flex } from 'native-base';
 const KHeight = Dimensions.get("window").height;
 const KWidth = Dimensions.get("window").width;
 
-export default function editEvents({ navigation, route }) {
+export default function EditEvents({ navigation, route }) {
 	const socket = route.params.socket;
 	const loginState = route.params.loginState;
 	const event = route.params.event;
