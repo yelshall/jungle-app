@@ -25,6 +25,9 @@ export default function Explore({ navigation, route }) {
 	const loginState = route.params.loginState;
 	const interestedEvents = React.useRef([]);
 	const confirmedEvents = React.useRef([]);
+	const pastEvents = React.useRef([]);
+	const cancelledEvents = React.useRef([]);
+
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	useEffect(() => {
@@ -33,8 +36,25 @@ export default function Explore({ navigation, route }) {
 				return;
 			}
 
-			confirmedEvents.current = [...res.confirmedEvents];
-			interestedEvents.current = [...res.interestedEvents];
+			for(let i = 0; i < res.confirmedEvents.length; i++) {
+				if(res.confirmedEvents[i].active) {
+					confirmedEvents.current.push(res.confirmedEvents[i]);
+				} else if(res.confirmedEvents[i].cancelled) {
+					cancelledEvents.current.push(res.confirmedEvents[i]);
+				} else {
+					pastEvents.current.push(res.confirmedEvents[i]);
+				}
+			}
+
+			for(let i = 0; i < res.interestedEvents.length; i++) {
+				if(res.interestedEvents[i].active) {
+					interestedEvents.current.push(res.interestedEvents[i]);
+				} else if(res.interestedEvents[i].cancelled) {
+					cancelledEvents.current.push(res.interestedEvents[i]);
+				} else {
+					pastEvents.current.push(res.interestedEvents[i]);
+				}
+			}
 
 			setIsLoading(false);
 		});
@@ -159,6 +179,44 @@ export default function Explore({ navigation, route }) {
 							})
 						}
 					</Flex>
+
+					{cancelledEvents.current.length > 0 &&
+						<Flex
+							alignItems={"center"}
+							w={'full'}
+						>
+							<Text style={styles.heading}>Cancelled events</Text>
+							{
+								cancelledEvents.current.map((event, i) => {
+									let search_text = search.toLowerCase();
+									if (event.eventName.toLowerCase().includes(search_text)) {
+										return (
+											<CardItem key={i} event={event} onPress={() => onPress(event, "INTERESTED")} edit={false} />
+										);
+									}
+								})
+							}
+						</Flex>
+					}
+
+					{pastEvents.current.length > 0 &&
+						<Flex
+							alignItems={"center"}
+							w={'full'}
+						>
+							<Text style={styles.heading}>Past events</Text>
+							{
+								pastEvents.current.map((event, i) => {
+									let search_text = search.toLowerCase();
+									if (event.eventName.toLowerCase().includes(search_text)) {
+										return (
+											<CardItem key={i} event={event} onPress={() => onPress(event, "INTERESTED")} edit={false} />
+										);
+									}
+								})
+							}
+						</Flex>
+					}
 				</ScrollView>
 			)
 			}

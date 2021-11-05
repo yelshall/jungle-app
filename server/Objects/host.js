@@ -231,6 +231,10 @@ var removeTag = (hid, tid, callback) => {
     });
 };
 
+var cancelEventHost = (eid, callback) => {
+    event_functions.cancelEvent(eid, callback);
+}
+
 
 //Update functions for hostName, hostEmail, phoneNumber, email,
 //password, description, website, imageURL
@@ -247,5 +251,6 @@ module.exports = {
     addFollower: addFollower,
     removeFollower: removeFollower,
     addTag: addTag,
-    removeTag: removeTag
+    removeTag: removeTag,
+    cancelEventHost: cancelEventHost
 };

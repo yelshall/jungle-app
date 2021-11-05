@@ -35,7 +35,11 @@ export default function HostManage({ navigation, route }) {
 	const [tagTypes, setTagTypes] = React.useState([]);
 
 	const [tags, setTags] = React.useState([]);
+
 	const events = React.useRef([]);
+	const pastEvents = React.useRef([]);
+	const cancelledEvents = React.useRef([]);
+
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	useEffect(() => {
@@ -66,7 +70,17 @@ export default function HostManage({ navigation, route }) {
 				return;
 			}
 
-			events.current = [...res.events];
+			console.log(res.events);
+
+			for (let i = 0; i < res.events.length; i++) {
+				if (res.events[i].active) {
+					events.current.push(res.events[i]);
+				} else if (res.events[i].cancelled) {
+					cancelledEvents.current.push(res.events[i]);
+				} else {
+					pastEvents.current.push(res.events[i]);
+				}
+			}
 
 			setIsLoading(false);
 		});
@@ -126,18 +140,116 @@ export default function HostManage({ navigation, route }) {
 					style={{ width: '100%', height: '100%' }}
 					contentContainerStyle={{ alignItems: "center" }}
 				>
-					<Flex
-						alignItems={"center"}
-						w={'full'}
-					>
-						{
-							events.current.map((event, i) => {
-								return (
-									<CardItem key={i} event={event} onPress={() => navigation.navigate("EditEvents", { event: event })} edit={true} />
-								);
-							})
-						}
-					</Flex>
+					{events.current.length > 0 &&
+						<>
+							<Text
+								style={{
+									fontSize: 20,
+									fontWeight: "bold",
+									alignSelf: 'flex-start',
+									marginLeft: '5%'
+								}}
+							>
+								Active events
+							</Text>
+							<View
+								style={{
+									width: "90%",
+									height: 0,
+									borderWidth: 0.5,
+									borderColor: "#cccccc",
+									alignSelf: "center",
+									margin: "2%",
+								}}
+							></View>
+							<Flex
+								alignItems={"center"}
+								w={'full'}
+							>
+								{
+									events.current.map((event, i) => {
+										return (
+											<CardItem key={i} event={event} onPress={() => navigation.navigate("EditEvents", { event: event })} edit={true} />
+										);
+									})
+								}
+							</Flex>
+						</>
+					}
+
+					{pastEvents.current.length > 0 &&
+						<>
+							<Text
+								style={{
+									fontSize: 20,
+									fontWeight: "bold",
+									alignSelf: 'flex-start',
+									marginLeft: '5%'
+								}}
+							>
+								Past events
+							</Text>
+							<View
+								style={{
+									width: "90%",
+									height: 0,
+									borderWidth: 0.5,
+									borderColor: "#cccccc",
+									alignSelf: "center",
+									margin: "2%",
+								}}
+							></View>
+							<Flex
+								alignItems={"center"}
+								w={'full'}
+							>
+								{
+									pastEvents.current.map((event, i) => {
+										return (
+											<CardItem key={i} event={event} onPress={() => navigation.navigate("EditEvents", { event: event })} edit={true} />
+										);
+									})
+								}
+							</Flex>
+						</>
+					}
+
+					{cancelledEvents.current.length > 0 &&
+						<>
+							<Text
+								style={{
+									fontSize: 20,
+									fontWeight: "bold",
+									alignSelf: 'flex-start',
+									marginLeft: '5%'
+								}}
+							>
+								Cancelled events
+							</Text>
+							<View
+								style={{
+									width: "90%",
+									height: 0,
+									borderWidth: 0.5,
+									borderColor: "#cccccc",
+									alignSelf: "center",
+									margin: "2%",
+								}}
+							></View>
+							<Flex
+								alignItems={"center"}
+								w={'full'}
+							>
+								{
+									cancelledEvents.current.map((event, i) => {
+										return (
+											<CardItem key={i} event={event} onPress={() => navigation.navigate("EditEvents", { event: event })} edit={true} />
+										);
+									})
+								}
+							</Flex>
+						</>
+					}
 					<Modal
 						avoidKeyboard
 						presentationStyle="fullScreen"

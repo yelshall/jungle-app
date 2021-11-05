@@ -19,10 +19,10 @@ var createEvent = async (newEvent, callback) => {
         media: newEvent.media,
         imageURL: newEvent.imageURL
     };
-    
-    if(event.url) event.url = event.url.toLowerCase();
 
-    if(event.url) event.url = event.url.toLowerCase();
+    if (event.url) event.url = event.url.toLowerCase();
+
+    if (event.url) event.url = event.url.toLowerCase();
 
     let eventSave = new schemas.Event(event);
 
@@ -60,6 +60,17 @@ var deleteEvent = (eid, callback) => {
             if (callback) { callback(null, deletedEvent); }
         }
     });
+};
+
+var cancelEvent = (eid, callback) => {
+    schemas.Event.findByIdAndUpdate(eid, { cancelled: true, active: false }, (err, res) => {
+        if (err) {
+            if (callback) { callback(err, null); }
+            return;
+        }
+
+        if (callback) { callback(null, res); }
+    })
 };
 
 var updateEvent = (eid, update, callback) => {
@@ -106,7 +117,19 @@ var updateEvent = (eid, update, callback) => {
                 break;
         }
     } else {
-        update_functions.createUpdate(update.title, update.message, update.notifyAll, eid, callback);
+        update_functions.createUpdate(update.title, update.message, update.notifyAll, eid, (err, res) => {
+            if (err) {
+                if (callback) { callback(err, null) }
+                return;
+            }
+            schemas.Event.findByIdAndUpdate(eid, { $push: { updates: res._id } }, (err, res) => {
+                if (err) {
+                    if (callback) { callback(err, null) }
+                    return;
+                }
+                if (callback) { callback(null, res) }
+            })
+        });
     }
 };
 
@@ -123,7 +146,7 @@ var retreiveEventInfo = (eid, callback) => {
 var getEvents = (count, eventIds, callback) => {
     schemas.Event.aggregate([
         {
-            $match: { "_id": { $nin: eventIds } }
+            $match: { "_id": { $nin: eventIds }, "active": { $eq: true } }
         },
         { $sample: { size: count } },
         {
@@ -354,5 +377,6 @@ module.exports = {
     addMedia: addMedia,
     removeMedia: removeMedia,
     changeImage: changeImage,
-    changeURL: changeURL
+    changeURL: changeURL,
+    cancelEvent: cancelEvent
 };

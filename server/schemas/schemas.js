@@ -205,6 +205,10 @@ const eventSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    cancelled: {
+        type: Boolean,
+        default: false
+    },
     metadata: {
         dateCreated: {
             type: Date,
