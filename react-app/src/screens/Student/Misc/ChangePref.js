@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from "react-native";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { Text } from "react-native-elements";
 import Constants from "expo-constants";
@@ -20,7 +20,10 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function ChangePref({ route, navigation }) {
-  const { tags } = route.params.users;
+  const socket = route.params.socket;
+  const loginState = route.params.loginState;
+  const tags = React.useRef([]).current;
+  const newStudent = route.params.current;
 
   useEffect(() => {
     LayoutAnimation.spring();
