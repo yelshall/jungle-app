@@ -45,11 +45,11 @@ var connectedUsers = [];
 
 io.on('connection', (socket) => {
     socket.on('setId', (request) => {
-        if(connectedUsers.filter(user => user.userId == request.id).length > 0) {
+        if (connectedUsers.filter(user => user.userId == request.id).length > 0) {
             connectedUsers = [...connectedUsers.filter(user => user.userId != request.id)];
         }
 
-        if(connectedUsers.filter(user => user.socketId == socket.id).length > 0) {
+        if (connectedUsers.filter(user => user.socketId == socket.id).length > 0) {
             connectedUsers = [...connectedUsers.filter(user => user.socketId != socket.id)];
         }
 
@@ -167,15 +167,63 @@ io.on('connection', (socket) => {
                 eventIds.push(res1.unlikedEvents[i]._id);
             }
 
-            event.getEvents(20, eventIds, (err, res) => {
+            event.getEvents(eventIds, (err, res) => {
                 if (err) {
                     callback(err, null);
                     return;
                 }
 
-                let arr = res;
+                let arr = [];
 
-                callback(null, arr);
+                function shuffle(array) {
+                    let currentIndex = array.length, randomIndex;
+
+                    // While there remain elements to shuffle...
+                    while (currentIndex != 0) {
+
+                        // Pick a remaining element...
+                        randomIndex = Math.floor(Math.random() * currentIndex);
+                        currentIndex--;
+
+                        // And swap it with the current element.
+                        [array[currentIndex], array[randomIndex]] = [
+                            array[randomIndex], array[currentIndex]];
+                    }
+
+                    return array;
+                }
+
+                function sameDay(d1, d2) {
+                    return d1.getFullYear() === d2.getFullYear() &&
+                        d1.getMonth() === d2.getMonth() &&
+                        d1.getDate() === d2.getDate();
+                }
+
+                var numDaysBetween = function (d1, d2) {
+                    var diff = Math.abs(d1.getTime() - d2.getTime());
+                    return diff / (1000 * 60 * 60 * 24);
+                };
+
+                if (request.filter.type == 'tags') {
+                    for (let i = 0; i < res.length; i++) {
+                        if (res[i].tags.filter(tag => tag._id == request.filter.id) != 0) {
+                            arr.push(res[i]);
+                        }
+                    }
+                } else if (request.filter.type == 'date') {
+                    console.log(request.filter);
+                    if (request.filter.date.date == 'day') {
+                        arr = res.filter(event => sameDay(new Date(event.dateTime), new Date()));
+                    } else if (request.filter.date.date == 'week') {
+                        arr = res.filter(event => numDaysBetween(new Date(event.dateTime), new Date()) <= 7);
+                    } else {
+                        arr = res.filter(event => numDaysBetween(new Date(event.dateTime), new Date()) <= 30);
+                    }
+                } else {
+                    arr = res;
+                }
+
+                callback(null, shuffle(arr).slice(0, arr.length > 20 ? 20 : arr.length));
             });
         });
     });
@@ -188,12 +236,12 @@ io.on('connection', (socket) => {
             }
 
             let sendTo = connectedUsers.filter(user => user.userId == request.receiverId);
-            
-            if(sendTo.length != 0) {
+
+            if (sendTo.length != 0) {
                 io.to(sendTo[0].socketId)
-                .emit('newMessage', {message: request.message, mid: res._id});
+                    .emit('newMessage', { message: request.message, mid: res._id });
             }
-    
+
             callback(null, res);
         });
     });
@@ -217,10 +265,10 @@ io.on('connection', (socket) => {
             }
 
             let sendTo = connectedUsers.filter(user => user.userId == request.receiverId);
-            
-            if(sendTo.length != 0) {
+
+            if (sendTo.length != 0) {
                 io.to(sendTo[0].socketId)
-                .emit('newMessage', {message: request.message, mid: res._id});    
+                    .emit('newMessage', { message: request.message, mid: res._id });
             }
 
             callback(null, res);
@@ -253,7 +301,7 @@ var studentListeners = (socket) => {
 
     socket.on('retreiveStudentInfo', (request, callback) => {
         student.retreiveStudentInfo(request.sid, (err, res) => {
-            if(err) {
+            if (err) {
                 callback(err, null);
                 return;
             }
@@ -425,7 +473,7 @@ var hostListeners = (socket) => {
         };
 
         host.updateEventHost(request.eid, update, (err, res) => {
-            if(err) {
+            if (err) {
                 callback(err, null);
             }
 
