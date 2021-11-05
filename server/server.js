@@ -185,7 +185,7 @@ io.on('connection', (socket) => {
             
             if(sendTo.length != 0) {
                 io.to(sendTo[0].socketId)
-                .emit('newMessage', {message: request.message, mid: res._id});    
+                .emit('newMessage', {message: request.message, mid: res._id});
             }
     
             callback(null, res);

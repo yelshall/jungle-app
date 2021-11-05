@@ -5,7 +5,7 @@ import HostHome from "./src/screens/Host/HostHome";
 import Register from "./src/screens/Login-registration/Register";
 import { io } from "socket.io-client";
 import { getData, storeData, removeData } from "./src/utils/asyncStorage";
-import { ActivityIndicator, View, Platform, Button, Text } from "react-native";
+import { ActivityIndicator, View, Platform } from "react-native";
 import { AuthContext } from "./src/utils/context";
 import eventsData from "./assets/events-data/eventsData";
 import EditEvents from "./src/screens/Host/EditEvents";
@@ -29,7 +29,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-	const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+	const socket = useRef(io("https://mighty-plateau-63166.herokuapp.com/")).current;
 
 	const [expoPushToken, setExpoPushToken] = useState("");
 	const [notification, setNotification] = useState(false);
