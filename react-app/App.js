@@ -41,6 +41,7 @@ export default function App() {
 		token: null,
 		signInType: null,
 		id: null,
+		expoPushToken: null
 	};
 
 	const loginReducer = (prevState, action) => {
@@ -77,6 +78,11 @@ export default function App() {
 					signInType: action.signInType,
 					isLoading: false,
 				};
+			case "PUSHTOKEN":
+				return {
+					...prevState,
+					expoPushToken: action.expoPushToken
+				}
 		}
 	};
 
@@ -97,7 +103,7 @@ export default function App() {
 						signInType: response.signInType,
 						id: response.id,
 					});
-					socket.emit('setId', {id: response.id});
+					socket.emit('setId', { id: response.id });
 				} catch (err) {
 					console.log(err);
 				}
@@ -129,9 +135,11 @@ export default function App() {
 	);
 
 	useEffect(() => {
-		registerForPushNotificationsAsync().then((token) =>
+		registerForPushNotificationsAsync().then((token) => {
 			setExpoPushToken(token)
-		);
+			dispatch({type: "PUSHTOKEN", expoPushToken: token});
+			console.log(loginState);
+		});
 
 		// This listener is fired whenever a notification is received while the app is foregrounded
 		notificationListener.current =
@@ -142,7 +150,6 @@ export default function App() {
 		// This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
 		responseListener.current =
 			Notifications.addNotificationResponseReceivedListener((response) => {
-				console.log(response);
 			});
 
 		setTimeout(async () => {
@@ -173,7 +180,7 @@ export default function App() {
 					signInType: response.signInType,
 					id: response.id,
 				});
-				socket.emit('setId', {id: response.id});
+				socket.emit('setId', { id: response.id });
 			});
 		}, 500);
 
@@ -209,7 +216,7 @@ export default function App() {
 								name='Register'
 								options={{ headerShown: false }}
 								component={Register}
-								initialParams={{ socket: socket }}
+								initialParams={{ socket: socket, loginState: loginState }}
 							/>
 						</Stack.Navigator>
 					</NavigationContainer>
@@ -287,27 +294,6 @@ export default function App() {
 	}
 }
 
-// a function used to send notificaions to the user
-async function sendPushNotification(expoPushToken) {
-	const message = {
-		to: expoPushToken,
-		sound: "default",
-		title: "Original Title",
-		body: "jungleeeeeeeeeeeeeeeeeeeee",
-		data: { someData: "goes here" },
-	};
-
-	await fetch("https://exp.host/--/api/v2/push/send", {
-		method: "POST",
-		headers: {
-			Accept: "application/json",
-			"Accept-encoding": "gzip, deflate",
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(message),
-	});
-}
-
 async function registerForPushNotificationsAsync() {
 	let token;
 	// checks for permissions and device type (basically the code is always the same for all expo notifications so no change here from the documentation)
@@ -325,7 +311,6 @@ async function registerForPushNotificationsAsync() {
 		}
 		// get the device push notification token (store this in the database, with the user id)
 		token = (await Notifications.getExpoPushTokenAsync()).data;
-		console.log(token);
 	} else {
 		alert("Must use physical device for Push Notifications");
 	}

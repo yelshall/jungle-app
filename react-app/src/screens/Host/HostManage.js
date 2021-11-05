@@ -70,8 +70,6 @@ export default function HostManage({ navigation, route }) {
 				return;
 			}
 
-			console.log(res.events);
-
 			for (let i = 0; i < res.events.length; i++) {
 				if (res.events[i].active) {
 					events.current.push(res.events[i]);
@@ -113,11 +111,12 @@ export default function HostManage({ navigation, route }) {
 			description: description,
 		};
 
+		console.log('heree');
 		socket.emit(
 			"createEventHost",
 			{ hid: loginState.id, newEvent: newEvent },
 			(err, res) => {
-				console.log(err, res);
+				console.log('lvkns');
 				if (err) {
 					Alert.alert("Error", "Could not create new event.", [
 						{

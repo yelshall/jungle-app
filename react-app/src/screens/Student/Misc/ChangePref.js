@@ -28,7 +28,6 @@ export default function ChangePref({ route, navigation }) {
   useEffect(() => {
     LayoutAnimation.spring();
   }, []);
-  //console.log(image);
   const [textValue, setTextValue] = React.useState("Update");
 
   let onPress = () => {

@@ -12,6 +12,8 @@ const jwt = require('jsonwebtoken');
 const schemas = require('./schemas/schemas');
 const messages = require('./Objects/messages');
 const s3 = require('./utils/s3');
+const { Expo } = require('expo-server-sdk');
+let expo = new Expo();
 
 require('dotenv').config({ path: './config/.env' });
 
@@ -211,7 +213,6 @@ io.on('connection', (socket) => {
                         }
                     }
                 } else if (request.filter.type == 'date') {
-                    console.log(request.filter);
                     if (request.filter.date.date == 'day') {
                         arr = res.filter(event => sameDay(new Date(event.dateTime), new Date()));
                     } else if (request.filter.date.date == 'week') {
@@ -240,6 +241,76 @@ io.on('connection', (socket) => {
             if (sendTo.length != 0) {
                 io.to(sendTo[0].socketId)
                     .emit('newMessage', { message: request.message, mid: res._id });
+            }
+
+            if (res.firstId == request.receiverId) {
+                schemas.Host.findById(res.secondId).exec((err, res1) => {
+                    schemas.Student.findById(request.receiverId).exec((err, res) => {
+                        if (err) {
+                            return;
+                        }
+
+                        let messages = [];
+                        if (!Expo.isExpoPushToken(res.expoPushToken)) {
+                            return;
+                        }
+
+                        messages.push({
+                            to: res.expoPushToken,
+                            sound: 'default',
+                            body: `${res1.hostName}: ${request.message.text}`,
+                            data: { withSome: 'Push an update!' },
+                        })
+
+
+                        let chunks = expo.chunkPushNotifications(messages);
+                        let tickets = [];
+                        (async () => {
+                            for (let chunk of chunks) {
+                                try {
+                                    let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                                    tickets.push(...ticketChunk);
+                                } catch (error) {
+                                    console.error(error);
+                                }
+                            }
+                        })();
+                    });
+                });
+            } else {
+                schemas.Student.findById(res.first).exec((err, res1) => {
+                    schemas.Host.findById(request.receiverId).exec((err, res) => {
+                        if (err) {
+                            return;
+                        }
+
+                        let messages = [];
+                        if (!Expo.isExpoPushToken(res.expoPushToken)) {
+                            return;
+                        }
+
+                        messages.push({
+                            to: res.expoPushToken,
+                            sound: 'default',
+                            body: `${res1.fullName.firstName} ${res1.fullName.lastName}: ${request.message.text}`,
+                            data: { withSome: 'Push an update!' },
+                        })
+
+
+                        let chunks = expo.chunkPushNotifications(messages);
+                        let tickets = [];
+                        (async () => {
+                            for (let chunk of chunks) {
+                                try {
+                                    let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                                    tickets.push(...ticketChunk);
+                                } catch (error) {
+                                    console.error(error);
+                                }
+                            }
+                        })();
+                    });
+                });
             }
 
             callback(null, res);
@@ -428,6 +499,41 @@ var hostListeners = (socket) => {
                 if (callback) { callback(err, null) };
                 return;
             }
+
+            schemas.Host.findById(request.hid).populate('followers').exec((err, res) => {
+                if (err) {
+                    return;
+                }
+
+                let messages = [];
+                for (let i = 0; i < res.followers.length; i++) {
+                    if (!Expo.isExpoPushToken(res.followers[i].expoPushToken)) {
+                        continue;
+                    }
+
+                    messages.push({
+                        to: res.followers[i].expoPushToken,
+                        sound: 'default',
+                        body: `${res.hostName} has a created a new event!`,
+                        data: { withSome: 'Created a new event!' },
+                    })
+                }
+
+                let chunks = expo.chunkPushNotifications(messages);
+                let tickets = [];
+                (async () => {
+                    for (let chunk of chunks) {
+                        try {
+                            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                            tickets.push(...ticketChunk);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }
+                })();
+            });
+
+
             if (callback) { callback(null, ret) };
         });
     });
@@ -438,6 +544,7 @@ var hostListeners = (socket) => {
                 if (callback) { callback(err, null) };
                 return;
             }
+
             if (callback) { callback(null, res) };
         });
     });
@@ -477,11 +584,84 @@ var hostListeners = (socket) => {
                 callback(err, null);
             }
 
+            schemas.Host.findById(request.hid).populate('followers').exec((err, res) => {
+                if (err) {
+                    return;
+                }
+
+                let messages = [];
+                for (let i = 0; i < res.followers.length; i++) {
+                    if (!Expo.isExpoPushToken(res.followers[i].expoPushToken)) {
+                        continue;
+                    }
+
+                    messages.push({
+                        to: res.followers[i].expoPushToken,
+                        sound: 'default',
+                        body: `${res.hostName} has a push an update to one of their events!`,
+                        data: { withSome: 'Push an update!' },
+                    })
+                }
+
+                let chunks = expo.chunkPushNotifications(messages);
+                let tickets = [];
+                (async () => {
+                    for (let chunk of chunks) {
+                        try {
+                            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                            tickets.push(...ticketChunk);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }
+                })();
+            });
+
             callback(null, res);
         })
     });
 
     socket.on('cancelEvent', (request, callback) => {
-        host.cancelEventHost(request.eid, callback);
+        host.cancelEventHost(request.eid, (err, res) => {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+
+            schemas.Host.findById(request.hid).populate('followers').exec((err, res) => {
+                if (err) {
+                    return;
+                }
+
+                let messages = [];
+                for (let i = 0; i < res.followers.length; i++) {
+                    if (!Expo.isExpoPushToken(res.followers[i].expoPushToken)) {
+                        continue;
+                    }
+
+                    messages.push({
+                        to: res.followers[i].expoPushToken,
+                        sound: 'default',
+                        body: `${res.hostName} has cancelled one of their events.`,
+                        data: { withSome: 'Cancelled an event' },
+                    })
+                }
+
+                let chunks = expo.chunkPushNotifications(messages);
+                let tickets = [];
+                (async () => {
+                    for (let chunk of chunks) {
+                        try {
+                            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                            tickets.push(...ticketChunk);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }
+                })();
+            });
+
+            callback(null, res);
+        });
     });
 };

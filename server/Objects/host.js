@@ -20,7 +20,8 @@ var hostSignup = (newHost, callback) => {
         tags: newHost.tags,
         phoneNumber: newHost.phoneNumber,
         website: newHost.website.toLowerCase(),
-        imageURL: newHost.imageURL
+        imageURL: newHost.imageURL,
+        expoPushToken: newHost.expoPushToken
     };
 
     let hostSave = new schemas.Host(host);

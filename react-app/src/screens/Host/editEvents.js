@@ -624,8 +624,7 @@ export default function editEvents({ navigation, route }) {
 				<TouchableOpacity
 					style={styles.signOutBtn}
 					onPress={() => {
-						socket.emit('pushUpdate', { eid: event._id, title: title, message: message, notifyAll: false }, (err, res) => {
-							console.log(err, res);
+						socket.emit('pushUpdate', { hid: loginState.id, eid: event._id, title: title, message: message, notifyAll: false }, (err, res) => {
 							if (err) {
 								return;
 							}
@@ -657,7 +656,7 @@ export default function editEvents({ navigation, route }) {
 					<TouchableOpacity
 						style={styles.signOutBtn}
 						onPress={() => {
-							socket.emit('cancelEvent', { eid: event._id }, (err, res) => {
+							socket.emit('cancelEvent', { hid: loginState.id, eid: event._id }, (err, res) => {
 								if (err) {
 									return;
 								}

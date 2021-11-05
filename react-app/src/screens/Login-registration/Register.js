@@ -13,6 +13,7 @@ import { defaultOptions } from "../../components/Header";
 
 export default function Register({ navigation, route }) {
 	const socket = route.params.socket;
+	const loginState = route.params.loginState;
 	const Stack = createStackNavigator();
 
 	return (
@@ -21,9 +22,9 @@ export default function Register({ navigation, route }) {
 			<Stack.Screen name="Login" component={Login} initialParams={{ socket: socket }} options={defaultOptions('Login', '#96db8f', '#6ec28c')} />
 			<Stack.Screen name="EmailAndPassword" component={EmailAndPassword} initialParams={{ socket: socket }} options={defaultOptions('Email', '#96db8f', '#6ec28c')} />
 			<Stack.Screen name="PersonalInfo" component={PersonalInfo} options={defaultOptions('Personal information', '#96db8f', '#6ec28c')} />
-			<Stack.Screen name="Preferences" component={Preferences} initialParams={{ socket: socket }} options={defaultOptions('Preferences', '#96db8f', '#6ec28c')} />
-			<Stack.Screen name="HostSignup" component={HostSignup} initialParams={{ socket: socket }} options={defaultOptions('Host information', '#96db8f', '#6ec28c')} />
-			<Stack.Screen name="ProfilePic" component={ProfilePic} initialParams={{ socket: socket }} options={defaultOptions('Profile picture', '#96db8f', '#6ec28c')} />
+			<Stack.Screen name="Preferences" component={Preferences} initialParams={{ socket: socket, loginState: loginState }} options={defaultOptions('Preferences', '#96db8f', '#6ec28c')} />
+			<Stack.Screen name="HostSignup" component={HostSignup} initialParams={{ socket: socket, loginState: loginState }} options={defaultOptions('Host information', '#96db8f', '#6ec28c')} />
+			<Stack.Screen name="ProfilePic" component={ProfilePic} initialParams={{ socket: socket, loginState: loginState }} options={defaultOptions('Profile picture', '#96db8f', '#6ec28c')} />
 		</Stack.Navigator>
 	);
 };
