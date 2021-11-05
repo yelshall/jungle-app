@@ -29,8 +29,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-	// const socket = useRef(io("https://mighty-plateau-63166.herokuapp.com/")).current;
-	const socket = useRef(io("http://192.168.1.112:3000")).current;
+	const socket = useRef(io("https://mighty-plateau-63166.herokuapp.com/")).current;
 
 	const [expoPushToken, setExpoPushToken] = useState("");
 	const [notification, setNotification] = useState(false);
