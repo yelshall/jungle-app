@@ -10,6 +10,7 @@ import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "./src/utils/context";
 import eventsData from "./assets/events-data/eventsData";
 import EditEvents from "./src/screens/Host/EditEvents";
+import Message from "./src/screens/Message";
 
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import { NativeBaseProvider } from "native-base";
@@ -17,7 +18,8 @@ import { defaultOptions } from "./src/components/Header";
 const Stack = createStackNavigator();
 
 export default function App() {
-	const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+	//const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+	const socket = io("http://localhost:3000");
 
 	const initialLoginState = {
 		isLoading: true,
@@ -56,7 +58,7 @@ export default function App() {
 				return {
 					...prevState,
 					token: action.token,
-					id: null,
+					id: action.id,
 					signInType: action.signInType,
 					isLoading: false,
 				};
@@ -80,6 +82,7 @@ export default function App() {
 						signInType: response.signInType,
 						id: response.id,
 					});
+					socket.emit('setId', { id: response.id });
 				} catch (err) {
 					console.log(err);
 				}
@@ -113,11 +116,13 @@ export default function App() {
 	useEffect(() => {
 		setTimeout(async () => {
 			let token = null;
+
 			try {
 				token = await getData("token");
 			} catch (err) {
 				console.log(err);
 			}
+
 			socket.emit("verifyToken", token, async (err, response) => {
 				if (err) {
 					try {
@@ -133,14 +138,17 @@ export default function App() {
 					});
 					return;
 				}
+
 				dispatch({
 					type: "RETREIVE_TOKEN",
 					token: token,
 					signInType: response.signInType,
 					id: response.id,
 				});
+
+				socket.emit('setId', { id: response.id });
 			});
-		}, 500);
+		}, 100);
 	}, []);
 
 	if (loginState.isLoading) {
@@ -165,7 +173,7 @@ export default function App() {
 						<Stack.Navigator>
 							<Stack.Screen
 								name="Register"
-								options={{headerShown: false}}
+								options={{ headerShown: false }}
 								component={Register}
 								initialParams={{ socket: socket }}
 							/>
@@ -184,7 +192,7 @@ export default function App() {
 								<Stack.Screen
 									name="HostHome"
 									component={HostHome}
-									options={{headerShown: false}}
+									options={{ headerShown: false }}
 									initialParams={{ socket: socket, loginState: loginState }}
 								/>
 								<Stack.Screen
@@ -196,6 +204,12 @@ export default function App() {
 										loginState: loginState,
 									}}
 									options={defaultOptions('Event information', 'white', '#cccccc')}
+								/>
+								<Stack.Screen
+									name="Message"
+									component={Message}
+									initialParams={{ socket: socket, loginState: loginState }}
+									options={defaultOptions('Message', 'white', '#cccccc')}
 								/>
 							</Stack.Navigator>
 						</NavigationContainer>
@@ -211,7 +225,7 @@ export default function App() {
 								<Stack.Screen
 									name="Home"
 									component={Home}
-									options={{headerShown: false}}
+									options={{ headerShown: false }}
 									initialParams={{
 										socket: socket,
 										loginState: loginState,
@@ -220,7 +234,7 @@ export default function App() {
 								<Stack.Screen
 									name="StudentMiscStack"
 									component={StudentMiscStack}
-									options={{headerShown: false}}
+									options={{ headerShown: false }}
 									initialParams={{
 										socket: socket,
 										loginState: loginState

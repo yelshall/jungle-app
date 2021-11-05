@@ -1,7 +1,5 @@
 import React from "react";
-import { View } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
-import { Icon } from 'react-native-elements';
 import EventInfo from "./EventInfo";
 import HostInfo from './HostInfo';
 import FollowedHosts from "./FollowedHosts";
@@ -9,6 +7,7 @@ import ChangePref from "./ChangePref";
 import UpdatePreferences from "./UpdatePreferences";
 import users from "../../../../assets/events-data/users";
 import {defaultOptions} from '../../../components/Header';
+import Message from "../../Message";
 
 export default function StudentMiscStack({ navigation, route }) {
     const Stack = createStackNavigator();
@@ -51,6 +50,12 @@ export default function StudentMiscStack({ navigation, route }) {
                 component={UpdatePreferences}
                 initialParams={{ socket: socket, loginState: loginState }}
                 options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="Message"
+                component={Message}
+                initialParams={{ socket: socket, loginState: loginState }}
+                options={defaultOptions('Message', 'white', '#cccccc')}
             />
         </Stack.Navigator>
     );

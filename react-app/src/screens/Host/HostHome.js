@@ -5,7 +5,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import HostManage from "./HostManage";
-import HostChat from "./HostChat";
+import Chat from "../Chat";
 import HostProfile from "./HostProfile";
 
 import {defaultOptions} from "../../components/Header";
@@ -39,7 +39,7 @@ export default function HostHome({ navigation, route }) {
 						case "HostManage":
 							filePath = require("../../../assets/menu.png");
 							break;
-						case "HostChat":
+						case "Chat":
 							filePath = require("../../../assets/chat.png");
 							break;
 						case "HostProfile":
@@ -68,28 +68,19 @@ export default function HostHome({ navigation, route }) {
 				name="HostManage"
 				component={HostManage}
 				initialParams={{ socket: socket, loginState: loginState }}
-				options={defaultOptions('Manage', 'white', '#cccccc')}
-				listeners={({ navigation }) => ({
-					blur: () => navigation.setParams({ screen: undefined }),
-				})}
+				options={defaultOptions('Manage', 'white', '#cccccc'), { unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
-				name="HostChat"
-				component={HostChat}
+				name="Chat"
+				component={Chat}
 				initialParams={{ socket: socket, loginState: loginState }}
-				options={defaultOptions('Chat', 'white', '#cccccc')}
-				listeners={({ navigation }) => ({
-					blur: () => navigation.setParams({ screen: undefined }),
-				})}
+				options={defaultOptions('Chat', 'white', '#cccccc'), { unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
 				name="HostProfile"
 				component={HostProfile}
 				initialParams={{ socket: socket, loginState: loginState }}
-				options={defaultOptions('Profile', 'white', '#cccccc')}
-				listeners={({ navigation }) => ({
-					blur: () => navigation.setParams({ screen: undefined }),
-				})}
+				options={defaultOptions('Profile', 'white', '#cccccc'), { unmountOnBlur: true }}
 			/>
 		</Tabs.Navigator>
 	);
