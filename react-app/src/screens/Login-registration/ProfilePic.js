@@ -7,6 +7,7 @@ import { AuthContext } from '../../utils/context';
 export default function ProfilePic({ navigation, route }) {
     const { signUp } = React.useContext(AuthContext);
     const socket = route.params.socket;
+    const loginState = route.params.loginState
     const newStudent = route.params.newStudent;
     const signupType = route.params.signupType;
     const newHost = route.params.newHost;
@@ -71,6 +72,7 @@ export default function ProfilePic({ navigation, route }) {
                         body: img
                     });
                     route.params.newHost.imageURL = res.split('?')[0];
+                    route.params.newHost.expoPushToken = loginState.expoPushToken;
                     socket.emit('hostSignup', { newHost: route.params.newHost }, (err, response) => {
                         if (err) {
                             Alert.alert(

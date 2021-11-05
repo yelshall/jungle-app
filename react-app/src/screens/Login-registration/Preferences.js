@@ -56,6 +56,7 @@ const formatData = (data) => {
 export default function Preferences({ navigation, route }) {
 	const { signUp } = React.useContext(AuthContext);
 	const socket = route.params.socket;
+	const loginState = route.params.loginState;
 	const [selectedIds, setSelectedIds] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
 	const [progress, setProgress] = React.useState(0);
@@ -115,6 +116,7 @@ export default function Preferences({ navigation, route }) {
 			tagsArr.push(selectedIds[i].id);
 		}
 		route.params.newStudent.tags = tagsArr;
+		route.params.newStudent.expoPushToken = loginState.expoPushToken;
 
 		socket.emit('studentSignup', route.params.newStudent, (err, response) => {
 			if (err) {

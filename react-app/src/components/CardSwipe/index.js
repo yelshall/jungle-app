@@ -140,7 +140,7 @@ export default function CardSwipe({ route }) {
 						events.current.shift();
 						position.setValue({ x: 0, y: 0 });
 						if (events.length === 5) {
-							socket.emit("getEvents", { sid: loginState.id }, (err, res) => {
+							socket.emit("getEvents", { sid: loginState.id, filter: { type: 'nofilter' }  }, (err, res) => {
 								if (err) {
 									return;
 								}
@@ -164,7 +164,7 @@ export default function CardSwipe({ route }) {
 						events.current.shift();
 						position.setValue({ x: 0, y: 0 });
 						if (events.current.length === 5) {
-							socket.emit("getEvents", { sid: loginState.id }, (err, res) => {
+							socket.emit("getEvents", { sid: loginState.id, filter: { type: 'nofilter' }  }, (err, res) => {
 								if (err) {
 									return;
 								}

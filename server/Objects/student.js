@@ -18,7 +18,8 @@ var studentSignup = (newStudent, callback) => {
         birthDate: newStudent.birthDate,
         gender: newStudent.gender,
         tags: newStudent.tags,
-        imageURL: newStudent.imageURL
+        imageURL: newStudent.imageURL,
+        expoPushToken: newStudent.expoPushToken
     });
 
     student.save()

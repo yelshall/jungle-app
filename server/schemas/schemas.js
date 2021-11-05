@@ -31,6 +31,10 @@ const studentSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    expoPushToken: {
+        type: String,
+        default: ""
+    },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
@@ -75,6 +79,10 @@ const hostSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
+    },
+    expoPushToken: {
+        type: String,
+        default: ""
     },
     password: {
         type: String,
