@@ -355,16 +355,19 @@ export default function CardSwipe({ route }) {
       <View style={styles.row}>
         <Text
           style={{
-            marginRight: 10,
-            marginTop: 10,
-            fontSize: 18,
-            fontWeight: "700",
+            marginRight: 30,
+            marginTop: 5,
+            fontSize: 30,
+            fontWeight: "bold",
+            color: "lightgreen",
           }}
         >
           {" "}
-          Filter by:{" "}
+          JUNGLE
         </Text>
-        <View style={{ backgroundColor: "#fefefe", borderRadius: 10 }}>
+        <View
+          style={{ backgroundColor: "#fefefe", borderRadius: 20, opacity: 0.3 }}
+        >
           <Button
             style={{ height: 100, width: 100 }}
             title='Tags'
@@ -394,8 +397,9 @@ export default function CardSwipe({ route }) {
         <View
           style={{
             backgroundColor: "#fefefe",
-            borderRadius: 10,
+            borderRadius: 20,
             marginLeft: 25,
+            opacity: 0.3,
           }}
         >
           <Button
@@ -426,8 +430,9 @@ export default function CardSwipe({ route }) {
         <View
           style={{
             backgroundColor: "#fefefe",
-            borderRadius: 10,
+            borderRadius: 20,
             marginLeft: 25,
+            opacity: 0.3,
           }}
         >
           <Button
