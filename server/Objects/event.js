@@ -143,12 +143,14 @@ var retreiveEventInfo = (eid, callback) => {
     });
 };
 
-var getEvents = (count, eventIds, callback) => {
+var getEvents = (eventIds, callback) => {
     schemas.Event.aggregate([
         {
-            $match: { "_id": { $nin: eventIds }, "active": { $eq: true } }
+            $match: {
+                "_id": { $nin: eventIds },
+                "active": { $eq: true }
+            }
         },
-        { $sample: { size: count } },
         {
             $lookup: {
                 from: 'tags',
