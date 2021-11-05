@@ -93,8 +93,27 @@ export default function ProfilePic({ navigation, route }) {
             return;
         }
 
-        navigation.navigate('Preferences', {
-            newStudent: newStudent
+        socket.emit('uploadImage', {}, async (err, res) => {
+            if (err) {
+                return;
+            }
+
+            try {
+                const img = await fetchImageFromUri(image);
+                await fetch(res, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                    body: img
+                });
+                route.params.newStudent.imageURL = res.split('?')[0];
+                navigation.navigate('Preferences', {
+                    newStudent: newStudent
+                });
+            } catch (e) {
+                console.log(e);
+            }
         });
     };
 
