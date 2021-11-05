@@ -110,7 +110,7 @@ export default function CardSwipe({ route }) {
                   return;
                 }
 
-                events.current = [...events, ...res];
+                events.current = [...events.current, ...res];
               });
             }
             forceUpdate();
@@ -134,7 +134,7 @@ export default function CardSwipe({ route }) {
                   return;
                 }
 
-                events.current = [...events, ...res];
+                events.current = [...events.current, ...res];
               });
             }
             forceUpdate();

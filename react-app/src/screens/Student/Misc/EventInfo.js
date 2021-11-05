@@ -139,8 +139,8 @@ export default function event_info({ navigation, route }) {
 					>
 						<Avatar
 							rounded size={"medium"}
-							source={{ uri: "https://i.ytimg.com/vi/x_HL0wiK4Zc/maxresdefault.jpg" }}
-							title={event.eventHost.hostName}
+							source={{ uri: event.eventHost.imageURL }}
+							title={event.eventHost.hostName.charAt(0)}
 						/>
 						<ListItem.Content style={{ alignItems: 'flex-start' }}>
 							<ListItem.Title style={{ fontSize: 16, fontWeight: 'bold' }}>{event.eventHost.hostName}</ListItem.Title>

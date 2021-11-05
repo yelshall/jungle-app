@@ -73,7 +73,7 @@ export default function App() {
 				return {
 					...prevState,
 					token: action.token,
-					id: null,
+					id: action.id,
 					signInType: action.signInType,
 					isLoading: false,
 				};
