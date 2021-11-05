@@ -11,7 +11,7 @@ import React, { useEffect } from "react";
 
 import { Text } from "react-native-elements";
 import Constants from "expo-constants";
-
+import users from "../../../assets/events-data/users";
 import { Divider } from "react-native-elements";
 
 var { height, width } = Dimensions.get("window");
@@ -20,6 +20,7 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function ChangePref({ route, navigation }) {
+  console.log(route);
   const { tags } = route.params.users;
 
   useEffect(() => {

@@ -10,10 +10,16 @@ import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "./src/utils/context";
 import eventsData from "./assets/events-data/eventsData";
 import EditEvents from "./src/screens/Host/editEvents";
+import Host_info from "./src/screens/Student/Misc/HostInfo";
+import Stats from "./src/screens/Host/Stats";
+import ChangePref from "./src/screens/Host/ChangePref";
+import users from "./assets/events-data/users";
 
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
+import HostInfo from "./src/screens/Host/HostInfo";
+import HostNotifications from "./src/screens/Host/HostNotifications";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -152,7 +158,7 @@ export default function App() {
           alignItems: "center",
         }}
       >
-        <ActivityIndicator size='large' />
+        <ActivityIndicator size="large" />
       </View>
     );
   }
@@ -164,7 +170,7 @@ export default function App() {
           <NavigationContainer>
             <Stack.Navigator>
               <Stack.Screen
-                name='Register'
+                name="Register"
                 options={{ headerShown: false }}
                 component={Register}
                 initialParams={{ socket: socket }}
@@ -182,13 +188,36 @@ export default function App() {
             <NavigationContainer>
               <Stack.Navigator>
                 <Stack.Screen
-                  name='HostHome'
+                  name="HostHome"
                   component={HostHome}
                   options={{ headerShown: false }}
                   initialParams={{ socket: socket, loginState: loginState }}
                 />
                 <Stack.Screen
-                  name='EditEvents'
+                  name="HostInfo"
+                  component={HostInfo}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+
+                <Stack.Screen
+                  name="Stats"
+                  component={Stats}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+
+                <Stack.Screen
+                  name="HostNofications"
+                  component={HostNotifications}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                
+                <Stack.Screen
+                  name="ChangePref"
+                  component={ChangePref}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                <Stack.Screen
+                  name="EditEvents"
                   component={EditEvents}
                   initialParams={{
                     event: eventsData[0],
@@ -213,7 +242,7 @@ export default function App() {
             <NavigationContainer>
               <Stack.Navigator>
                 <Stack.Screen
-                  name='Home'
+                  name="Home"
                   component={Home}
                   options={{ headerShown: false }}
                   initialParams={{
@@ -222,7 +251,7 @@ export default function App() {
                   }}
                 />
                 <Stack.Screen
-                  name='StudentMiscStack'
+                  name="StudentMiscStack"
                   component={StudentMiscStack}
                   options={{ headerShown: false }}
                   initialParams={{

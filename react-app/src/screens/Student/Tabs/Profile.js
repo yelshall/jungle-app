@@ -138,7 +138,7 @@ export default function Profile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={()=>pressed("Notifcations")}
+        onPress={()=>pressed("Notifications")}
       >
         <Avatar
           source={{

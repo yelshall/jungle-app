@@ -5,13 +5,13 @@ import { Icon } from "react-native-elements";
 import EventInfo from "./EventInfo";
 import HostInfo from "./HostInfo";
 import FollowedHosts from "./FollowedHosts";
-import ChangePref from "./ChangePref";
+import ChangePref from "../../Host/ChangePref";
 import UpdatePreferences from "./UpdatePreferences";
 import users from "../../../../assets/events-data/users";
 import { defaultOptions } from "../../../components/Header";
 import AccountInfo from "./AccountInfo";
 import Profile from "../Tabs/Profile";
-import NotifiationsSettings from "./Notifications";
+import Notifiations from "./Notifications";
 export default function StudentMiscStack({ navigation, route }) {
   const Stack = createStackNavigator();
   const socket = route.params.socket;
@@ -68,7 +68,7 @@ export default function StudentMiscStack({ navigation, route }) {
 
         <Stack.Screen
         name="Notifications"
-        component={NotifiationsSettings}
+        component={Notifiations}
         initialParams={{socket:socket,loginState:loginState}}
         />
     </Stack.Navigator>
