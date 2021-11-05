@@ -19,9 +19,10 @@ mongoose.connect(process.env.DATABASE_ACCESS);
 
 // schemas.Event.deleteMany({}).exec();
 // schemas.Tag.updateMany({events: []}).exec();
-// schemas.Student.updateMany({interestedEvents: [], confirmedEvents: []}).exec();
-// schemas.Host.updateMany({events: []}).exec();
-
+// schemas.Student.deleteMany().exec();
+// schemas.Host.deleteMany().exec();
+// schemas.Update.deleteMany().exec();
+// schemas.Messages.deleteMany().exec();
 // scraper.getEvents(new Date(), new Date('2022-06-01'),async (err, res) => {
 //     for(let i = 0; i < res.length; i++) {
 //         for(let j = 0; j < res[i].events.length; j++) {
@@ -162,6 +163,10 @@ io.on('connection', (socket) => {
                 eventIds.push(res1.confirmedEvents[i]._id);
             }
 
+            for (let i = 0; i < res1.unlikedEvents.length; i++) {
+                eventIds.push(res1.unlikedEvents[i]._id);
+            }
+
             event.getEvents(20, eventIds, (err, res) => {
                 if (err) {
                     callback(err, null);
@@ -265,11 +270,11 @@ var studentListeners = (socket) => {
             }
 
             for (let i = 0; i < res.confirmedEvents.length; i++) {
-                res.confirmedEvents[i] = await schemas.Event.findById(res.confirmedEvents[i]._id).populate('eventHost').populate('tags').exec();
+                res.confirmedEvents[i] = await schemas.Event.findById(res.confirmedEvents[i]._id).populate('eventHost').populate('tags').populate('updates').exec();
             }
 
             for (let i = 0; i < res.interestedEvents.length; i++) {
-                res.interestedEvents[i] = await schemas.Event.findById(res.interestedEvents[i]._id).populate('eventHost').populate('tags').exec();
+                res.interestedEvents[i] = await schemas.Event.findById(res.interestedEvents[i]._id).populate('eventHost').populate('tags').populate('updates').exec();
             }
 
             if (callback) { callback(null, { confirmedEvents: res.confirmedEvents, interestedEvents: res.interestedEvents }) }
@@ -409,5 +414,26 @@ var hostListeners = (socket) => {
 
             if (callback) { callback(null, ret) };
         });
+    });
+
+    socket.on('pushUpdate', (request, callback) => {
+        let update = {
+            type: 'PUSH_UPDATE',
+            title: request.title,
+            message: request.message,
+            notifyAll: request.notifyAll
+        };
+
+        host.updateEventHost(request.eid, update, (err, res) => {
+            if(err) {
+                callback(err, null);
+            }
+
+            callback(null, res);
+        })
+    });
+
+    socket.on('cancelEvent', (request, callback) => {
+        host.cancelEventHost(request.eid, callback);
     });
 };

@@ -50,7 +50,7 @@ export default function event_info({ navigation, route }) {
 			}}>{update.title}</Text>
 			<Text style={{
 				fontSize: 12,
-			}}>{new Date(update.dateTime).toDateString()}</Text>
+			}}>{new Date(update.metadata.dateCreated).toDateString()}</Text>
 			<View style={{
 				width: '100%',
 				height: 0,
@@ -263,13 +263,13 @@ export default function event_info({ navigation, route }) {
 				{/* Add google maps functionality on here */}
 			</View>
 
-			{RSVP && (
+			{RSVP && event.active && (
 				<TouchableOpacity style={styles.signOutBtn} onPress={onPress}>
 					<Text style={styles.signOutBtnText}>RSVP</Text>
 				</TouchableOpacity>
 			)}
 
-			{!RSVP && (
+			{!RSVP && event.active && (
 				<TouchableOpacity style={styles.signOutBtn} onPress={onCancel}>
 					<Text style={styles.signOutBtnText}>CANCEL</Text>
 				</TouchableOpacity>
