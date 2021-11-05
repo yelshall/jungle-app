@@ -41,10 +41,8 @@ export default function HostProfile({ navigation, route }) {
         containerStyle={{ width: "100%" }}
         onPress={() => pressed("HostInfo")}
       >
-        <Avatar
-          source={{
-            uri: "i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
-          }}
+       <Icon
+        name="info"
         />
         <ListItem.Content>
           <ListItem.Title>Host Info</ListItem.Title>
@@ -57,10 +55,8 @@ export default function HostProfile({ navigation, route }) {
         containerStyle={{ width: "100%" }}
         onPress={() => pressed("ChangePref")}
       >
-        <Avatar
-          source={{
-            uri: "i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
-          }}
+         <Icon
+        name="tag"
         />
         <ListItem.Content>
           <ListItem.Title>Tags</ListItem.Title>
@@ -73,11 +69,8 @@ export default function HostProfile({ navigation, route }) {
         containerStyle={{ width: "100%" }}
         onPress={() => pressed("Stats")}
       >
-        <Avatar
-          source={{
-            uri: "i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
-          }}
-        />
+        <RiseOutlined />
+       
         <ListItem.Content>
           <ListItem.Title>Stats</ListItem.Title>
         </ListItem.Content>
@@ -119,7 +112,7 @@ export default function HostProfile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={pressed}
+        
       >
 
         <Icon
@@ -136,8 +129,8 @@ export default function HostProfile({ navigation, route }) {
         </View>
         
 
-          <TouchableOpacity  onPress={onSignout}>
-        <Text >Sign Out</Text>
+          <TouchableOpacity   style={{height:"8%"}} onPress={onSignout}>
+        <Text style={{borderColor:"green",borderBottomWidth:20}} >Sign Out</Text>
       </TouchableOpacity>
 
 
