@@ -1,13 +1,13 @@
 import {
-	View,
-	LayoutAnimation,
-	ImageBackground,
-	StyleSheet,
-	Alert,
-	ScrollView,
-	Dimensions,
-	TouchableOpacity,
-	ActivityIndicator,
+  View,
+  LayoutAnimation,
+  ImageBackground,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 
 import React, { useEffect } from "react";
@@ -24,91 +24,91 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function FollowedHosts({ navigation, route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+  const socket = route.params.socket;
+  const loginState = route.params.loginState;
 
-	const hostValue = React.useRef([]).current;
-	const [isLoading, setIsLoading] = React.useState(true);
-	const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+  const hostValue = React.useRef([]).current;
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
-	useEffect(() => {
-		LayoutAnimation.spring();
+  useEffect(() => {
+    LayoutAnimation.spring();
 
-		socket.emit("getFollowing", { uid: loginState.id }, (err, res) => {
-			if (err) {
-				Alert.alert("Error", "Could not get host info data.", [
-					{
-						text: "OK",
-					},
-				]);
-				return;
-			}
+    socket.emit("getFollowing", { uid: loginState.id }, (err, res) => {
+      if (err) {
+        Alert.alert("Error", "Could not get host info data.", [
+          {
+            text: "OK",
+          },
+        ]);
+        return;
+      }
 
-			for (let i = 0; i < res.length; i++) {
-				hostValue.push(res[i]);
-			}
+      for (let i = 0; i < res.length; i++) {
+        hostValue.push(res[i]);
+      }
 
-			forceUpdate();
+      forceUpdate();
 
-			setIsLoading(false);
-		});
-	}, []);
+      setIsLoading(false);
+    });
+  }, []);
 
-	const onLongPress = (host) => {
-		navigation.navigate("StudentMiscStack", {
-			screen: "HostInfo",
-			params: {
-				socket: socket,
-				loginState: loginState,
-				host: host
-			}
-		});
-	};
+  const onLongPress = (host) => {
+    navigation.navigate("StudentMiscStack", {
+      screen: "HostInfo",
+      params: {
+        socket: socket,
+        loginState: loginState,
+        host: host,
+      },
+    });
+  };
 
-	const renderNormal = (host, index) => {
-		if (host === null) {
-			return null;
-		}
+  const renderNormal = (host, index) => {
+    if (host === null) {
+      return null;
+    }
 
-		return (
-			<View
-				key={index}
-				style={{
-					flexWrap: "nowrap",
-					flexDirection: "row",
-					flex: 1,
-					alignItems: "center",
-					justifyContent: "center",
-					marginBottom: 20,
-				}}
-			>
-				<TouchableOpacity onLongPress={() => onLongPress(host)}>
-					<ImageBackground
-						source={{ uri: hostValue[index].imageURL }}
-						style={[
-							{
-								height: smallSize,
-								width: smallSize,
-								opacity: 1,
-								resizeMode: "cover",
-							},
-						]}
-					/>
-				</TouchableOpacity>
+    return (
+      <View
+        key={index}
+        style={{
+          flexWrap: "nowrap",
+          flexDirection: "row",
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 20,
+        }}
+      >
+        <TouchableOpacity onLongPress={() => onLongPress(host)}>
+          <ImageBackground
+            source={{ uri: hostValue[index].imageURL }}
+            style={[
+              {
+                height: smallSize,
+                width: smallSize,
+                opacity: 1,
+                resizeMode: "cover",
+              },
+            ]}
+          />
+        </TouchableOpacity>
 
-				<View style={{ marginLeft: 20, flex: 1 }}>
-					<TouchableOpacity onLongPress={() => onLongPress(host)}>
-						<Text
-							style={{
-								fontWeight: "600",
-								fontSize: 16,
-								position: "absolute",
-								bottom: 5,
-							}}
-						>
-							{hostValue[index].hostName}
-							{/** check-mark check and View */}
-							{/**  
+        <View style={{ marginLeft: 20, flex: 1 }}>
+          <TouchableOpacity onLongPress={() => onLongPress(host)}>
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: 16,
+                position: "absolute",
+                bottom: 5,
+              }}
+            >
+              {hostValue[index].hostName}
+              {/** check-mark check and View */}
+              {/**  
               {"verified" == ver_status ? (
                 <Image
                   style={styles.ver_stat}
@@ -116,45 +116,45 @@ export default function FollowedHosts({ navigation, route }) {
                 />
               ) : null}
               */}
-						</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
-		);
-	};
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
-	return (
-		<>
-			{isLoading ? (
-				<ActivityIndicator size="large" />
-			) : (
-				<>
-					<View style={styles.container}>
-						<View style={styles.header}></View>
-						<View style={styles.body}>
-							<View style={styles.bodyContent}>
-								<Text style={styles.name}> {"Following"} </Text>
+  return (
+    <>
+      {isLoading ? (
+        <ActivityIndicator size='large' />
+      ) : (
+        <>
+          <View style={styles.container}>
+            <View style={styles.header}></View>
+            <View style={styles.body}>
+              <View style={styles.bodyContent}>
+                <Text style={styles.name}> {"Following"} </Text>
 
-								<Divider orientation="vertical" width={5} />
-							</View>
-						</View>
-					</View>
+                <Divider orientation='vertical' width={5} />
+              </View>
+            </View>
+          </View>
 
-					<View style={styles.containerExplore}>
-						<Text style={styles.headingExplore}>Hosts</Text>
-						<ScrollView
-							contentContainerStyle={{ alignItems: "flex-start" }}
-							style={{ paddingHorizontal: 10, flex: 1, width: width }}
-						>
-							{hostValue.map((host, i) => {
-								return renderNormal(host, i);
-							})}
-						</ScrollView>
-					</View>
-				</>
-			)}
-		</>
-	);
+          <View style={styles.containerExplore}>
+            <Text style={styles.headingExplore}>Hosts</Text>
+            <ScrollView
+              contentContainerStyle={{ alignItems: "flex-start" }}
+              style={{ paddingHorizontal: 10, flex: 1, width: width }}
+            >
+              {hostValue.map((host, i) => {
+                return renderNormal(host, i);
+              })}
+            </ScrollView>
+          </View>
+        </>
+      )}
+    </>
+  );
 }
 
 // prettier-ignore

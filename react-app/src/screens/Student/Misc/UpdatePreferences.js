@@ -11,7 +11,7 @@ import {
 import { LinearProgress } from "react-native-elements";
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
+  <TouchableOpacity onPress={onPress} style={[styles.item_s, backgroundColor]}>
     <Text style={[styles.itemText, textColor]}>{item.title}</Text>
   </TouchableOpacity>
 );
@@ -84,7 +84,7 @@ export default function UpdatePreferences({ navigation, route }) {
   };
 
   const onContinue = () => {
-    navigation.navigate("StudentMiscStack", {screen: "Profile"});
+    navigation.goBack();
   };
 
   return (
@@ -92,9 +92,9 @@ export default function UpdatePreferences({ navigation, route }) {
       <Text style={styles.text}>Please pick 5 or more interests</Text>
       <LinearProgress
         style={styles.progress}
-        color="black"
-        trackColor="white"
-        variant="determinate"
+        color='black'
+        trackColor='white'
+        variant='determinate'
         value={progress}
       />
 
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#2f402d",
   },
-  item: {
+  item_s: {
     alignItems: "center",
     justifyContent: "center",
     flex: 1,

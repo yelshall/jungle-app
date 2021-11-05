@@ -1,14 +1,14 @@
 import {
-	StyleSheet,
-	SafeAreaView,
-	Text,
-	Dimensions,
-	Animated,
-	PanResponder,
-	ActivityIndicator,
-	View,
-	Button,
-	Alert,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  Dimensions,
+  Animated,
+  PanResponder,
+  ActivityIndicator,
+  View,
+  Button,
+  Alert,
 } from "react-native";
 
 import React, { useEffect } from "react";
@@ -20,6 +20,7 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function CardSwipe({ route }) {
+
 	const socket = route.params.socket;
 	const loginState = route.params.loginState;
 	const events = React.useRef([]);
@@ -538,12 +539,12 @@ export default function CardSwipe({ route }) {
 }
 
 const styles = StyleSheet.create({
-	container: {
-		alignItems: "center",
-	},
-	row: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignContent: "space-between",
-	},
+  container: {
+    alignItems: "center",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignContent: "space-between",
+  },
 });
