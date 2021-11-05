@@ -31,62 +31,22 @@ export default function About({ navigation, route }) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
-  useEffect(() => {
-    LayoutAnimation.spring();
-
-    socket.emit("getFollowing", { uid: loginState.id }, (err, res) => {
-      if (err) {
-        Alert.alert("Error", "Could not get host info data.", [
-          {
-            text: "OK",
-          },
-        ]);
-        return;
-      }
-
-      for (let i = 0; i < res.length; i++) {
-        hostValue.push(res[i]);
-      }
-
-      forceUpdate();
-
-      setIsLoading(false);
-    });
-  }, []);
-
-  const onLongPress = (host) => {
-    navigation.navigate("StudentMiscStack", {
-      screen: "HostInfo",
-      params: {
-        socket: socket,
-        loginState: loginState,
-        host: host,
-      },
-    });
-  };
-
   return (
     <>
-      {isLoading ? (
-        <ActivityIndicator size='large' />
-      ) : (
-        <>
-          <View style={styles.container}>
-            <View style={styles.header}></View>
-            <View style={styles.body}>
-              <View style={styles.bodyContent}>
-                <Text style={styles.name}> {"About Us"} </Text>
+      <View style={styles.container}>
+        <View style={styles.header}></View>
+        <View style={styles.body}>
+          <View style={styles.bodyContent}>
+            <Text style={styles.name}> {"About Us"} </Text>
 
-                <Divider orientation='vertical' width={5} />
-              </View>
-            </View>
+            <Divider orientation='vertical' width={5} />
           </View>
+        </View>
+      </View>
 
-          <View style={styles.containerExplore}>
-            <Text style={styles.headingExplore}>Team 17 Purdue</Text>
-          </View>
-        </>
-      )}
+      <View style={styles.containerExplore}>
+        <Text style={styles.headingExplore}>Team 17 Purdue</Text>
+      </View>
     </>
   );
 }
