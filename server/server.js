@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const schemas = require('./schemas/schemas');
 const messages = require('./Objects/messages');
+const s3 = require('./utils/s3');
 
 require('dotenv').config({ path: './config/.env' });
 
@@ -219,6 +220,11 @@ io.on('connection', (socket) => {
 
             callback(null, res);
         });
+    });
+
+    socket.on('uploadImage', async (request, callback) => {
+        const url = await s3.generateUploadURL();
+        callback(null, url);
     });
 
     studentListeners(socket);

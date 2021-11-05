@@ -15,9 +15,9 @@ export default function ProfilePic({ navigation, route }) {
     const [image, setImage] = useState(null);
 
     useEffect(() => {
-        setTitle(signupType == 'Student' ? 
-        `${newStudent.fullName.firstName.charAt(0)}${newStudent.fullName.lastName.charAt(0)}` :
-        `${newHost.hostName.charAt(0)}`
+        setTitle(signupType == 'Student' ?
+            `${newStudent.fullName.firstName.charAt(0)}${newStudent.fullName.lastName.charAt(0)}` :
+            `${newHost.hostName.charAt(0)}`
         )
     }, []);
 
@@ -34,6 +34,12 @@ export default function ProfilePic({ navigation, route }) {
         })();
     }, []);
 
+    const fetchImageFromUri = async (uri) => {
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        return blob;
+    };
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -48,26 +54,45 @@ export default function ProfilePic({ navigation, route }) {
         }
     };
 
-    const onContinue = () => {
+    const onContinue = async () => {
         if (signupType === "Host") {
-            socket.emit('hostSignup', { newHost: route.params.newHost }, (err, response) => {
+            socket.emit('uploadImage', {}, async (err, res) => {
                 if (err) {
-                    Alert.alert(
-                        "Host sign up",
-                        "Error signing you up",
-                        [
-                            {
-                                text: "OK"
-                            }
-                        ]
-                    );
-                    return
+                    return;
                 }
-                signUp(response);
-            });
+
+                try {
+                    const img = await fetchImageFromUri(image);
+                    await fetch(res, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        },
+                        body: img
+                    });
+                    route.params.newHost.imageURL = res.split('?')[0];
+                    socket.emit('hostSignup', { newHost: route.params.newHost }, (err, response) => {
+                        if (err) {
+                            Alert.alert(
+                                "Host sign up",
+                                "Error signing you up",
+                                [
+                                    {
+                                        text: "OK"
+                                    }
+                                ]
+                            );
+                            return
+                        }
+                        signUp(response);
+                    });
+                } catch (e) {
+                    console.log(e);
+                }
+            })
             return;
         }
-        newStudent.profilePic = image;
+
         navigation.navigate('Preferences', {
             newStudent: newStudent
         });
