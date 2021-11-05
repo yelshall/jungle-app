@@ -61,9 +61,11 @@ export default function Profile({ navigation, route }) {
     },
   ];
 
-  const pressed = () => {
-    console.log("Pressed");
-  };
+  const pressed = (direction) => {
+    console.log(direction);
+	navigation.navigate("StudentMiscStack",{screen:direction}) 
+
+};
   return (
     <View
       style={{
@@ -86,7 +88,7 @@ export default function Profile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={pressed}
+        onPress={()=>pressed("AccountInfo")}
       >
         <Avatar
           source={{
@@ -102,7 +104,7 @@ export default function Profile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={pressed}
+        onPress={()=>pressed("UpdatePreferences")}
       >
         <Avatar
           source={{
@@ -110,31 +112,17 @@ export default function Profile({ navigation, route }) {
           }}
         />
         <ListItem.Content>
-          <ListItem.Title>Prefernces</ListItem.Title>
+          <ListItem.Title>Preferences</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
 
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={pressed}
-      >
-        <Avatar
-          source={{
-            uri: "i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Prefernces</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
+
 
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={pressed}
+        onPress={()=>pressed("FollowedHosts")}
       >
         <Avatar
           source={{
@@ -150,7 +138,7 @@ export default function Profile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={pressed}
+        onPress={()=>pressed("Notifcations")}
       >
         <Avatar
           source={{

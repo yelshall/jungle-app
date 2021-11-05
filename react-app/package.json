@@ -15,6 +15,7 @@
     "@react-navigation/bottom-tabs": "^6.0.8",
     "@react-navigation/native": "^6.0.5",
     "@react-navigation/stack": "^6.0.10",
+    "@react-stately/collections": "^3.3.4",
     "@react-stately/toggle": "^3.2.3",
     "check-password-strength": "^2.0.3",
     "expo": "~42.0.1",
@@ -38,6 +39,7 @@
     "react-native-reanimated": "^2.2.2",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
+    "react-native-settings-list": "^1.8.0",
     "react-native-svg": "12.1.1",
     "react-native-tags": "^2.2.1",
     "react-native-unimodules": "0.14.10",
@@ -48,7 +50,8 @@
     "socket.io-client": "^4.2.0",
     "styled-components": "^5.3.3",
     "styled-system": "^5.1.5",
-    "tslib": "^2.3.1"
+    "tslib": "^2.3.1",
+    "yarn": "^1.22.17"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
