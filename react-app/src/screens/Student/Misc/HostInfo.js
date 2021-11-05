@@ -8,33 +8,31 @@ import {
 	ActivityIndicator,
 	Pressable,
 	Dimensions,
-	Image,
 	TouchableOpacity,
 } from "react-native";
 
 import React, { useEffect } from "react";
-
-import { Text } from "react-native-elements";
+import Tags from "react-native-tags";
 import Constants from "expo-constants";
+import { Text } from "react-native-elements";
 
-import { Divider } from "react-native-elements";
+import { CardItem, CardRow } from "../../../components/Event";
 
 var { height, width } = Dimensions.get("window");
 
 const smallSize = width / 5;
-const itemWidth = width * 0.67;
-const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function Host_info({ navigation, route }) {
 	const hostId = route.params.host._id;
 	const socket = route.params.socket;
 	const loginState = route.params.loginState;
-	const hostValue = React.useRef([]).current;
+	const host = React.useRef(null);
 	const [isLoading, setIsLoading] = React.useState(true);
 	const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+	const [tags, setTags] = React.useState([]);
 
 	useEffect(() => {
-		socket.emit("getHostData", { hid: hostId }, (err, res) => {
+		socket.emit("retreiveHostInfo", { hid: hostId }, (err, res) => {
 			if (err) {
 				Alert.alert("Error", "Could not get host info data.", [
 					{
@@ -49,15 +47,23 @@ export default function Host_info({ navigation, route }) {
 				setTextValue("Unfollow");
 			}
 
-			hostValue.push(res);
+			host.current = res;
+
+			let tags = [];
+			for (let i = 0; i < res.tags.length; i++) {
+				tags.push(res.tags[i].tagName);
+			}
+
+			setTags(tags);
 
 			forceUpdate();
 
 			setIsLoading(false);
 		});
+		LayoutAnimation.spring();
 	}, []);
 
-	const onLongPress = (event) => {
+	const onEventPress = (event) => {
 		navigation.navigate("StudentMiscStack",
 			{
 				screen: 'EventInfo',
@@ -66,97 +72,89 @@ export default function Host_info({ navigation, route }) {
 				}
 			});
 	};
-	useEffect(() => {
-		LayoutAnimation.spring();
-	}, []);
 
 	const [textValue, setTextValue] = React.useState("Follow");
 	const [Follow_Bool, setFollow] = React.useState(false);
 
 	let onPress = () => {
 		if (!Follow_Bool) {
-			hostValue[0].followers.push("Follower");
+			host.current.followers.push("Follower");
 			socket.emit("followHost", { uid: loginState.id, hid: hostId });
 			setTextValue("Unfollow");
 			setFollow(true);
 		} else {
-			hostValue[0].followers.pop();
+			host.current.followers.pop();
 			socket.emit("unfollowHost", { uid: loginState.id, hid: hostId });
 			setTextValue("Follow");
 			setFollow(false);
 		}
 	};
 
-	const renderNormal = (event, index) => {
-		if (event === null) {
-			return null;
-		}
+	let onChat = () => {
+		socket.emit('getMessages', {sid: loginState.id, hid: host.current._id}, (err, res) => {
+			if(err) {
+				return;
+			}
 
-		return (
-			<View
-				key={index}
-				style={{
-					flexWrap: "nowrap",
-					flexDirection: "row",
-					flex: 1,
-					alignItems: "center",
-					justifyContent: "center",
-					marginBottom: 20,
-				}}
-			>
-				<TouchableOpacity onLongPress={() => onLongPress(event)}>
-					<ImageBackground
-						source={{ uri: event.imageURL }}
-						style={[
-							{
-								height: smallSize,
-								width: smallSize,
-								opacity: 1,
-								resizeMode: "cover",
-							},
-						]}
-					/>
-				</TouchableOpacity>
+			navigation.navigate('StudentMiscStack', 
+			{
+				screen: 'Message',
+				params: {
+					rid: host.current._id,
+					createChat: (res.length == 0 ? true : false)
+				}
+			});
 
-				<View style={{ marginLeft: 20, flex: 1 }}>
-					<TouchableOpacity onLongPress={() => onLongPress(event)}>
-						<Text
-							style={{
-								fontWeight: "600",
-								fontSize: 16,
-								position: "absolute",
-								bottom: 5,
-							}}
-						>
-							{event.eventName}
-						</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
-		);
+			return;
+		});
 	};
 
 	return (
-		<>
+		<ScrollView
+			contentContainerStyle={{
+				alignItems: 'center'
+			}}
+			style={{
+				width: '100%',
+				height: '100%'
+			}}
+		>
 			{isLoading ? (
 				<ActivityIndicator size="large" />
 			) : (
 				<>
-					<View style={styles.container}>
-						<View style={styles.header}></View>
-
-						{hostValue[0].imageURL.length > 0 && (
-							<Image
-								style={styles.avatar}
-								source={{ uri: hostValue[0].imageURL }}
-							/>
-						)}
-						<View style={styles.body}>
-							<View style={styles.bodyContent}>
-								<Text style={styles.name}>
-									{hostValue[0].hostName}
-									{/** check-mark check and View */}
-									{/**  
+					<ImageBackground
+						source={{ uri: host.current.imageURL }}
+						resizeMode={'cover'}
+						style={{
+							width: 100,
+							height: 100,
+							borderRadius: 50,
+							justifyContent: 'center',
+							alignItems: 'center',
+							backgroundColor: '#e3e3e3',
+							marginTop: '10%'
+						}}
+						imageStyle={{
+							width: 100,
+							height: 100,
+							borderRadius: 50
+						}}
+					>
+						{host.current.imageURL.length == "" &&
+							<>
+								<Text style={{
+									color: '#a8a8a8',
+									fontSize: 60,
+									fontWeight: '500'
+								}}>{host.current.hostName.charAt(0).toUpperCase()}</Text>
+							</>
+						}
+					</ImageBackground>
+					<Text style={styles.name}>
+						{host.current.hostName}
+						{/** check-mark check and View */}
+						{/**  
               {"verified" == ver_status ? (
                 <Image
                   style={styles.ver_stat}
@@ -164,100 +162,74 @@ export default function Host_info({ navigation, route }) {
                 />
               ) : null}
               */}
-								</Text>
+					</Text>
 
-								<Text style={styles.description}>
-									{hostValue[0].followers.length + " Followers"}
-								</Text>
+					<Text style={styles.description}>
+						{host.current.followers.length + " Followers"}
+					</Text>
 
-								<Text style={styles.info}>{hostValue[0].hostEmail}</Text>
+					<Text style={styles.info}>{host.current.hostEmail}</Text>
 
-								<Text style={styles.description}>
-									{hostValue[0].description}
-								</Text>
+					<Text style={styles.description}>
+						{host.current.description}
+					</Text>
 
-								{hostValue[0].website.length > 0 && (
-									<Text style={styles.info}>{hostValue[0].website}</Text>
-								)}
+					{host.current.website.length > 0 && (
+						<Text style={styles.info}>{host.current.website}</Text>
+					)}
 
-								{hostValue[0].tags.length > 0 && (
-									<Text style={styles.info}>
-										{"Tags: " + hostValue[0].tags}
-									</Text>
-								)}
-								{hostValue[0].phoneNumber.length > 0 && (
-									<Text style={styles.info}>
-										{"Phone: " + hostValue[0].phoneNumber}
-									</Text>
-								)}
+					{host.current.phoneNumber.length > 0 && (
+						<Text style={styles.info}>
+							{"Phone: " + host.current.phoneNumber}
+						</Text>
+					)}
 
-								<Pressable style={styles.buttonContainer} onPress={onPress}>
-									<Text style={styles.textButton}> {textValue}</Text>
-								</Pressable>
+					{host.current.tags.length > 0 && (
+						<Tags
+							initialTags={tags}
+							readonly={true}
+							deleteTagOnPress={false}
+						/>
+					)}
+					<View
+						style={{
+							width: '100%',
+							flexDirection: 'row',
+							justifyContent:'space-around'
+						}}
+					>
+						<Pressable style={styles.buttonContainer} onPress={onPress}>
+							<Text style={styles.textButton}>{textValue}</Text>
+						</Pressable>
 
-								<Divider orientation="vertical" width={5} />
-							</View>
-						</View>
+						<Pressable style={styles.buttonContainer} onPress={onChat}>
+							<Text style={styles.textButton}>Chat</Text>
+						</Pressable>
 					</View>
 
-					<View style={styles.containerExplore}>
-						<Text style={styles.headingExplore}>Posted Events</Text>
-						<ScrollView
-							contentContainerStyle={{ alignItems: "flex-start" }}
-							style={{ paddingHorizontal: 10, flex: 1, width: width }}
-						>
-							{hostValue[0].events.map((event, i) => {
-								return renderNormal(event, i);
-							})}
-						</ScrollView>
-					</View>
+
+
+					<Text style={{ fontWeight: '600', fontSize: 22, alignSelf: "flex-start", marginLeft: '5%' }}>Posted Events</Text>
+					<View style={{
+						width: '90%',
+						height: 0,
+						borderWidth: 0.5,
+						borderColor: '#cccccc',
+						alignSelf: 'center',
+						margin: '2%'
+					}}></View>
+					{host.current.events.map((event, i) => {
+						return (
+							<CardItem key={i} event={event} onPress={() => onEventPress(event)} edit={false} />
+						)
+					})}
 				</>
 			)}
-		</>
+		</ScrollView>
 	);
 }
 
-// prettier-ignore
 const styles = StyleSheet.create({
-	container: {
-		height: 300,
-		//width:410,
-		resizeMode: 'contain',
-	},
-
-	image: {
-		width: "100%",
-		height: "100%",
-		borderRadius: 20,
-		overflow: "hidden",
-		justifyContent: "flex-end",
-	},
-
-	loginBtn: {
-		width: "50%",
-		borderRadius: 10,
-		height: 50,
-		bottom: 0,
-		position: 'relative',
-		top: 80,
-		alignItems: "center",
-		justifyContent: "center",
-		marginLeft: Dimensions.get('window').width / 4,
-		backgroundColor: "grey",
-	},
-
-	ver_stat: {
-		width: 35,
-		height: 35,
-		//borderRadius: 0,
-		//borderWidth: 4,
-		//borderColor: "white",
-		//marginBottom:10,
-		//alignSelf:'center',
-		position: 'relative',
-		marginTop: 0,
-	},
-
 	textButton: {
 		fontSize: 16,
 		lineHeight: 21,
@@ -265,89 +237,22 @@ const styles = StyleSheet.create({
 		letterSpacing: 0.25,
 		color: 'white',
 	},
-
-	TextContainer: {
-		position: 'relative',
-		height: 80,
-		resizeMode: 'contain',
-		justifyContent: "flex-end",
-		top: 400,
-		//bottom: 100 
-	},
-
-	scrollView: {
-		backgroundColor: 'white',
-		resizeMode: "contain",
-		marginVertical: 3,
-		//marginHorizontal: 5,
-		paddingTop: 5,
-		paddingBottom: 0,
-	},
-
-	text: {
-		//paddingTop:3,
-		position: "relative",
-		fontSize: 21,
-		lineHeight: 21,
-		//fontWeight: 'bold',
-		letterSpacing: 0.25,
-		color: 'black',
-	},
-
-	textInner: {
-		//paddingTop:3,
-		position: "relative",
-		fontSize: 21,
-		lineHeight: 21,
-		//fontWeight: 'bold',
-		letterSpacing: 0.25,
-		color: 'black',
-	},
-
-	header: {
-		backgroundColor: "#85ba7f",
-		height: 200,
-	},
-	avatar: {
-		width: 130,
-		height: 130,
-		borderRadius: 63,
-		borderWidth: 4,
-		borderColor: "white",
-		marginBottom: 10,
-		alignSelf: 'center',
-		position: 'absolute',
-		marginTop: 130
-	},
-
-	body: {
-		marginTop: 40,
-	},
-
-	bodyContent: {
-		//flex: 1,
-		alignItems: 'center',
-		padding: 30,
-	},
 	name: {
 		fontSize: 28,
 		color: "#696969",
 		fontWeight: "600"
 	},
-
 	info: {
 		fontSize: 16,
 		color: "#85ba7f",
 		marginTop: 10
 	},
-
 	description: {
 		fontSize: 16,
 		color: "#696969",
 		marginTop: 10,
 		textAlign: 'center'
 	},
-
 	buttonContainer: {
 		marginTop: 10,
 		height: 45,
@@ -355,36 +260,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginBottom: 20,
-		width: 250,
-		borderRadius: 30,
+		width: 150,
+		borderRadius: 10,
 		backgroundColor: "#85ba7f",
-	},
-
-	containerExplore: {
-		top: 210,
-		flex: 1,
-		alignItems: "flex-start",
-		justifyContent: "center",
-		marginTop: Constants.statusBarHeight,
-	},
-	emptyItem: {
-		overflow: "hidden",
-		height: itemHeight,
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-		borderLeftWidth: 20,
-		borderColor: "white",
-		width: itemWidth,
-		backgroundColor: "transparent",
-	},
-	headingExplore: {
-		fontSize: 22,
-		fontWeight: "300",
-		alignSelf: "flex-start",
-		paddingHorizontal: 10,
-		paddingVertical: 10,
-	},
-
-
+	}
 });

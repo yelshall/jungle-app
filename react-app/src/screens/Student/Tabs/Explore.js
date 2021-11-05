@@ -39,6 +39,7 @@ export default function Explore({ navigation, route }) {
 			setIsLoading(false);
 		});
 		LayoutAnimation.spring();
+
 	}, []);
 
 	const [scrollX, setScrollX] = React.useState(new Animated.Value(0));
@@ -152,7 +153,7 @@ export default function Explore({ navigation, route }) {
 								let search_text = search.toLowerCase();
 								if (event.eventName.toLowerCase().includes(search_text)) {
 									return (
-										<CardItem event={event} onPress={() => onPress(event, "INTERESTED")} edit={false} />
+										<CardItem key={i} event={event} onPress={() => onPress(event, "INTERESTED")} edit={false} />
 									);
 								}
 							})

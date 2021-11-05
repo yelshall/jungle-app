@@ -22,6 +22,7 @@ export const CardItem = ({ event, onPress, edit }) => (
     <TouchableOpacity
         activeOpacity={1}
         onPress={onPress}
+        key={event._id}
     >
         <Flex
             style={{

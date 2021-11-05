@@ -77,15 +77,27 @@ var retreiveStudentInfo = (sid, callback) => {
         .populate('recommendedEvents')
         .populate('following')
         .populate('tags')
-        .populate('notifications').exec((err, res) => {
+        .populate('notifications')
+        .populate('messages')
+        .exec( async (err, res) => {
             if (err) {
                 if (callback) { callback(err, null); }
             } else {
-                if(res == undefined) {
-                    if (callback) { callback({err: 'No student found.'}, null); }
+                if (res == undefined) {
+                    if (callback) { callback({ err: 'No student found.' }, null); }
                     return;
                 }
+                let messages = [];
+                for (let i = 0; i < res.messages.length; i++) {
+                    messages.push(
+                        await schemas.Messages.findById(res.messages[i]._id)
+                            .populate({ path: 'firstId', model: schemas.Student })
+                            .populate({ path: 'secondId', model: schemas.Host })
+                            .exec()
+                    );
+                }
                 res.password = undefined;
+                res.messages = messages;
                 if (callback) { callback(null, res); }
             }
         });
