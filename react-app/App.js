@@ -29,7 +29,8 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-	const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+	//const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+	const socket = io("http://localhost:3000");
 	const [expoPushToken, setExpoPushToken] = useState("");
 	const [notification, setNotification] = useState(false);
 	const notificationListener = useRef();
@@ -96,6 +97,7 @@ export default function App() {
 						signInType: response.signInType,
 						id: response.id,
 					});
+					socket.emit('setId', {id: response.id});
 				} catch (err) {
 					console.log(err);
 				}
@@ -171,6 +173,7 @@ export default function App() {
 					signInType: response.signInType,
 					id: response.id,
 				});
+				socket.emit('setId', {id: response.id});
 			});
 		}, 500);
 

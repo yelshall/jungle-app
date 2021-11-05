@@ -181,9 +181,13 @@ io.on('connection', (socket) => {
                 return;
             }
 
-            io.to(connectedUsers.filter(user => user.userId == request.receiverId)[0].socketId)
-            .emit('newMessage', {message: request.message, mid: request.mid});
-
+            let sendTo = connectedUsers.filter(user => user.userId == request.receiverId);
+            
+            if(sendTo.length != 0) {
+                io.to(sendTo[0].socketId)
+                .emit('newMessage', {message: request.message, mid: res._id});    
+            }
+    
             callback(null, res);
         });
     });
@@ -205,9 +209,13 @@ io.on('connection', (socket) => {
                 callback(err, null);
                 return;
             }
-        
-            io.to(connectedUsers.filter(user => user.userId == request.receiverId)[0].socketId)
-            .emit('newMessage', {message: request.message, mid: res._id});
+
+            let sendTo = connectedUsers.filter(user => user.userId == request.receiverId);
+            
+            if(sendTo.length != 0) {
+                io.to(sendTo[0].socketId)
+                .emit('newMessage', {message: request.message, mid: res._id});    
+            }
 
             callback(null, res);
         });
