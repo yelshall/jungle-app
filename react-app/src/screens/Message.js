@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { Chat, defaultTheme } from '@flyerhq/react-native-chat-ui'
 
 function Messages({ navigation, route }) {
@@ -10,7 +10,6 @@ function Messages({ navigation, route }) {
 
 	const [messages, setMessages] = useState([]);
 	const [messageCount, setMessageCount] = useState(0);
-	const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
 	const senderId = loginState.id;
 	const receiverId = route.params.rid;
@@ -19,7 +18,9 @@ function Messages({ navigation, route }) {
 	const hid = loginState.signInType == 'HOST' ? senderId : receiverId;
 
 	socket.on('newMessage', (response) => {
-		forceUpdate();
+		response.message.id = messageCount;
+		setMessageCount(count => count + 1);
+		addMessage(response.message);
 	});
 
 	useEffect(() => {
@@ -35,8 +36,8 @@ function Messages({ navigation, route }) {
 			setMessageId(res[0]._id);
 
 			let msgs = [];
-			for (let i = res[0].messages.length-1; i >= 0; i--) {
-				msgs.push({ 
+			for (let i = res[0].messages.length - 1; i >= 0; i--) {
+				msgs.push({
 					author: res[0].messages[i].author,
 					createdAt: res[0].messages[i].createdAt,
 					id: i,

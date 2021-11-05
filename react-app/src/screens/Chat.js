@@ -1,5 +1,5 @@
 import { TouchableOpacity, ScrollView, ImageBackground, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import { ListItem, Avatar } from 'react-native-elements'
 
 export default function Chat({ navigation, route }) {
@@ -7,10 +7,15 @@ export default function Chat({ navigation, route }) {
 	const loginState = route.params.loginState;
 
 	const [messages, setMessages] = useState([]);
-	const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
 	socket.on('newMessage', (response) => {
-		forceUpdate();
+		for(let i = 0; i < messages.length; i++) {
+			if(messages[i]._id == response.mid) {
+				let msgs = messages;
+				msgs[i].messages.push(response.message);
+				setMessages(msgs);
+			}
+		}
 	});
 
 	useEffect(() => {
