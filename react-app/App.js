@@ -29,8 +29,8 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-	//const socket = io("https://mighty-plateau-63166.herokuapp.com/");
-	const socket = io("http://localhost:3000");
+	const socket = io("https://mighty-plateau-63166.herokuapp.com/");
+
 	const [expoPushToken, setExpoPushToken] = useState("");
 	const [notification, setNotification] = useState(false);
 	const notificationListener = useRef();
