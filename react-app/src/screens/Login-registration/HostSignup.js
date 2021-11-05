@@ -9,12 +9,10 @@ import {
     Alert
 } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { AuthContext } from '../../utils/context';
 import { Input } from 'react-native-elements';
 
 export default function Register({ navigation, route }) {
     const socket = route.params.socket;
-    const { signUp } = React.useContext(AuthContext);
 
     const [name, setName] = React.useState("");
     const [description, setDescription] = React.useState("");
@@ -111,20 +109,9 @@ export default function Register({ navigation, route }) {
         route.params.newHost.phoneNumber = phoneNumber;
         route.params.newHost.website = website;
 
-        socket.emit('hostSignup', { newHost: route.params.newHost }, (err, response) => {
-            if (err) {
-                Alert.alert(
-                    "Host sign up",
-                    "Error signing you up",
-                    [
-                        {
-                            text: "OK"
-                        }
-                    ]
-                );
-                return
-            }
-            signUp(response);
+        navigation.navigate('ProfilePic', {
+            newHost: route.params.newHost,
+            signupType: route.params.signupType
         });
     };
 

@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { Video } from 'expo-av';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, route }) {
     return (
         <View style={styles.view}>
             <Video

@@ -41,7 +41,8 @@ export default function HostManage({ navigation, route }) {
 	useEffect(() => {
 		socket.emit("getTags", {}, (err, res) => {
 			if (err) {
-				Alert.alert("Host signup", "Error occurred.", [
+				console.log('err');
+				Alert.alert("Manage", "Error occurred.", [
 					{
 						text: "OK",
 					},
@@ -55,9 +56,9 @@ export default function HostManage({ navigation, route }) {
 			}
 		});
 
-		socket.emit("getHostData", { hid: loginState.id }, (err, res) => {
+		socket.emit("retreiveHostInfo", { hid: loginState.id }, (err, res) => {
 			if (err) {
-				Alert.alert("Host signup", "Error occurred.", [
+				Alert.alert("Manage", "Error occurred.", [
 					{
 						text: "OK",
 					},
@@ -117,13 +118,13 @@ export default function HostManage({ navigation, route }) {
 	};
 
 	return (
-		<View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 			{isLoading ? (
 				<ActivityIndicator size="large" />
 			) : (
 				<ScrollView
 					style={{ width: '100%', height: '100%' }}
-					contentContainerStyle={{alignItems: "center"}}
+					contentContainerStyle={{ alignItems: "center" }}
 				>
 					<Flex
 						alignItems={"center"}
@@ -132,7 +133,7 @@ export default function HostManage({ navigation, route }) {
 						{
 							events.current.map((event, i) => {
 								return (
-									<CardItem event={event} onPress={() => navigation.navigate("EditEvents", {event: event})} edit={true} />
+									<CardItem key={i} event={event} onPress={() => navigation.navigate("EditEvents", { event: event })} edit={true} />
 								);
 							})
 						}

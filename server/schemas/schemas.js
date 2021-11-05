@@ -59,6 +59,10 @@ const studentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Host'
     }],
+    messages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Messages'
+    }],
     metadata: {
         dateCreated: {
             type: Date,
@@ -113,6 +117,10 @@ const hostSchema = new mongoose.Schema({
     events: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
+    }],
+    messages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Messages'
     }],
     metadata: {
         dateCreated: {
@@ -230,6 +238,31 @@ const TagSchema = new mongoose.Schema({
     }
 });
 
+const messagesSchema = new mongoose.Schema({
+    firstRef: {
+        type: String
+    },
+    firstId: {
+        type: mongoose.Schema.Types.ObjectId
+    },
+    secondRef: {
+        type: String
+    },
+    secondId: {
+        type: mongoose.Schema.Types.ObjectId
+    },
+    messages: {
+        type: Array,
+        default: []
+    },
+    metadata: {
+        dateCreated: {
+            type: Date,
+            default: Date.now
+        }
+    }
+});
+
 const updateSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -283,5 +316,6 @@ module.exports = {
     Event: mongoose.model('Event', eventSchema),
     Tag: mongoose.model('Tag', TagSchema),
     Update: mongoose.model('Update', updateSchema),
-    Notification: mongoose.model('Notification', notificationSchema)
+    Notification: mongoose.model('Notification', notificationSchema),
+    Messages: mongoose.model('Messages', messagesSchema)
 };

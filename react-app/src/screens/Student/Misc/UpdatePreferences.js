@@ -84,7 +84,7 @@ export default function UpdatePreferences({ navigation, route }) {
   };
 
   const onContinue = () => {
-    navigation.navigate("StudentMiscStack", {screen: "Profile", params: {socket: socket, loginState: loginState }});
+    navigation.navigate("StudentMiscStack", {screen: "Profile"});
   };
 
   return (

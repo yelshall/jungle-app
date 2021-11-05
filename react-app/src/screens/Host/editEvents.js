@@ -331,330 +331,255 @@
 // 	);
 // }
 
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  Image,
-  ImageBackground,
-  Alert,
-} from "react-native";
+
+import { View, StyleSheet, ScrollView, Dimensions, Image, ImageBackground } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import React from "react";
 
-import { LinearGradient } from "expo-linear-gradient";
-import { ListItem, Avatar, Text, Icon } from "react-native-elements";
-import { Flex } from "native-base";
+import { LinearGradient } from 'expo-linear-gradient';
+import { ListItem, Avatar, Text, Icon } from 'react-native-elements'
+import { Flex } from 'native-base';
 
 const KHeight = Dimensions.get("window").height;
 const KWidth = Dimensions.get("window").width;
 
-export default function editEvents({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
-  const event = route.params.event;
+export default function EditEvents({ navigation, route }) {
+	const socket = route.params.socket;
+	const loginState = route.params.loginState;
+	const event = route.params.event;
 
-  const UpdateItem = ({ update }) => (
-    <Flex
-      style={{
-        flexDirection: "column",
-        width: "100%",
-        justifyContent: "center",
-        marginVertical: "1%",
-        padding: "2%",
-        borderRadius: 1,
-        backgroundColor: "white",
-        borderColor: "#cccccc",
-        borderWidth: 0.5,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 18,
-          fontWeight: "bold",
-        }}
-      >
-        {update.title}
-      </Text>
-      <Text
-        style={{
-          fontSize: 12,
-        }}
-      >
-        {new Date(update.dateTime).toDateString()}
-      </Text>
-      <View
-        style={{
-          width: "100%",
-          height: 0,
-          borderWidth: 0.5,
-          borderColor: "#cccccc",
-          alignSelf: "center",
-          alignItems: "center",
-          margin: "2%",
-        }}
-      ></View>
-      <Text>{update.message}</Text>
-    </Flex>
-  );
+	const UpdateItem = ({ update }) => (
+		<Flex
+			style={{
+				flexDirection: 'column',
+				width: '100%',
+				justifyContent: 'center',
+				marginVertical: '1%',
+				padding: '2%',
+				borderRadius: 1,
+				backgroundColor: 'white',
+				borderColor: '#cccccc',
+				borderWidth: 0.5
+			}}
+		>
+			<Text style={{
+				fontSize: 18,
+				fontWeight: 'bold'
+			}}>{update.title}</Text>
+			<Text style={{
+				fontSize: 12,
+			}}>{new Date(update.dateTime).toDateString()}</Text>
+			<View style={{
+				width: '100%',
+				height: 0,
+				borderWidth: 0.5,
+				borderColor: '#cccccc',
+				alignSelf: 'center',
+				alignItems: 'center',
+				margin: '2%'
+			}}></View>
+			<Text>{update.message}</Text>
+		</Flex>
+	);
 
-  return (
-    <ScrollView
-      contentContainerStyle={{
-        alignItems: "center",
-      }}
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <ImageBackground
-        style={{
-          width: KWidth,
-          height: KHeight / 5,
-          resizeMode: "cover",
-          justifyContent: "flex-end",
-        }}
-        source={{ uri: event.imageURL }}
-      >
-        <LinearGradient
-          colors={["#000000", "transparent", "transparent"]}
-          start={{ x: 0, y: 0.9 }}
-          end={{ x: 0, y: 0 }}
-          style={{
-            height: "100%",
-            width: "100%",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 25,
-              alignSelf: "flex-start",
-              marginTop: 50,
-              color: "white",
-              fontWeight: "bold",
-            }}
-          >
-            {event.eventName}
-          </Text>
-        </LinearGradient>
-      </ImageBackground>
+	return (
+		<ScrollView
+			contentContainerStyle={{
+				alignItems: 'center',
+			}}
+			style={{
+				width: '100%',
+				height: '100%'
+			}}
+		>
+			<ImageBackground
+				style={{
+					width: KWidth,
+					height: KHeight / 5,
+					resizeMode: "cover",
+					justifyContent: 'flex-end'
+				}}
+				source={{ uri: event.imageURL }}
+			>
+				<LinearGradient
+					colors={['#000000', 'transparent', 'transparent']}
+					start={{ x: 0, y: 0.9 }}
+					end={{ x: 0, y: 0 }}
+					style={{
+						height: '100%',
+						width: '100%',
+						justifyContent: 'flex-end'
+					}}
+				>
+					<Text
+						style={{
+							fontSize: 25,
+							alignSelf: "flex-start",
+							marginTop: 50,
+							color: "white",
+							fontWeight: "bold",
+						}}
+					>
+						{event.eventName}
+					</Text>
+				</LinearGradient>
+			</ImageBackground>
 
-      <View
-        style={{
-          width: "90%",
-          margin: "5%",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-          }}
-        >
-          Description
-        </Text>
-        <View
-          style={{
-            width: "100%",
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#cccccc",
-            alignSelf: "center",
-            margin: "2%",
-          }}
-        ></View>
-        <Text>{event.description}</Text>
-      </View>
+			<View style={{
+				width: '90%',
+				margin: '5%'
+			}}>
+				<Text style={{
+					fontSize: 20,
+					fontWeight: 'bold'
+				}}>Description</Text>
+				<View style={{
+					width: '100%',
+					height: 0,
+					borderWidth: 0.5,
+					borderColor: '#cccccc',
+					alignSelf: 'center',
+					margin: '2%'
+				}}></View>
+				<Text>{event.description}</Text>
+			</View>
 
-      <View
-        style={{
-          width: "90%",
-          margin: "5%",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-          }}
-        >
-          Event information
-        </Text>
-        <View
-          style={{
-            width: "100%",
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#cccccc",
-            alignSelf: "center",
-            margin: "2%",
-          }}
-        ></View>
-        <Flex
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontWeight: "bold" }}>Location: </Text>
-          <Icon
-            type={"ionicon"}
-            name={"location-outline"}
-            size={14}
-            containerStyle={{
-              marginRight: "1%",
-            }}
-          />
-          <Text>
-            {event.location.length > 30
-              ? event.location.substring(0, 30) + "..."
-              : event.location}
-          </Text>
-        </Flex>
-        <Flex
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontWeight: "bold" }}>Start date: </Text>
-          <Icon
-            type={"ionicon"}
-            name={"calendar-outline"}
-            size={14}
-            containerStyle={{
-              marginRight: "1%",
-            }}
-          />
-          <Text>{new Date(event.dateTime).toDateString()}</Text>
-        </Flex>
-        <Flex
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontWeight: "bold" }}>End date: </Text>
-          <Icon
-            type={"ionicon"}
-            name={"calendar-outline"}
-            size={14}
-            containerStyle={{
-              marginRight: "1%",
-            }}
-          />
-          <Text>{new Date(event.endDateTime).toDateString()}</Text>
-        </Flex>
-        <Flex
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontWeight: "bold" }}>Interested people: </Text>
-          <Text>{event.interestedStudents.length}</Text>
-        </Flex>
-        <Flex
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontWeight: "bold" }}>Confirmed people: </Text>
-          <Text>{event.confirmedStudents.length}</Text>
-        </Flex>
+			<View style={{
+				width: '90%',
+				margin: '5%'
+			}}>
+				<Text style={{
+					fontSize: 20,
+					fontWeight: 'bold'
+				}}>Event information</Text>
+				<View style={{
+					width: '100%',
+					height: 0,
+					borderWidth: 0.5,
+					borderColor: '#cccccc',
+					alignSelf: 'center',
+					margin: '2%'
+				}}></View>
+				<Flex
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center'
+					}}
+				>
+					<Text style={{ fontWeight: 'bold' }}>Location: </Text>
+					<Icon
+						type={"ionicon"}
+						name={"location-outline"}
+						size={14}
+						containerStyle={{
+							marginRight: '1%'
+						}}
+					/>
+					<Text>{event.location.length > 30 ? event.location.substring(0, 30) + '...' : event.location}</Text>
+				</Flex>
+				<Flex
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center'
+					}}
+				>
+					<Text style={{ fontWeight: 'bold' }}>Start date: </Text>
+					<Icon
+						type={"ionicon"}
+						name={"calendar-outline"}
+						size={14}
+						containerStyle={{
+							marginRight: '1%'
+						}}
+					/>
+					<Text>{(new Date(event.dateTime)).toDateString()}</Text>
+				</Flex>
+				<Flex
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center'
+					}}
+				>
+					<Text style={{ fontWeight: 'bold' }}>End date: </Text>
+					<Icon
+						type={"ionicon"}
+						name={"calendar-outline"}
+						size={14}
+						containerStyle={{
+							marginRight: '1%'
+						}}
+					/>
+					<Text>{(new Date(event.endDateTime)).toDateString()}</Text>
+				</Flex>
+				<Flex
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center'
+					}}
+				>
+					<Text style={{ fontWeight: 'bold' }}>Interested people: </Text>
+					<Text>{event.interestedStudents.length}</Text>
+				</Flex>
+				<Flex
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center'
+					}}
+				>
+					<Text style={{ fontWeight: 'bold' }}>Confirmed people: </Text>
+					<Text>{event.confirmedStudents.length}</Text>
+				</Flex>
 
-        {/* Add google maps functionality on here */}
-      </View>
+				{/* Add google maps functionality on here */}
+			</View>
 
-      <View
-        style={{
-          width: "90%",
-          margin: "5%",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-          }}
-        >
-          Updates
-        </Text>
-        <View
-          style={{
-            width: "100%",
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#cccccc",
-            alignSelf: "center",
-            alignItems: "center",
-            margin: "2%",
-          }}
-        ></View>
-        {event.updates.map((update, index) => {
-          return <UpdateItem update={update} />;
-        })}
-      </View>
-      <TouchableOpacity style={styles.signOutBtn}>
-        <Text style={styles.signOutBtnText}>Edit</Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.signOutBtn}
-        onPress={() => {
-          let temp_update = Alert.prompt(
-            "PUSH UPDATES",
-            "Please Type the Updates you want pushed",
-            [
-              { text: "Cancel", type: "cancel" },
-              {
-                text: "Push",
-              },
-            ],
-            "plain-text",
-            "",
-            ""
-          );
-        }}
-      >
-        <Text style={styles.signOutBtnText}>Push Updates</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.signOutBtn}
-        onPress={() => {
-          Alert.alert("event deleted");
-        }}
-      >
-        <Text style={styles.signOutBtnText}>Delete Event</Text>
-      </TouchableOpacity>
-    </ScrollView>
-  );
+			<View style={{
+				width: '90%',
+				margin: '5%'
+			}}>
+				<Text style={{
+					fontSize: 20,
+					fontWeight: 'bold'
+				}}>Updates</Text>
+				<View style={{
+					width: '100%',
+					height: 0,
+					borderWidth: 0.5,
+					borderColor: '#cccccc',
+					alignSelf: 'center',
+					alignItems: 'center',
+					margin: '2%'
+				}}></View>
+				{event.updates.map((update, index) => {
+					return (
+						<UpdateItem update={update} />
+					)
+				})}
+			</View>
+		</ScrollView>
+	);
 }
 
 const styles = StyleSheet.create({
-  signOutBtnText: {
-    alignSelf: "center",
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    fontSize: 18,
-    color: "#2f402d",
-    marginTop: 5,
-  },
-  signOutBtn: {
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    opacity: 0.8,
-    width: KWidth * 0.8,
-    backgroundColor: "#85ba7f",
-    padding: 15,
-    borderRadius: 10,
-    alignSelf: "center",
-  },
+	signOutBtnText: {
+		alignSelf: "center",
+		textTransform: "uppercase",
+		fontWeight: "bold",
+		fontSize: 18,
+		color: "#2f402d",
+	},
+	signOutBtn: {
+		shadowColor: "black",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.2,
+		shadowRadius: 5,
+		opacity: 0.8,
+		width: KWidth * 0.8,
+		backgroundColor: "#85ba7f",
+		padding: 15,
+		borderRadius: 10,
+		alignSelf: "center",
+	},
 });

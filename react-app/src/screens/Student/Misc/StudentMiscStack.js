@@ -12,6 +12,7 @@ import { defaultOptions } from "../../../components/Header";
 import AccountInfo from "./AccountInfo";
 import Profile from "../Tabs/Profile";
 import Notifiations from "./Notifications";
+import Message from "../../Message";
 export default function StudentMiscStack({ navigation, route }) {
   const Stack = createStackNavigator();
   const socket = route.params.socket;
@@ -71,6 +72,12 @@ export default function StudentMiscStack({ navigation, route }) {
         component={Notifiations}
         initialParams={{socket:socket,loginState:loginState}}
         />
+                    <Stack.Screen
+                name="Message"
+                component={Message}
+                initialParams={{ socket: socket, loginState: loginState }}
+                options={defaultOptions('Message', 'white', '#cccccc')}
+            />
     </Stack.Navigator>
   );
 }

@@ -76,22 +76,24 @@ export default function Register({ navigation, route }) {
                 newHost: {
                     email: route.params.email,
                     password: route.params.password
-                }
+                },
+                signupType: signupType
             });
             return;
         }
 
-        navigation.navigate('Preferences', {
+        navigation.navigate('ProfilePic', {
             newStudent: {
                 email: route.params.email,
                 password: route.params.password,
                 fullName: {
-                    firstName: name[0],
-                    lastName: name[1]
+                    firstName: fullName[0],
+                    lastName: fullName[1]
                 },
                 birthDate: new Date(dateOfBirth),
                 gender: gender
-            }
+            },
+            signupType: signupType
         });
     };
 

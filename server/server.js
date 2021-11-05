@@ -10,6 +10,7 @@ const app = express();
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const schemas = require('./schemas/schemas');
+const messages = require('./Objects/messages');
 
 require('dotenv').config({ path: './config/.env' });
 
@@ -38,7 +39,21 @@ const io = require('socket.io')(server, {
     }
 });
 
+var connectedUsers = [];
+
 io.on('connection', (socket) => {
+    socket.on('setId', (request) => {
+        if(connectedUsers.filter(user => user.userId == request.id).length > 0) {
+            connectedUsers = [...connectedUsers.filter(user => user.userId != request.id)];
+        }
+
+        if(connectedUsers.filter(user => user.socketId == socket.id).length > 0) {
+            connectedUsers = [...connectedUsers.filter(user => user.socketId != socket.id)];
+        }
+
+        connectedUsers.push({ socketId: socket.id, userId: request.id });
+    });
+
     socket.on('verifyEmail', (request, callback) => {
         verify.checkEmailExists(request.email, (check) => {
             if (check) {
@@ -82,9 +97,9 @@ io.on('connection', (socket) => {
             decoded.exp = undefined;
 
             student.retreiveStudentInfo(decoded.id, (err, res) => {
-                if(err) {
+                if (err) {
                     host.retreiveHostInfo(decoded.id, (err, res) => {
-                        if(err) {
+                        if (err) {
                             callback(err, null);
                             return;
                         }
@@ -138,11 +153,11 @@ io.on('connection', (socket) => {
 
             let eventIds = [];
 
-            for(let i = 0; i < res1.interestedEvents.length; i++) {
+            for (let i = 0; i < res1.interestedEvents.length; i++) {
                 eventIds.push(res1.interestedEvents[i]._id);
             }
 
-            for(let i = 0; i < res1.confirmedEvents.length; i++) {
+            for (let i = 0; i < res1.confirmedEvents.length; i++) {
                 eventIds.push(res1.confirmedEvents[i]._id);
             }
 
@@ -156,6 +171,53 @@ io.on('connection', (socket) => {
 
                 callback(null, arr);
             });
+        });
+    });
+
+    socket.on('sendMessage', (request, callback) => {
+        messages.sendMessage(request.mid, request.message, (err, res) => {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+
+            let sendTo = connectedUsers.filter(user => user.userId == request.receiverId);
+            
+            if(sendTo.length != 0) {
+                io.to(sendTo[0].socketId)
+                .emit('newMessage', {message: request.message, mid: res._id});
+            }
+    
+            callback(null, res);
+        });
+    });
+
+    socket.on('getMessages', (request, callback) => {
+        messages.getMessages(request.sid, request.hid, (err, res) => {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+
+            callback(null, res);
+        })
+    });
+
+    socket.on('createMessages', (request, callback) => {
+        messages.createMessages(request.sid, request.hid, request.message, (err, res) => {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+
+            let sendTo = connectedUsers.filter(user => user.userId == request.receiverId);
+            
+            if(sendTo.length != 0) {
+                io.to(sendTo[0].socketId)
+                .emit('newMessage', {message: request.message, mid: res._id});    
+            }
+
+            callback(null, res);
         });
     });
 
@@ -176,6 +238,17 @@ var studentListeners = (socket) => {
 
             if (callback) { callback(null, { id: ret._id, email: ret.token.email, token: ret.token.token, signInType: 'STUDENT' }) };
         });
+    });
+
+    socket.on('retreiveStudentInfo', (request, callback) => {
+        student.retreiveStudentInfo(request.sid, (err, res) => {
+            if(err) {
+                callback(err, null);
+                return;
+            }
+
+            callback(null, res);
+        })
     });
 
     socket.on('getStudentEvents', (request, callback) => {
@@ -306,7 +379,7 @@ var hostListeners = (socket) => {
                 if (callback) { callback(err, null) };
                 return;
             }
-            if (callback) { callback(null, res) };  
+            if (callback) { callback(null, res) };
         });
     });
 
@@ -321,7 +394,7 @@ var hostListeners = (socket) => {
         });
     });
 
-    socket.on('getHostData', (request, callback) => {
+    socket.on('retreiveHostInfo', (request, callback) => {
         host.retreiveHostInfo(request.hid, (err, ret) => {
             if (err) {
                 if (callback) { callback(err, null) };
