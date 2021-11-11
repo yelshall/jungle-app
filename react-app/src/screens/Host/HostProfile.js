@@ -9,11 +9,11 @@ import {
 import React from "react";
 import { ListItem, Avatar } from "react-native-elements";
 
-import { AuthContext } from "../../../utils/context";
+import { AuthContext } from "../../utils/context";
 
-import HostData from "../../../../assets/events-data/HostData";
-import eventsData from "../../../../assets/events-data/eventsData";
-import users from "../../../../assets/events-data/users";
+import HostData from "../../../assets/events-data/HostData";
+import eventsData from "../../../assets/events-data/eventsData";
+import users from "../../../assets/events-data/users";
 import { List } from "native-base";
 import { Icon } from "react-native-elements";
 
@@ -67,9 +67,7 @@ export default function Profile({ navigation, route }) {
 
   const pressed = (direction) => {
     console.log(direction);
-    navigation.navigate("StudentMiscStack", {
-      screen: direction,
-    });
+    navigation.navigate(direction)
   };
   return (
     <View
@@ -93,7 +91,7 @@ export default function Profile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%", marginTop: 20 }}
-        onPress={() => pressed("AccountInfo")}
+        onPress={() => pressed("HostProfileInfo")}
       >
         <Icon
           type={"material-icons"}
@@ -105,7 +103,7 @@ export default function Profile({ navigation, route }) {
           }}
         />
         <ListItem.Content>
-          <ListItem.Title>Account Info</ListItem.Title>
+          <ListItem.Title>Host Info</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
@@ -125,7 +123,7 @@ export default function Profile({ navigation, route }) {
           }}
         />
         <ListItem.Content>
-          <ListItem.Title>Preferences</ListItem.Title>
+          <ListItem.Title>Tags</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
@@ -145,7 +143,7 @@ export default function Profile({ navigation, route }) {
           }}
         />
         <ListItem.Content>
-          <ListItem.Title>FollowedHosts</ListItem.Title>
+          <ListItem.Title>Stats</ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
