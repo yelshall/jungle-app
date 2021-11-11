@@ -8,8 +8,8 @@ import { getData, storeData, removeData } from "./src/utils/asyncStorage";
 import { ActivityIndicator, View, Platform } from "react-native";
 import { AuthContext } from "./src/utils/context";
 import eventsData from "./assets/events-data/eventsData";
+import EditEvents from "./src/screens/Host/EditEvents";
 import Message from "./src/screens/Message";
-import EditEvents from "./src/screens/Host/editEvents";
 
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import { NativeBaseProvider } from "native-base";
