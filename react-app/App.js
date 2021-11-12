@@ -11,6 +11,7 @@ import eventsData from "./assets/events-data/eventsData";
 import EditEvents from "./src/screens/Host/editEvents";
 import Message from "./src/screens/Message";
 import HostProfileInfo from "./src/screens/Host/HostProfileInfo";
+import Stats from "./src/screens/Host/Stats";
 
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import { NativeBaseProvider } from "native-base";
@@ -258,11 +259,17 @@ export default function App() {
 									initialParams={{ socket: socket, loginState: loginState }}
 									options={defaultOptions('Message', 'white', '#cccccc')}
 								/>
-																<Stack.Screen
+								<Stack.Screen
 									name="HostProfileInfo"
 									component={HostProfileInfo}
 									initialParams={{ socket: socket, loginState: loginState }}
 									options={defaultOptions('Host Info', 'white', '#cccccc')}
+								/>
+								<Stack.Screen
+									name="Stats"
+									component={Stats}
+									initialParams={{ socket: socket, loginState: loginState }}
+									options={defaultOptions('Stats', 'white', '#cccccc')}
 								/>
 								
 							</Stack.Navigator>

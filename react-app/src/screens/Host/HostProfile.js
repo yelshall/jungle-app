@@ -131,7 +131,7 @@ export default function Profile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={() => pressed("FollowedHosts")}
+        onPress={() => pressed("Stats")}
       >
         <Icon
           type={"material-icons"}
