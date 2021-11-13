@@ -14,6 +14,7 @@ import {
   export default function HostProfileInfo({ navigation, route }) {
     const socket = route.params.socket;
     const loginState = route.params.loginState;
+    
   
     const [email, setEmail] = useState("John@purdue.edu");
     const [OrgName, setOrgName] = useState("John");

@@ -86,7 +86,7 @@ export default function Profile({ navigation, route }) {
         }}
       />
       <Text style={{ fontWeight: "bold", fontSize: 25 }}>John Doe</Text>
-      <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followed: 0</Text>
+      <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followers: 0</Text>
 
       <ListItem
         bottomDivider
@@ -151,7 +151,7 @@ export default function Profile({ navigation, route }) {
       <ListItem
         bottomDivider
         containerStyle={{ width: "100%" }}
-        onPress={() => pressed("Notifications")}
+        onPress={() => pressed("HostNotifications")}
       >
         <Icon
           type={"material-icons"}
