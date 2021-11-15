@@ -114,7 +114,7 @@ export default function AccountInfo({ navigation, route }) {
 const styles = StyleSheet.create({
   signOutBtn: {
     position: "absolute",
-    top: 550,
+    top: 555,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.4,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   signOutBtn1: {
     position: "absolute",
-    top: 450,
+    top: 445,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.4,
