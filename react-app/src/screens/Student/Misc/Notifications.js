@@ -67,6 +67,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Updates
@@ -74,7 +75,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 220,
+            marginLeft: 195,
             marginTop: 10,
           }}
           value={switchValue}
@@ -90,6 +91,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Cancellations
@@ -97,7 +99,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 172,
+            marginLeft: 147,
             marginTop: 10,
           }}
           value={false}
@@ -112,6 +114,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Updates
@@ -119,7 +122,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 220,
+            marginLeft: 195,
             marginTop: 10,
           }}
           value={false}
@@ -134,6 +137,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Updates
@@ -141,7 +145,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 220,
+            marginLeft: 195,
             marginTop: 10,
           }}
           value={false}

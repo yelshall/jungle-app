@@ -143,6 +143,7 @@ export default function event_info({ navigation, route }) {
               marginTop: 50,
               color: "white",
               fontWeight: "bold",
+              marginLeft: 5
             }}
           >
             {event.eventName}
@@ -415,6 +416,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignSelf: "center",
+    marginTop: 15
   },
   CalendarButton: {
     shadowColor: "black",
