@@ -6,7 +6,7 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native'
-import { Input } from 'react-native-elements';
+import { Input, SocialIcon } from 'react-native-elements';
 import { AuthContext } from '../../utils/context';
 
 export default function Login({ navigation, route }) {
@@ -153,6 +153,24 @@ export default function Login({ navigation, route }) {
 					<Text style={styles.signInButtonText}>Sign In</Text>
 				</TouchableOpacity>
 
+				<TouchableOpacity>
+					<SocialIcon
+						style={styles.socialButton}
+						title='SIGN IN WITH GOOGLE'
+						button
+						type='google'
+					/>
+				</TouchableOpacity>
+
+				<TouchableOpacity>
+					<SocialIcon
+						style={styles.socialButton}
+						title='SIGN IN WITH FACEBOOK'
+						button
+						type='facebook'
+					/>
+				</TouchableOpacity>
+
 				<View style={styles.align}>
 					<TouchableOpacity
 						style={{
@@ -235,5 +253,12 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 		marginTop: 10
+	},
+	socialButton: {
+		width: 290,
+		borderRadius: 10,
+		shadowOpacity: 0.4,
+        shadowRadius: 5,
+		marginBottom: 2
 	}
 })
