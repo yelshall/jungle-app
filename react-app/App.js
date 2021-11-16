@@ -13,17 +13,18 @@ import Message from "./src/screens/Message";
 import HostProfileInfo from "./src/screens/Host/HostProfileInfo";
 import Stats from "./src/screens/Host/Stats";
 import HostNotifications from "./src/screens/Host/HostNotifications";
-
-
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
+import Help from "./src/screens/Student/Misc/Help";
+import About from "./src/screens/Student/Misc/About";
 const Stack = createStackNavigator();
 
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
 import HostInfo from "./src/screens/Host/HostProfileInfo";
+import ChangePref from "./src/screens/Student/Misc/ChangePref";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -272,11 +273,26 @@ export default function App() {
                   name="Stats"
                   component={Stats}
                   initialParams={{ socket: socket, loginState: loginState }}
-				  options={defaultOptions("Stats", "white", "#cccccc")}
+                  options={defaultOptions("Stats", "white", "#cccccc")}
                 />
                 <Stack.Screen
                   name="HostNotifications"
                   component={HostNotifications}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                <Stack.Screen
+                  name="ChangePref"
+                  component={ChangePref}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                <Stack.Screen
+                  name="Help"
+                  component={Help}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                <Stack.Screen
+                  name="About"
+                  component={About}
                   initialParams={{ socket: socket, loginState: loginState }}
                 />
               </Stack.Navigator>

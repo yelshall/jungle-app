@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import Accordion from 'react-native-collapsible/Accordion';
+import Accordion from "react-native-collapsible/Accordion";
+import { AntDesign } from "@expo/vector-icons";
 import React, { useState } from "react";
 
 import SettingsList from "react-native-settings-list";
@@ -16,25 +17,28 @@ export default function HostProfileInfo({ navigation, route }) {
   const socket = route.params.socket;
   const loginState = route.params.loginState;
 
-  const SECTIONS =[
-    {
-    title:"Description",
-    content:"A fun club with lots of good people.We meet every wedndessay to play football and drink water"
-    }
-  ]
-  const [activeSections,setActiveSections] = useState([0]);
 
-   const renderSectionTitle = (section) => {
+  const [activeSections, setActiveSections] = useState([0]);
+
+  const renderSectionTitle = (section) => {
     return (
-      <View style={styles.content}>
+      <View style={styles.SectionTitle}>
         <Text>{section.title}</Text>
       </View>
     );
   };
 
-   const renderContent = (section) => {
+  const renderContent = (section) => {
     return (
-      <View style={styles.content}>
+      <View
+        style={{
+          backgroundColor: "white",
+          width: "90%",
+          alignSelf: "center",
+          borderRadius: 30,
+          padding: 5,
+        }}
+      >
         <Text>{section.content}</Text>
       </View>
     );
@@ -42,8 +46,20 @@ export default function HostProfileInfo({ navigation, route }) {
 
   const renderHeader = (section) => {
     return (
-      <View style={styles.header}>
-        <Text style={styles.headerText}>{section.title}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          borderWidth: 1,
+          backgroundColor: "white",
+          height: 50,
+          padding: 10,
+          borderColor: "#D3D3D3",
+        }}
+      >
+        <Text>Description</Text>
+        <Text style={{ fontSize: 10 }}> Begin Description for </Text>
+        <AntDesign name="down" size={24} color="black" />
       </View>
     );
   };
@@ -56,6 +72,12 @@ export default function HostProfileInfo({ navigation, route }) {
   const [Description, setDesciption] = useState(
     "A fun club full of good people"
   );
+  const SECTIONS = [
+    {
+      title: "Club Description",
+      content: Description
+    },
+  ];
   const [editing, setEditing] = useState(false);
 
   let changeInfoEmail = () => {
@@ -103,7 +125,7 @@ export default function HostProfileInfo({ navigation, route }) {
     ]);
   };
   return (
-    <View style={{ backgroundColor: "#EFEFF4", flex: 1 }}>
+    <View style={{ backgroundColor: "#EFEFF4", flex: 1, marginBottom: 200 }}>
       <View
         style={{
           borderBottomWidth: 1,
@@ -129,21 +151,19 @@ export default function HostProfileInfo({ navigation, route }) {
             titleInfo={OrgName}
             hasNavArrow={false}
           />
-          <SettingsList.Item
-            title="Description"
-            titleInfo={Description}
-            hasNavArrow={false}
-          />
         </SettingsList>
 
+        <View style={{marginBottom:70}}>
         <Accordion
           sections={SECTIONS}
           activeSections={activeSections}
-          renderSectionTitle={renderSectionTitle}
           renderHeader={renderHeader}
           renderContent={renderContent}
           onChange={updateSections}
         />
+
+
+        </View>
 
         <TouchableOpacity style={styles.signOutBtn} onPress={changeInfoEmail}>
           <Text style={styles.signOutBtnText}>Edit Email</Text>
@@ -198,7 +218,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginLeft: 50,
     borderRadius: 10,
-    marginBottom:100,
+    marginBottom: 100,
   },
   signOutBtnText: {
     alignSelf: "center",
@@ -217,5 +237,14 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     position: "absolute",
     marginTop: 130,
+  },
+  header: {},
+  headerText: {
+    fontSize: 20,
+  },
+  SectionTitle: {
+    fontSize: 20,
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });
