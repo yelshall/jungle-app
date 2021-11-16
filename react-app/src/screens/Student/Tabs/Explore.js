@@ -16,6 +16,7 @@ import { DefaultTheme } from "@react-navigation/native";
 
 import { CardItem, CardRow } from "../../../components/Event";
 import { backgroundColor } from "styled-system";
+import { color } from "react-native-elements/dist/helpers";
 var { height, width } = Dimensions.get("window");
 
 const itemWidth = width * 0.67;
@@ -104,8 +105,15 @@ export default function Explore({ navigation, route }) {
     );
   };
   const explore_options = ["Explore", "Trending"];
-  const [selectedExploreIndex, setSelectedExploreIndex] = useState();
-  const [ExploreIndex, setExploreIndex] = useState();
+  const [selectedIndex, setIndex] = useState(0);
+
+  let onChangeIndex = () => {
+    if (selectedIndex == 0) {
+      setIndex(1);
+    } else if (selectedIndex == 1) {
+      setIndex(0);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -139,6 +147,10 @@ export default function Explore({ navigation, route }) {
           />
           <ButtonGroup
             buttons={explore_options}
+            onPress={onChangeIndex}
+            disabledSelectedStyle={{ backgroundColor: "black" }}
+            selectedButtonStyle={{ backgroundColor: "lightgreen" }}
+            selectedIndex={selectedIndex}
             containerStyle={{
               height: 30,
               position: "relative",
@@ -147,7 +159,12 @@ export default function Explore({ navigation, route }) {
           />
 
           <View style={{ height: 20 + height / 2 }}>
-            <Text style={[styles.heading, { fontSize: 28 }]}>Reserved</Text>
+            {selectedIndex == 0 && (
+              <Text style={[styles.heading, { fontSize: 28 }]}>Reserved</Text>
+            )}
+            {selectedIndex == 1 && (
+              <Text style={[styles.heading, { fontSize: 28 }]}>Trending</Text>
+            )}
             <Animated.ScrollView
               horizontal={true}
               style={{ flex: 1 }}
