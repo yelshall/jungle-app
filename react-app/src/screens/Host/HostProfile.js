@@ -14,7 +14,7 @@ import { AuthContext } from "../../utils/context";
 import HostData from "../../../assets/events-data/HostData";
 import eventsData from "../../../assets/events-data/eventsData";
 import users from "../../../assets/events-data/users";
-import { List } from "native-base";
+import { Center, List } from "native-base";
 import { Icon } from "react-native-elements";
 
 export default function Profile({ navigation, route }) {
@@ -67,7 +67,7 @@ export default function Profile({ navigation, route }) {
 
   const pressed = (direction) => {
     console.log(direction);
-    navigation.navigate(direction)
+    navigation.navigate(direction);
   };
   return (
     <View
@@ -77,16 +77,29 @@ export default function Profile({ navigation, route }) {
         alignItems: "center",
       }}
     >
-      <Avatar
-        rounded
-        size='xlarge'
-        containerStyle={{ marginTop: "3%" }}
-        source={{
-          uri: "https://i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
+      <View
+        style={{
+          backgroundColor: "green",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 20,
+          shadowOpacity: 0.4,
+          shadowRadius: 5,
+          opacity: 0.8,
         }}
-      />
-      <Text style={{ fontWeight: "bold", fontSize: 25 }}>John Doe</Text>
-      <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followers: 0</Text>
+      >
+        <Avatar
+          rounded
+          size="xlarge"
+          containerStyle={{ marginTop: "3%" }}
+          source={{
+            uri: "https://i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
+          }}
+        />
+        <Text style={{ fontWeight: "bold", fontSize: 25 }}>John Doe</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followers: 0</Text>
+      </View>
 
       <ListItem
         bottomDivider
@@ -97,7 +110,7 @@ export default function Profile({ navigation, route }) {
           type={"material-icons"}
           name={"info"}
           size={20}
-          color='black'
+          color="black"
           containerStyle={{
             marginRight: "1%",
           }}
@@ -117,7 +130,7 @@ export default function Profile({ navigation, route }) {
           type={"material-icons"}
           name={"favorite"}
           size={20}
-          color='black'
+          color="black"
           containerStyle={{
             marginRight: "1%",
           }}
@@ -137,7 +150,7 @@ export default function Profile({ navigation, route }) {
           type={"material-icons"}
           name={"bookmark"}
           size={20}
-          color='black'
+          color="black"
           containerStyle={{
             marginRight: "1%",
           }}
@@ -157,7 +170,7 @@ export default function Profile({ navigation, route }) {
           type={"material-icons"}
           name={"receipt"}
           size={20}
-          color='black'
+          color="black"
           containerStyle={{
             marginRight: "1%",
           }}
@@ -177,7 +190,7 @@ export default function Profile({ navigation, route }) {
           type={"material-icons"}
           name={"help"}
           size={20}
-          color='black'
+          color="black"
           containerStyle={{
             marginRight: "1%",
           }}
@@ -197,7 +210,7 @@ export default function Profile({ navigation, route }) {
           type={"material-icons"}
           name={"pending"}
           size={20}
-          color='black'
+          color="black"
           containerStyle={{
             marginRight: "1%",
           }}

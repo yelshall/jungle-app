@@ -31,7 +31,7 @@ export default function HostNotifications({ navigation, route }) {
           borderColor: "#c8c7cc",
         }}
       ></View>
-      <View style={{ backgroundColor: "white", flexDirection: "row" }}>
+      <View style={{ backgroundColor: "white", flexDirection: "row",justifyContent:"space-between" }}>
         <Text
           style={{
             alignSelf: "flex-start",
@@ -47,11 +47,11 @@ export default function HostNotifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 220,
-            marginTop: 10,
+            alignSelf:"center"
+           
           }}
           value={switchValue}
-          onValueChange={(value) => setSwitchValue(true)}
+          onValueChange={(value) => setSwitchValue(!switchValue)}
         />
       </View>
 

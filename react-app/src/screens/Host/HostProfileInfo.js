@@ -9,14 +9,14 @@ import {
 
 import Accordion from "react-native-collapsible/Accordion";
 import { AntDesign } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { ListItem, Avatar } from "react-native-elements";
 
 import SettingsList from "react-native-settings-list";
 
 export default function HostProfileInfo({ navigation, route }) {
   const socket = route.params.socket;
   const loginState = route.params.loginState;
-
 
   const [activeSections, setActiveSections] = useState([0]);
 
@@ -49,7 +49,7 @@ export default function HostProfileInfo({ navigation, route }) {
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-around",
+          justifyContent: "space-between",
           borderWidth: 1,
           backgroundColor: "white",
           height: 50,
@@ -57,8 +57,7 @@ export default function HostProfileInfo({ navigation, route }) {
           borderColor: "#D3D3D3",
         }}
       >
-        <Text>Description</Text>
-        <Text style={{ fontSize: 10 }}> Begin Description for </Text>
+        <Text>{section.title}</Text>
         <AntDesign name="down" size={24} color="black" />
       </View>
     );
@@ -74,8 +73,16 @@ export default function HostProfileInfo({ navigation, route }) {
   );
   const SECTIONS = [
     {
+      title: "Organisation name",
+      content: OrgName,
+    },
+    {
+      title: "Email",
+      content: email,
+    },
+    {
       title: "Club Description",
-      content: Description
+      content: Description,
     },
   ];
   const [editing, setEditing] = useState(false);
@@ -135,41 +142,21 @@ export default function HostProfileInfo({ navigation, route }) {
       ></View>
 
       <View style={{ backgroundColor: "#EFEFF4", flex: 1 }}>
-        <SettingsList borderColor="#c8c7cc" defaultItemSize={50}>
-          <SettingsList.Header
-            headerStyle={{ marginTop: 20, fontSize: 20, fontWeight: "bold" }}
-            headerText="Info"
-            position="relative"
+        <View style={{ marginBottom: 200 }}>
+          <Accordion
+            sections={SECTIONS}
+            activeSections={activeSections}
+            renderHeader={renderHeader}
+            renderContent={renderContent}
+            onChange={updateSections}
           />
-          <SettingsList.Item
-            title="Email"
-            titleInfo={email}
-            hasNavArrow={false}
-          />
-          <SettingsList.Item
-            title="Organisation Name"
-            titleInfo={OrgName}
-            hasNavArrow={false}
-          />
-        </SettingsList>
-
-        <View style={{marginBottom:70}}>
-        <Accordion
-          sections={SECTIONS}
-          activeSections={activeSections}
-          renderHeader={renderHeader}
-          renderContent={renderContent}
-          onChange={updateSections}
-        />
-
-
         </View>
 
-        <TouchableOpacity style={styles.signOutBtn} onPress={changeInfoEmail}>
-          <Text style={styles.signOutBtnText}>Edit Email</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.signOutBtn1} onPress={changeInfoName}>
           <Text style={styles.signOutBtnText}>Edit Name</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.signOutBtn} onPress={changeInfoEmail}>
+          <Text style={styles.signOutBtnText}>Edit Email</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.signOutBtn2}
