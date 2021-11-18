@@ -10,6 +10,7 @@ import {
 import { Input, SocialIcon } from "react-native-elements";
 import { AuthContext } from "../../utils/context";
 import * as Google from "expo-google-app-auth";
+import * as Facebook from "expo-facebook";
 
 export default function Login({ navigation, route }) {
   const socket = route.params.socket;
@@ -109,9 +110,50 @@ export default function Login({ navigation, route }) {
       });
   };
 
-  const onLoginFacebook = () => {
-    Alert.alert("Login with facebook");
-  };
+  async function onLoginFacebook() {
+    try {
+      await Facebook.initializeAsync({
+        appId: "197006039272073",
+      });
+      const { type, token, expirationDate, permissions, declinedPermissions } =
+        await Facebook.logInWithReadPermissionsAsync({
+          permissions: ["public_profile"],
+        });
+      if (type === "success") {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(
+          `https://graph.facebook.com/me?access_token=${token}`
+        );
+        setTimeout(
+          () =>
+            socket.emit(
+              "login",
+              { email: "test@mail.net", password: "testPassword" },
+              (err, response) => {
+                if (err) {
+                  if (
+                    err.err === "INCORRECT_EMAIL" ||
+                    err.err === "INCORRECT_PASSWORD"
+                  ) {
+                    setErrorPassword("Your email or password was incorrect");
+                  } else {
+                    setErrorPassword("Error logging you in");
+                  }
+                  return;
+                }
+                setErrorPassword("");
+                signIn(response);
+              }
+            ),
+          1000
+        );
+      } else {
+        // type === 'cancel'
+      }
+    } catch ({ message }) {
+      alert(`Facebook Login Error: ${message}`);
+    }
+  }
 
   return (
     <View style={styles.container}>
