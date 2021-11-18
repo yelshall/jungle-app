@@ -11,6 +11,8 @@ import * as Calendar from "expo-calendar";
 import { LinearGradient } from "expo-linear-gradient";
 import { ListItem, Avatar, Text, Icon } from "react-native-elements";
 import { Flex } from "native-base";
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import { borderRadius } from "styled-system";
 
 const KHeight = Dimensions.get("window").height;
 const KWidth = Dimensions.get("window").width;
@@ -106,6 +108,10 @@ export default function event_info({ navigation, route }) {
       <Text>{update.message}</Text>
     </Flex>
   );
+  let { width, height } = Dimensions.get("window");
+  const ASPECT_RATIO = width / height;
+  const LATITUDE_DELTA = 0.0005; //Very high zoom level
+  const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
   return (
     <ScrollView
@@ -143,7 +149,7 @@ export default function event_info({ navigation, route }) {
               marginTop: 50,
               color: "white",
               fontWeight: "bold",
-              marginLeft: 5
+              marginLeft: 5,
             }}
           >
             {event.eventName}
@@ -337,6 +343,45 @@ export default function event_info({ navigation, route }) {
         </Flex>
 
         {/* Add google maps functionality on here */}
+        <View style={styles.container}>
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            mapType='standard'
+            //maxZoomLevel={20}
+            showsBuildings={true}
+            showsIndoorLevelPicker={true}
+            showsIndoors={true}
+            style={styles.map}
+            initialRegion={{
+              latitude: event.latitude,
+              longitude: event.longitude,
+              longitudeDelta: LONGITUDE_DELTA,
+              latitudeDelta: LATITUDE_DELTA,
+            }}
+          >
+            <Marker
+              coordinate={{
+                latitude: event.latitude,
+                longitude: event.longitude,
+                longitudeDelta: LONGITUDE_DELTA,
+                latitudeDelta: LATITUDE_DELTA,
+              }}
+              title='Marker'
+            />
+          </MapView>
+          {console.log(
+            "latidue" +
+              event.latitude +
+              "longitude" +
+              event.longitude +
+              "latitudeDelta" +
+              event.latitudeDelta +
+              "longitudeDelta" +
+              event.longitudeDelta +
+              "location" +
+              event.location
+          )}
+        </View>
       </View>
 
       {RSVP && event.active && (
@@ -416,7 +461,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignSelf: "center",
-    marginTop: 15
+    marginTop: 15,
   },
   CalendarButton: {
     shadowColor: "black",
@@ -430,5 +475,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 10,
     alignSelf: "center",
+  },
+  container: {
+    flex: 1,
+    //backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 5,
+  },
+  map: {
+    width: Dimensions.get("window").width - 10,
+    height: 180,
+    borderRadius: 5,
+    marginTop: 10,
   },
 });
