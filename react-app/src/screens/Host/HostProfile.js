@@ -5,17 +5,18 @@ import {
   StyleSheet,
   Image,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 import React from "react";
-import { ListItem, Avatar } from "react-native-elements";
+
+import { ListItem, Avatar, Divider, Icon } from "react-native-elements";
 
 import { AuthContext } from "../../utils/context";
 
 import HostData from "../../../assets/events-data/HostData";
 import eventsData from "../../../assets/events-data/eventsData";
 import users from "../../../assets/events-data/users";
-import { Center, List } from "native-base";
-import { Icon } from "react-native-elements";
+import { Center, Column, List, ScrollView } from "native-base";
 
 export default function Profile({ navigation, route }) {
   const socket = route.params.socket;
@@ -69,165 +70,289 @@ export default function Profile({ navigation, route }) {
     console.log(direction);
     navigation.navigate(direction);
   };
+
+  const ColmWidget = ({ topText, bottomText }) => (
+    <View style={{ alignItems: "center", width: "25%" }}>
+      <Text style={{ fontWeight: "bold" }}> {topText} </Text>
+      <Text style={{ fontSize: 10 }}> {bottomText} </Text>
+    </View>
+  );
+
   return (
-    <View
+    <SafeAreaView
       style={{
         width: "100%",
         height: "100%",
         alignItems: "center",
       }}
     >
-      <View
-        style={{
-          backgroundColor: "green",
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 20,
-          shadowOpacity: 0.4,
-          shadowRadius: 5,
-          opacity: 0.8,
-        }}
-      >
-        <Avatar
-          rounded
-          size="xlarge"
-          containerStyle={{ marginTop: "3%" }}
-          source={{
-            uri: "https://i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
+      <ScrollView>
+        <View
+          style={{
+            backgroundColor: "white",
+            width: "100%",
+            alignItems: "center",
+            padding: 20,
           }}
-        />
-        <Text style={{ fontWeight: "bold", fontSize: 25 }}>John Doe</Text>
-        <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followers: 0</Text>
-      </View>
+        >
+          <Avatar
+            rounded
+            size="large"
+            containerStyle={{ marginTop: "3%" }}
+            source={{
+              uri: "https://i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
+            }}
+          />
+          <Text style={{ fontWeight: "bold", fontSize: 25 }}>John Doe</Text>
+          <TouchableOpacity>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 10,
+                color: "purple",
+                marginTop: 8,
+                marginBottom: 8,
+              }}
+            >
+              View as Student
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "#cccccc",
+              width: "85%",
+              marginBottom: 20,
+            }}
+          ></View>
+          <View style={{ flexDirection: "row", backgroundColor: "white" }}>
+            <ColmWidget topText="90" bottomText="Folowers"></ColmWidget>
+            <View
+              style={{ height: 50, backgroundColor: "#cccccc", width: 1 }}
+            ></View>
+            <ColmWidget topText="90" bottomText="Event Views"></ColmWidget>
+            <View
+              style={{ height: 50, backgroundColor: "#cccccc", width: 1 }}
+            ></View>
+            <ColmWidget
+              topText="90"
+              bottomText="Average Attendees"
+            ></ColmWidget>
+          </View>
+        </View>
 
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%", marginTop: 20 }}
-        onPress={() => pressed("HostProfileInfo")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"info"}
-          size={20}
-          color="black"
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Host Info</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
+        <View style={{ backgroundColor: "white", marginTop: 5 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              marginBottom: 20,
+              marginLeft: 10,
+              marginTop: 10,
+            }}
+          >
+            Account settings
+          </Text>
+          <TouchableOpacity>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ width: "20%", padding: 5 }}>
+                <Icon
+                  name="user-o"
+                  type="font-awesome"
+                  size={20}
+                  color="black"
+                />
+              </View>
+              <View
+                style={{ flexDirection: "column", width: "60%", padding: 5 }}
+              >
+                <Text> Your Info</Text>
+                <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
+                  Update your Host Account,email, name and description{" "}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}>
+                <Icon
+                  name="chevron-small-right"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <Divider orientation="horizontal" />
 
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("ChangePref")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"favorite"}
-          size={20}
-          color="black"
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Tags</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
+          <TouchableOpacity>
+            <View style={{ flexDirection: "row", marginTop: 15 }}>
+              <View style={{ width: "20%", padding: 5 }}>
+                <Icon
+                  name="bell"
+                  type="font-awesome"
+                  size={20}
+                  color="black"
+                />
+              </View>
+              <View
+                style={{ flexDirection: "column", width: "60%", padding: 5 }}
+              >
+                <Text> Notifications</Text>
+                <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
+                  Update your messaging,event and host Notifications{" "}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}>
+                <Icon
+                  name="chevron-small-right"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <Divider orientation="horizontal" />
+          <TouchableOpacity>
+            <View style={{ flexDirection: "row", marginTop: 15 }}>
+              <View style={{ width: "20%", padding: 5 }}>
+                <Icon
+                  name="tags"
+                  type="font-awesome"
+                  size={20}
+                  color="black"
+                />
+              </View>
+              <View
+                style={{ flexDirection: "column", width: "60%", padding: 5 }}
+              >
+                <Text> Organiation Tags</Text>
+                <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
+                  Change the tags associated with your organisation{" "}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}>
+                <Icon
+                  name="chevron-small-right"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("Stats")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"bookmark"}
-          size={20}
-          color="black"
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Stats</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
 
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("HostNotifications")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"receipt"}
-          size={20}
-          color="black"
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Notifications</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
+        <View style={{ backgroundColor: "white", marginTop: 5 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              marginBottom: 20,
+              marginLeft: 10,
+              marginTop: 10,
+            }}
+          >
+            More
+          </Text>
+          <TouchableOpacity>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ width: "20%", padding: 5 }}>
+                <Icon
+                  name="question"
+                  type="font-awesome"
+                  size={20}
+                  color="black"
+                />
+              </View>
+              <View
+                style={{ flexDirection: "column", width: "60%", padding: 5 }}
+              >
+                <Text> Help</Text>
+                <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
+                For more info and support{" "}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}>
+                <Icon
+                  name="chevron-small-right"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <Divider orientation="horizontal" />
 
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("Help")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"help"}
-          size={20}
-          color="black"
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Help</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
+          <TouchableOpacity>
+            <View style={{ flexDirection: "row", marginTop: 15 }}>
+              <View style={{ width: "20%", padding: 5 }}>
+                <Icon
+                  name="cloud"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+              <View
+                style={{ flexDirection: "column", width: "60%", padding: 5 }}
+              >
+                <Text> About</Text>
+                <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
+                  Developer Contact, enquires and other information{" "}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}>
+                <Icon
+                  name="chevron-small-right"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+          <Divider orientation="horizontal" />
+          <TouchableOpacity>
+            <View style={{ flexDirection: "row", marginTop: 15 }}>
+              <View style={{ width: "20%", padding: 5 }}>
+                <Icon
+                  name="exchange"
+                  type="font-awesome"
+                  size={20}
+                  color="black"
+                />
+              </View>
+              <View
+                style={{ flexDirection: "column", width: "60%", padding: 5 }}
+              >
+                <Text> Logout</Text>
+                <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
+                  To logout or change account{" "}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}>
+                <Icon
+                  name="chevron-small-right"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("About")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"pending"}
-          size={20}
-          color="black"
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>About</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
 
-      <TouchableOpacity style={styles.signOutBtn} onPress={onSignout}>
-        <Text style={styles.signOutBtnText}>Sign Out</Text>
-      </TouchableOpacity>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
+//        <TouchableOpacity style={styles.signOutBtn} onPress={onSignout}>
+//<Text style={styles.signOutBtnText}>Sign Out</Text>
+//</TouchableOpacity>
 const styles = StyleSheet.create({
   signOutBtn: {
     top: 560,

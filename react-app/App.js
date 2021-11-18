@@ -266,8 +266,9 @@ export default function App() {
                 <Stack.Screen
                   name="HostProfileInfo"
                   component={HostProfileInfo}
+                  options={{headerShown:false}}
                   initialParams={{ socket: socket, loginState: loginState }}
-                  options={defaultOptions("Host Info", "white", "#cccccc")}
+                  options={defaultOptions("Profile", "white", "#cccccc")}
                 />
                 <Stack.Screen
                   name="Stats"
