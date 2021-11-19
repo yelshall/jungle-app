@@ -6,8 +6,9 @@ import {
   Image,
   FlatList,
   SafeAreaView,
+  Modal,
 } from "react-native";
-import React from "react";
+import React,{useState} from "react";
 
 import { ListItem, Avatar, Divider, Icon } from "react-native-elements";
 
@@ -17,8 +18,10 @@ import HostData from "../../../assets/events-data/HostData";
 import eventsData from "../../../assets/events-data/eventsData";
 import users from "../../../assets/events-data/users";
 import { Center, Column, List, ScrollView } from "native-base";
+import { flexDirection } from "styled-system";
 
 export default function Profile({ navigation, route }) {
+  const [modalVisible, setModalVisible] = useState(false);
   const socket = route.params.socket;
   const loginState = route.params.loginState;
   const { signOut } = React.useContext(AuthContext);
@@ -186,12 +189,7 @@ export default function Profile({ navigation, route }) {
           <TouchableOpacity>
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <View style={{ width: "20%", padding: 5 }}>
-                <Icon
-                  name="bell"
-                  type="font-awesome"
-                  size={20}
-                  color="black"
-                />
+                <Icon name="bell" type="font-awesome" size={20} color="black" />
               </View>
               <View
                 style={{ flexDirection: "column", width: "60%", padding: 5 }}
@@ -215,12 +213,7 @@ export default function Profile({ navigation, route }) {
           <TouchableOpacity>
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <View style={{ width: "20%", padding: 5 }}>
-                <Icon
-                  name="tags"
-                  type="font-awesome"
-                  size={20}
-                  color="black"
-                />
+                <Icon name="tags" type="font-awesome" size={20} color="black" />
               </View>
               <View
                 style={{ flexDirection: "column", width: "60%", padding: 5 }}
@@ -242,7 +235,6 @@ export default function Profile({ navigation, route }) {
           </TouchableOpacity>
         </View>
 
-
         <View style={{ backgroundColor: "white", marginTop: 5 }}>
           <Text
             style={{
@@ -255,7 +247,9 @@ export default function Profile({ navigation, route }) {
           >
             More
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={()=>navigation.navigate("Help")}
+          >
             <View style={{ flexDirection: "row" }}>
               <View style={{ width: "20%", padding: 5 }}>
                 <Icon
@@ -270,7 +264,7 @@ export default function Profile({ navigation, route }) {
               >
                 <Text> Help</Text>
                 <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
-                For more info and support{" "}
+                  For more info and support{" "}
                 </Text>
               </View>
               <View style={{ width: "20%" }}>
@@ -285,15 +279,12 @@ export default function Profile({ navigation, route }) {
           </TouchableOpacity>
           <Divider orientation="horizontal" />
 
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={()=>navigation.navigate("About")}
+          >
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <View style={{ width: "20%", padding: 5 }}>
-                <Icon
-                  name="cloud"
-                  type="entypo"
-                  size={20}
-                  color="black"
-                />
+                <Icon name="cloud" type="entypo" size={20} color="black" />
               </View>
               <View
                 style={{ flexDirection: "column", width: "60%", padding: 5 }}
@@ -314,7 +305,9 @@ export default function Profile({ navigation, route }) {
             </View>
           </TouchableOpacity>
           <Divider orientation="horizontal" />
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={()=>{setModalVisible(true)}}
+          >
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <View style={{ width: "20%", padding: 5 }}>
                 <Icon
@@ -343,9 +336,31 @@ export default function Profile({ navigation, route }) {
             </View>
           </TouchableOpacity>
         </View>
-
-
       </ScrollView>
+      <Modal animationType="slide" visible={modalVisible} transparent={true}>
+        <View style={{marginTop:"150%",alignItems:"center"}}>
+            <View style={{height:120,alignItems:"center",borderColor:"black",borderRadius:10,borderWidth:1, width:"80%",backgroundColor:"white"}}>
+              <Text style={{fontSize:15,padding:20}}>Are you sure you want to log out?</Text>
+           
+              <View style={{height:1,width:"100%",backgroundColor:"#cccccc"}}></View>
+              <TouchableOpacity style={{padding:20}}
+              onPress={onSignout}>
+                <Text style={{fontSize:20,fontWeight:"bold"}}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <View style={{marginTop:20,padding:20,borderWidth:1,borderRadius:5,width:300,backgroundColor:"white"}}>
+            <TouchableOpacity
+            onPress={()=>{setModalVisible(false)}}
+            >
+              <Text style={{alignSelf:"center"}}>Cancel</Text>
+            </TouchableOpacity>
+            </View>
+            </View>
+            
+
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
