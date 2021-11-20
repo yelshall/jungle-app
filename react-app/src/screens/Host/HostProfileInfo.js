@@ -61,7 +61,7 @@ export default function HostProfileInfo({ navigation, route }) {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("About")}>
+      <TouchableOpacity onPress={() => navigation.navigate("editOrgEmail")}>
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <View style={{ width: "20%", padding: 5 }}>
             <Icon name="mail" type="entypo" size={20} color="black" />
@@ -83,7 +83,7 @@ export default function HostProfileInfo({ navigation, route }) {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("About")}>
+      <TouchableOpacity onPress={() => navigation.navigate("editOrgDescription")}>
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <View style={{ width: "20%", padding: 5 }}>
             <Icon name="news" type="entypo" size={20} color="black" />

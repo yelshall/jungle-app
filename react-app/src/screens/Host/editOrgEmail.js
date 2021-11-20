@@ -3,8 +3,8 @@ import React from "react";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { height, justifySelf, width } from "styled-system";
 
-export default function editOrgName() {
-  const [text, onChangeText] = React.useState("The wild boys");
+export default function editOrgEmail() {
+  const [text, onChangeText] = React.useState("wildbboys@gmail.com");
   return (
     <View style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
       <Image
@@ -14,15 +14,15 @@ export default function editOrgName() {
           width: "60%",
           alignSelf: "center",
         }}
-        source={require("../../../assets/orgNameIcon.png")}
+        source={require("../../../assets/email.jpg")}
       ></Image>
       <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
         {" "}
-        Your Organiation Name
+        Your Organiation Email
       </Text>
       <Text style={{ color: "grey", marginBottom: 10 }}>
         {" "}
-        Please enter your new organisation Name bellow. Any changes to the
+        Please enter your new organisation Email bellow. Any changes to the
         orgnaisation name will show up on the student and host side{" "}
       </Text>
       <View
@@ -38,7 +38,7 @@ export default function editOrgName() {
           alignSelf:"center"
         }}
       >
-        <Text style={{ fontWeight: "500", color: "grey" }}>Name</Text>
+        <Text style={{ fontWeight: "500", color: "grey" }}>Email</Text>
         <TextInput
           style={{ height: 30}}
           onChangeText={onChangeText}
@@ -56,7 +56,7 @@ export default function editOrgName() {
           justifyContent: "center",
           marginTop:150,
         }}
-        onPress={()=>Alert.alert("Name Changed")}
+        onPress={()=>Alert.alert("Email Changed")}
       >
         <Text
           style={{

@@ -19,6 +19,8 @@ import { defaultOptions } from "./src/components/Header";
 import Help from "./src/screens/Student/Misc/Help";
 import About from "./src/screens/Student/Misc/About";
 import editOrgName from "./src/screens/Host/editOrgName";
+import editOrgEmail from "./src/screens/Host/editOrgEmail";
+import editOrgDescription from "./src/screens/Host/editOrgDescription";
 const Stack = createStackNavigator();
 
 import Constants from "expo-constants";
@@ -304,6 +306,16 @@ export default function App() {
                 <Stack.Screen
                   name="editOrgName"
                   component={editOrgName}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                <Stack.Screen
+                  name="editOrgEmail"
+                  component={editOrgEmail}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                <Stack.Screen
+                  name="editOrgDescription"
+                  component={editOrgDescription }
                   initialParams={{ socket: socket, loginState: loginState }}
                 />
               </Stack.Navigator>
