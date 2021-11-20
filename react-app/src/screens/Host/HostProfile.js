@@ -80,6 +80,35 @@ export default function Profile({ navigation, route }) {
       <Text style={{ fontSize: 10 }}> {bottomText} </Text>
     </View>
   );
+  const ListLine = ({ })=>(
+    <View>
+      <TouchableOpacity
+          onPress={()=>navigation.navigate("About")}
+          >
+            <View style={{ flexDirection: "row", marginTop: 15 }}>
+              <View style={{ width: "20%", padding: 5 }}>
+                <Icon name="cloud" type="entypo" size={20} color="black" />
+              </View>
+              <View
+                style={{ flexDirection: "column", width: "60%", padding: 5 }}
+              >
+                <Text> About</Text>
+                <Text style={{ fontSize: 12, color: "grey", marginBottom: 10 }}>
+                  Developer Contact, enquires and other information{" "}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}>
+                <Icon
+                  name="chevron-small-right"
+                  type="entypo"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+    </View>
+  );
 
   return (
     <SafeAreaView
@@ -156,7 +185,9 @@ export default function Profile({ navigation, route }) {
           >
             Account settings
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={()=>navigation.navigate("HostProfileInfo")}
+          >
             <View style={{ flexDirection: "row" }}>
               <View style={{ width: "20%", padding: 5 }}>
                 <Icon
