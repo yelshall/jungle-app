@@ -18,6 +18,7 @@ import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
 import Help from "./src/screens/Student/Misc/Help";
 import About from "./src/screens/Student/Misc/About";
+import editOrgName from "./src/screens/Host/editOrgName";
 const Stack = createStackNavigator();
 
 import Constants from "expo-constants";
@@ -266,9 +267,13 @@ export default function App() {
                 <Stack.Screen
                   name="HostProfileInfo"
                   component={HostProfileInfo}
-                  options={{headerShown:false}}
+                  options={{ headerShown: false }}
                   initialParams={{ socket: socket, loginState: loginState }}
-                  options={defaultOptions("Your Organisation Info", "white", "#cccccc")}
+                  options={defaultOptions(
+                    "Your Organisation Info",
+                    "white",
+                    "#cccccc"
+                  )}
                 />
                 <Stack.Screen
                   name="Stats"
@@ -294,6 +299,11 @@ export default function App() {
                 <Stack.Screen
                   name="About"
                   component={About}
+                  initialParams={{ socket: socket, loginState: loginState }}
+                />
+                <Stack.Screen
+                  name="editOrgName"
+                  component={editOrgName}
                   initialParams={{ socket: socket, loginState: loginState }}
                 />
               </Stack.Navigator>

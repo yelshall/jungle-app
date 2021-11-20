@@ -39,7 +39,7 @@ export default function HostProfileInfo({ navigation, route }) {
         Account
       </Text>
       <View>
-      <TouchableOpacity onPress={() => navigation.navigate("About")}>
+      <TouchableOpacity onPress={() => navigation.navigate("editOrgName")}>
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <View style={{ width: "20%", padding: 5 }}>
             <Icon name="home" type="entypo" size={20} color="black" />
