@@ -67,7 +67,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
-            marginLeft: 5
+            marginLeft: 5,
           }}
         >
           Events Updates
@@ -91,7 +91,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
-            marginLeft: 5
+            marginLeft: 5,
           }}
         >
           Events Cancellations
@@ -114,7 +114,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
-            marginLeft: 5
+            marginLeft: 5,
           }}
         >
           Events Updates
@@ -137,7 +137,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
-            marginLeft: 5
+            marginLeft: 5,
           }}
         >
           Events Updates
