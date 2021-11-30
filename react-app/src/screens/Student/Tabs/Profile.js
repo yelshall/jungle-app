@@ -16,6 +16,7 @@ import eventsData from "../../../../assets/events-data/eventsData";
 import users from "../../../../assets/events-data/users";
 import { List } from "native-base";
 import { Icon } from "react-native-elements";
+import { fontWeight, paddingBottom, style } from "styled-system";
 
 export default function Profile({ navigation, route }) {
   const socket = route.params.socket;
@@ -77,8 +78,10 @@ export default function Profile({ navigation, route }) {
         width: "100%",
         height: "100%",
         alignItems: "center",
+        backgroundColor: "white"
       }}
     >
+      {/*
       <Avatar
         rounded
         size='xlarge'
@@ -89,13 +92,16 @@ export default function Profile({ navigation, route }) {
       />
       <Text style={{ fontWeight: "bold", fontSize: 25 }}>John Doe</Text>
       <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followed: 0</Text>
-
+      */}
+      <Text style={styles.settingsTitle}>
+        Settings
+      </Text>
       <ListItem
         bottomDivider
-        containerStyle={{ width: "100%", marginTop: 20 }}
+        containerStyle={{ width: "100%", paddingHorizontal: 20, paddingTop: 10 }}
         onPress={() => pressed("AccountInfo")}
       >
-        <Icon
+        {/*<Icon
           type={"material-icons"}
           name={"info"}
           size={20}
@@ -103,19 +109,24 @@ export default function Profile({ navigation, route }) {
           containerStyle={{
             marginRight: "1%",
           }}
-        />
+        />*/}
         <ListItem.Content>
-          <ListItem.Title>Account Info</ListItem.Title>
+          <ListItem.Title>
+            <Text style={styles.listTitle}>Account Info</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle>
+            <Text style={styles.listSubtitle}>Update your account information</Text>
+          </ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Chevron />
+        <ListItem.Chevron color="black" />
       </ListItem>
 
       <ListItem
         bottomDivider
-        containerStyle={{ width: "100%" }}
+        containerStyle={{ width: "100%", paddingHorizontal: 20 }}
         onPress={() => pressed("ChangePref")}
       >
-        <Icon
+        {/*<Icon
           type={"material-icons"}
           name={"favorite"}
           size={20}
@@ -123,19 +134,24 @@ export default function Profile({ navigation, route }) {
           containerStyle={{
             marginRight: "1%",
           }}
-        />
+        />*/}
         <ListItem.Content>
-          <ListItem.Title>Preferences</ListItem.Title>
+          <ListItem.Title>
+            <Text style={styles.listTitle}>Preferences</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle>
+            <Text style={styles.listSubtitle}>Change your event preferences</Text>
+          </ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Chevron />
+        <ListItem.Chevron color="black" />
       </ListItem>
 
       <ListItem
         bottomDivider
-        containerStyle={{ width: "100%" }}
+        containerStyle={{ width: "100%", paddingHorizontal: 20, }}
         onPress={() => pressed("FollowedHosts")}
       >
-        <Icon
+        {/*<Icon
           type={"material-icons"}
           name={"bookmark"}
           size={20}
@@ -143,19 +159,24 @@ export default function Profile({ navigation, route }) {
           containerStyle={{
             marginRight: "1%",
           }}
-        />
+        />*/}
         <ListItem.Content>
-          <ListItem.Title>FollowedHosts</ListItem.Title>
+          <ListItem.Title>
+            <Text style={styles.listTitle}>FollowedHosts</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle>
+            <Text style={styles.listSubtitle}>View the hosts you follow</Text>
+          </ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Chevron />
+        <ListItem.Chevron color="black" />
       </ListItem>
 
       <ListItem
         bottomDivider
-        containerStyle={{ width: "100%" }}
+        containerStyle={{ width: "100%", paddingHorizontal: 20 }}
         onPress={() => pressed("Notifications")}
       >
-        <Icon
+        {/*<Icon
           type={"material-icons"}
           name={"receipt"}
           size={20}
@@ -163,19 +184,24 @@ export default function Profile({ navigation, route }) {
           containerStyle={{
             marginRight: "1%",
           }}
-        />
+        />*/}
         <ListItem.Content>
-          <ListItem.Title>Notifications</ListItem.Title>
+          <ListItem.Title>
+            <Text style={styles.listTitle}>Notifications</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle>
+            <Text style={styles.listSubtitle}>Manage event and message notifications</Text>
+          </ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Chevron />
+        <ListItem.Chevron color="black" />
       </ListItem>
 
       <ListItem
         bottomDivider
-        containerStyle={{ width: "100%" }}
+        containerStyle={{ width: "100%", paddingHorizontal: 20 }}
         onPress={() => pressed("Help")}
       >
-        <Icon
+        {/*<Icon
           type={"material-icons"}
           name={"help"}
           size={20}
@@ -183,19 +209,24 @@ export default function Profile({ navigation, route }) {
           containerStyle={{
             marginRight: "1%",
           }}
-        />
+        />*/}
         <ListItem.Content>
-          <ListItem.Title>Help</ListItem.Title>
+          <ListItem.Title>
+            <Text style={styles.listTitle}>Help</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle>
+            <Text style={styles.listSubtitle}>Contact the developers</Text>
+          </ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Chevron />
+        <ListItem.Chevron color="black" />
       </ListItem>
 
       <ListItem
         bottomDivider
-        containerStyle={{ width: "100%" }}
+        containerStyle={{ width: "100%", paddingHorizontal: 20 }}
         onPress={() => pressed("About")}
       >
-        <Icon
+        {/*<Icon
           type={"material-icons"}
           name={"pending"}
           size={20}
@@ -203,11 +234,33 @@ export default function Profile({ navigation, route }) {
           containerStyle={{
             marginRight: "1%",
           }}
-        />
+        />*/}
         <ListItem.Content>
-          <ListItem.Title>About</ListItem.Title>
+          <ListItem.Title>
+            <Text style={styles.listTitle}>
+              About
+            </Text>
+          </ListItem.Title>
+          <ListItem.Subtitle>
+            <Text style={styles.listSubtitle}>
+              Learn more about the developers
+            </Text>
+          </ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Chevron />
+        <ListItem.Chevron color="black" />
+      </ListItem>
+
+      <ListItem
+        bottomDivider
+        containerStyle={{ width: "100%", paddingHorizontal: 20 }}
+        onPress={() => pressed("About")}
+      >
+        <ListItem.Content>
+          <ListItem.Title>
+            <Text style={styles.listTitle}>Sign Out</Text>
+          </ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron color="black" />
       </ListItem>
 
       <TouchableOpacity style={styles.signOutBtn} onPress={onSignout}>
@@ -238,4 +291,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#2f402d",
   },
+  settingsTitle: {
+    alignSelf: "flex-start",
+    paddingBottom: 10,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    fontWeight: "bold",
+    fontSize: 24
+  },
+  listTitle: {
+    fontSize: 17
+  },
+  listSubtitle: {
+    fontSize: 13
+  },
+  listItemContainer: {
+    width: "100%",
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 10
+  }
 });
