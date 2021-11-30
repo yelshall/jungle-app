@@ -17,10 +17,10 @@ import React, { useEffect } from "react";
 import { TextInput } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { CardItem } from "../../components/Event";
+import { GeneralContext } from "../../utils/context";
 
 export default function HostManage({ navigation, route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+	const {socket, loginState, tags} = React.useContext(GeneralContext);
 
 	const [model1Open, setModal1Open] = React.useState(false);
 
@@ -34,8 +34,6 @@ export default function HostManage({ navigation, route }) {
 	const [openTags, setOpenTags] = React.useState(false);
 	const [tagTypes, setTagTypes] = React.useState([]);
 
-	const [tags, setTags] = React.useState([]);
-
 	const events = React.useRef([]);
 	const pastEvents = React.useRef([]);
 	const cancelledEvents = React.useRef([]);
@@ -43,23 +41,6 @@ export default function HostManage({ navigation, route }) {
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	useEffect(() => {
-		socket.emit("getTags", {}, (err, res) => {
-			if (err) {
-				console.log('err');
-				Alert.alert("Manage", "Error occurred.", [
-					{
-						text: "OK",
-					},
-				]);
-				navigation.navigate("HomeScreen");
-				return;
-			}
-
-			for (let i = 0; i < res.length; i++) {
-				setTagTypes([...tags, { label: res[i].tagName, value: res[i]._id }]);
-			}
-		});
-
 		socket.emit("retreiveHostInfo", { hid: loginState.id }, (err, res) => {
 			if (err) {
 				Alert.alert("Manage", "Error occurred.", [
@@ -111,12 +92,10 @@ export default function HostManage({ navigation, route }) {
 			description: description,
 		};
 
-		console.log('heree');
 		socket.emit(
 			"createEventHost",
 			{ hid: loginState.id, newEvent: newEvent },
 			(err, res) => {
-				console.log('lvkns');
 				if (err) {
 					Alert.alert("Error", "Could not create new event.", [
 						{

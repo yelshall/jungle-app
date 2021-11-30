@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { ListItem, Avatar } from "react-native-elements";
 
-import { AuthContext } from "../../../utils/context";
+import { AuthContext, GeneralContext } from "../../../utils/context";
 
 import HostData from "../../../../assets/events-data/HostData";
 import eventsData from "../../../../assets/events-data/eventsData";
@@ -18,8 +18,8 @@ import { List } from "native-base";
 import { Icon } from "react-native-elements";
 
 export default function Profile({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
+
   const { signOut } = React.useContext(AuthContext);
   const onSignout = () => {
     signOut();
@@ -66,7 +66,6 @@ export default function Profile({ navigation, route }) {
   ];
 
   const pressed = (direction) => {
-    console.log(direction);
     navigation.navigate("StudentMiscStack", {
       screen: direction,
     });

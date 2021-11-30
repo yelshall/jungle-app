@@ -14,7 +14,7 @@ import React, { useEffect } from "react";
 
 import { Text } from "react-native-elements";
 import Constants from "expo-constants";
-
+import { GeneralContext } from "../../../utils/context";
 import { Divider } from "react-native-elements";
 
 var { height, width } = Dimensions.get("window");
@@ -24,8 +24,7 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function FollowedHosts({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
 
   const hostValue = React.useRef([]).current;
   const [isLoading, setIsLoading] = React.useState(true);
@@ -58,9 +57,7 @@ export default function FollowedHosts({ navigation, route }) {
     navigation.navigate("StudentMiscStack", {
       screen: "HostInfo",
       params: {
-        socket: socket,
-        loginState: loginState,
-        host: host,
+        host: host
       },
     });
   };

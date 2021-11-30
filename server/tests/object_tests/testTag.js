@@ -76,7 +76,7 @@ describe('Tag Tests', () => {
                             return;
                         }
                         assert.equal(res2.tags.length, 0, 'Make sure the tag is removed from the host.');
-                        event.retreiveEventInfo(eid, (err, res3) => {
+                        event.getEvent(eid, (err, res3) => {
                             if(err) {
                                 done(err);
                                 return;

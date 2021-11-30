@@ -1,11 +1,10 @@
-import { View, Text } from "react-native";
 import React, { useState, useEffect, useReducer } from 'react';
 import { Chat, defaultTheme } from '@flyerhq/react-native-chat-ui'
-
+import { GeneralContext } from "../utils/context";
 function Messages({ navigation, route }) {
 	const [messageId, setMessageId] = useState(null);
-	const loginState = route.params.loginState;
-	const socket = route.params.socket;
+	const {socket, loginState} = React.useContext(GeneralContext);
+
 	const createChat = route.params.createChat;
 
 	const [messages, setMessages] = useState([]);

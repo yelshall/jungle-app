@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { LinearProgress } from "react-native-elements";
+import { GeneralContext } from "../../../utils/context";
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress} style={[styles.item_s, backgroundColor]}>
@@ -29,11 +30,11 @@ const formatData = (data) => {
 };
 
 export default function UpdatePreferences({ navigation, route }) {
-  const socket = route.params.socket;
+	const {socket, loginState} = React.useContext(GeneralContext);
+
   const [selectedIds, setSelectedIds] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [progress, setProgress] = React.useState(0);
-  const loginState = route.params.loginState;
 
   React.useEffect(() => {
     socket.emit("getTags", {}, (err, res) => {

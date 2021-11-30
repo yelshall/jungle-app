@@ -16,7 +16,7 @@ import { Text } from "react-native-elements";
 import Constants from "expo-constants";
 
 import { Divider } from "react-native-elements";
-
+import { GeneralContext } from "../../../utils/context";
 var { height, width } = Dimensions.get("window");
 
 const smallSize = width / 5;
@@ -24,8 +24,7 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function Help({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
 
   const hostValue = React.useRef([]).current;
   const [isLoading, setIsLoading] = React.useState(true);

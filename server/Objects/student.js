@@ -1,10 +1,10 @@
 const schemas = require('../schemas/schemas');
-const host_functions = require('./host');
-const event_functions = require('./event');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const event_functions = require('./event');
+const host_functions = require('./host');
 
-var studentSignup = (newStudent, callback) => {
+var createStudent = (newStudent, callback) => {
     let salt = bcrypt.genSaltSync(10);
     let hash = bcrypt.hashSync(newStudent.password, salt);
 
@@ -37,7 +37,7 @@ var studentSignup = (newStudent, callback) => {
         });
 };
 
-var isStudentLogin = async (loginInfo, callback) => {
+var isStudentLogin = async (loginInfo) => {
     try {
         let doc = await schemas.Student.findOne({ email: loginInfo.email });
         if (doc === null) {
@@ -49,7 +49,7 @@ var isStudentLogin = async (loginInfo, callback) => {
     }
 };
 
-var studentLogin = (loginInfo, callback) => {
+var loginStudent = (loginInfo, callback) => {
     schemas.Student.findOne({ email: loginInfo.email }, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
@@ -72,7 +72,7 @@ var studentLogin = (loginInfo, callback) => {
     });
 };
 
-var retreiveStudentInfo = (sid, callback) => {
+var getStudent = (sid, callback) => {
     schemas.Student.findById(sid)
         .populate('interestedEvents')
         .populate('confirmedEvents')
@@ -81,7 +81,7 @@ var retreiveStudentInfo = (sid, callback) => {
         .populate('tags')
         .populate('notifications')
         .populate('messages')
-        .exec( async (err, res) => {
+        .exec(async (err, res) => {
             if (err) {
                 if (callback) { callback(err, null); }
             } else {
@@ -105,11 +105,108 @@ var retreiveStudentInfo = (sid, callback) => {
         });
 };
 
+var updateStudent = (sid, update, callback) => {
+    if (update.type === "CHANGE_FIELD") {
+        switch (update.field) {
+            case "NAME":
+                updateStudentName(sid, update.name, callback);
+                break;
+            case "EMAIL":
+                updateStudentEmail(sid, update.email, callback);
+                break;
+            case "BIRTHDATE":
+                updateStudentBirthDate(sid, update.birthDate, callback);
+                break;
+            case "GENDER":
+                updateStudentGender(sid, update.gender, callback);
+                break;
+            case "IMAGE":
+                updateStudentImage(sid, update.image, callback);
+                break;
+            case "EXPO_TOKEN":
+                updateStudentExpoToken(sid, update.expoPushToken, callback);
+                break;
+            default:
+                if (callback) { callback({ err: "Incorrect update field" }, null); }
+                break;
+        }
+    } else if (update.type === "ADD") {
+        switch (update.field) {
+            case "INTERESTED_EVENT":
+                addInterestedEvent(sid, update.eid, callback);
+                break;
+            case "CONFIRMED_EVENT":
+                addConfirmedEvent(sid, update.eid, callback);
+                break;
+            case "RECOMMENDED_EVENT":
+                addRecommendedEvent(sid, update.eid, callback);
+                break;
+            case "UNLIKED_EVENT":
+                addUnlikedEvent(sid, update.eid, callback);
+                break;
+            case "TAG":
+                addTag(sid, update.tid, callback);
+                break;
+            case "NOTIFICATION":
+                addNotification(sid, update.nid, callback);
+                break;
+            case "MESSAGES":
+                addMessages(sid, update.mid, callback);
+                break;
+            case "HOST":
+                addHost(sid, update.hid, callback);
+                break;
+            default:
+                if (callback) { callback({ err: "Incorrect update field" }, null); }
+                break;
+        }
+    } else if (update.type === "REMOVE") {
+        switch (update.field) {
+            case "INTERESTED_EVENT":
+                removeInterestedEvent(sid, update.eid, callback);
+                break;
+            case "CONFIRMED_EVENT":
+                removeConfirmedStudent(sid, update.eid, callback);
+                break;
+            case "RECOMMENDED_EVENT":
+                removeRecommendedEvent(sid, update.eid, callback);
+                break;
+            case "UNLIKED_EVENT":
+                removeUnlikedEvent(sid, update.eid, callback);
+                break;
+            case "TAG":
+                removeTag(sid, update.tid, callback);
+                break;
+            case "NOTIFICATION":
+                removeNotification(sid, update.nid, callback);
+                break;
+            case "MESSAGES":
+                removeMessages(sid, update.mid, callback);
+                break;
+            case "HOST":
+                removeHost(sid, update.hid, callback);
+                break;
+            default:
+                if (callback) { callback({ err: "Incorrect update field" }, null); }
+                break;
+        }
+    } else {
+        if (callback) { callback({ err: "Incorrect update field" }, null); }
+    }
+};
+
 var deleteStudent = (sid, callback) => {
-    retreiveStudentInfo(sid, (err, res) => {
+    getStudent(sid, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
         } else {
+            //Remove interested events
+            //Remove confirmed events
+            //Remove unliked events
+            //Remove recommended events
+            //Remove hosts
+            //Remove notifications
+            //Remove messages
             res.interestedEvents.forEach((interestedEvent, index) => {
                 event_functions.removeInterestedStudent(interestedEvent, sid);
             });
@@ -118,9 +215,15 @@ var deleteStudent = (sid, callback) => {
                 event_functions.removeConfirmedStudent(confirmedEvent, sid);
             });
 
+            res.unlikedEvents.forEach((confirmedEvent, index) => {
+                event_functions.removeUnlikedStudent(confirmedEvent, sid);
+            });
+
             res.following.forEach((host, index) => {
                 host_functions.removeFollower(host, sid);
             });
+
+            //Messages and notifications
 
             schemas.Student.findByIdAndDelete(sid, (err, res2) => {
                 if (err) {
@@ -137,120 +240,139 @@ var deleteStudent = (sid, callback) => {
 var addInterestedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, { $addToSet: { interestedEvents: eid } }, (err, res) => {
         if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            event_functions.addInterestedStudent(eid, sid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (res.password) { res.password = undefined; }
-                    if (callback) { callback(null, res); }
-                }
-            });
+            if (callback) { callback(err, null) }
+            return;
         }
+        event_functions.addInterestedStudent(eid, sid, callback);
     });
 };
 
 var addConfirmedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, { $addToSet: { confirmedEvents: eid } }, (err, res) => {
         if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            event_functions.addConfirmedStudent(eid, sid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (res.password) { res.password = undefined; }
-                    if (callback) { callback(null, res); }
-                }
-            });
+            if (callback) { callback(err, null) }
+            return;
         }
+        event_functions.addConfirmedStudent(eid, sid, callback);
     });
 };
 
 var addUnlikedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, { $addToSet: { unlikedEvents: eid } }, (err, res) => {
         if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            event_functions.addUnlikedStudent(eid, sid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (res.password) { res.password = undefined; }
-                    if (callback) { callback(null, res); }
-                }
-            });
+            if (callback) { callback(err, null) }
+            return;
         }
+        event_functions.addUnlikedStudent(eid, sid, callback);
+    });
+};
+
+var addRecommendedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { recommendedEvents: eid } }, callback);
+};
+
+var addMessages = (sid, mid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { messages: mid } }, callback);
+};
+
+var addTag = (sid, tid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { tags: tid } }, callback);
+};
+
+var addNotification = (sid, nid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { notifications: nid } }, callback);
+};
+
+var addHost = (sid, hid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { following: hid } }, (err, res) => {
+        if(err) {
+            if(callback) {callback(err, null)}
+            return;
+        }
+        host_functions.addFollower(hid, sid, callback);
     });
 };
 
 var removeInterestedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, { $pull: { interestedEvents: eid } }, (err, res) => {
         if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            event_functions.removeInterestedStudent(eid, sid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (res.password) { res.password = undefined; }
-                    if (callback) { callback(null, res); }
-                }
-            });
+            if (callback) { callback(err, null) }
+            return;
         }
+        event_functions.removeInterestedStudent(eid, sid, callback);
     });
 };
 
 var removeConfirmedEvent = (sid, eid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, { $pull: { confirmedEvents: eid } }, (err, res) => {
         if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            event_functions.removeConfirmedStudent(eid, sid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (res.password) { res.password = undefined; }
-                    if (callback) { callback(null, res); }
-                }
-            });
+            if (callback) { callback(err, null) }
+            return;
         }
+        event_functions.removeConfirmedStudent(eid, sid, callback);
     });
 };
 
-var followHost = (sid, hid, callback) => {
-    schemas.Student.findByIdAndUpdate(sid, { $addToSet: { following: hid } }, (err, res) => {
+var removeUnlikedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $pull: { unlikedEvents: eid } }, (err, res) => {
         if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            host_functions.addFollower(hid, sid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (res.password) { res.password = undefined; }
-                    if (callback) { callback(null, res); }
-                }
-            });
+            if (callback) { callback(err, null) }
+            return;
         }
+        event_functions.removeUnlikedStudent(eid, sid, callback);
     });
 };
 
-var unfollowHost = (sid, hid, callback) => {
+var removeRecommendedEvent = (sid, eid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $pull: { recommendedEvents: eid } }, callback);
+};
+
+var removeMessages = (sid, mid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $pull: { messages: mid } }, callback);
+};
+
+var removeTag = (sid, tid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $pull: { tags: tid } }, callback);
+};
+
+var removeNotification = (sid, nid, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { $pull: { notifications: nid } }, callback);
+};
+
+var removeHost = (sid, hid, callback) => {
     schemas.Student.findByIdAndUpdate(sid, { $pull: { following: hid } }, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            host_functions.removeFollower(hid, sid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (res.password) { res.password = undefined; }
-                    if (callback) { callback(null, res); }
-                }
-            });
+        if(err) {
+            if(callback) {callback(err, null)}
+            return;
         }
+        host_functions.removeFollower(hid, sid, callback);
     });
+};
+
+var updateStudentName = (sid, name, callback) => {
+    schemas.Student.findByIdAndUpdate(sid,
+        { $set: { 'fullName.firstName': name.firstName, 'fullName.lastName': name.lastName } },
+        callback);
+};
+
+var updateStudentEmail = (sid, email, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { email: email }, callback);
+};
+
+var updateStudentBirthDate = (sid, birthDate, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { birthDate: birthDate }, callback);
+};
+
+var updateStudentGender = (sid, gender, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { gender: gender }, callback);
+};
+
+var updateStudentImage = (sid, image, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { imageURL: image }, callback);
+};
+
+var updateStudentExpoToken = (sid, expoPushToken, callback) => {
+    schemas.Student.findByIdAndUpdate(sid, { expoPushToken: expoPushToken }, callback);
 };
 
 var getRecommendations = (sid, callback) => {
@@ -258,17 +380,33 @@ var getRecommendations = (sid, callback) => {
 };
 
 module.exports = {
-    studentSignup: studentSignup,
+    createStudent: createStudent,
     isStudentLogin: isStudentLogin,
-    studentLogin: studentLogin,
-    retreiveStudentInfo: retreiveStudentInfo,
+    loginStudent: loginStudent,
+    getStudent: getStudent,
     deleteStudent: deleteStudent,
     addConfirmedEvent: addConfirmedEvent,
     addInterestedEvent: addInterestedEvent,
     addUnlikedEvent: addUnlikedEvent,
     removeConfirmedEvent: removeConfirmedEvent,
     removeInterestedEvent: removeInterestedEvent,
-    followHost: followHost,
-    unfollowHost: unfollowHost,
-    getRecommendations: getRecommendations
+    removeUnlikedEvent: removeUnlikedEvent,
+    addHost: addHost,
+    removeHost: removeHost,
+    removeRecommendedEvent: removeRecommendedEvent,
+    removeTag: removeTag,
+    removeMessages: removeMessages,
+    removeNotification: removeNotification,
+    addRecommendedEvent: addRecommendedEvent,
+    addMessages: addMessages,
+    addNotification: addNotification,
+    addTag: addTag,
+    getRecommendations: getRecommendations,
+    updateStudentBirthDate: updateStudentBirthDate,
+    updateStudentEmail: updateStudentEmail,
+    updateStudentExpoToken: updateStudentExpoToken,
+    updateStudentGender: updateStudentGender,
+    updateStudentImage: updateStudentImage,
+    updateStudentName: updateStudentName,
+    updateStudent: updateStudent
 };

@@ -17,93 +17,68 @@ import Help from "./Help";
 
 export default function StudentMiscStack({ navigation, route }) {
   const Stack = createStackNavigator();
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
-
+  
   return (
     <Stack.Navigator>
       <Stack.Screen
         name='EventInfo'
         component={EventInfo}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={defaultOptions("Event information", "white", "#cccccc")}
       />
       <Stack.Screen
         name='HostInfo'
         component={HostInfo}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={defaultOptions("Host information", "white", "#cccccc")}
       />
       <Stack.Screen
         name='Profile'
         component={Profile}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={defaultOptions("Event information", "white", "#cccccc")}
       />
 
       <Stack.Screen
         name='FollowedHosts'
         component={FollowedHosts}
-        initialParams={{
-          loginState: loginState,
-          socket: socket,
-        }}
         options={defaultOptions("Following", "white", "#cccccc")}
       />
       <Stack.Screen
         name='AccountInfo'
         component={AccountInfo}
-        initialParams={{
-          loginState: loginState,
-          socket: socket,
-        }}
         options={defaultOptions("Settings", "white", "#cccccc")}
       />
       <Stack.Screen
         name='ChangePref'
         component={ChangePref}
-        initialParams={{
-          loginState: loginState,
-          socket: socket,
-        }}
         options={defaultOptions("Settings", "white", "#cccccc")}
       />
       <Stack.Screen
         name='Preferences'
         component={Preferences}
-        initialParams={{
-          socket: socket,
-        }}
         options={defaultOptions("Settings", "white", "#cccccc")}
       />
       <Stack.Screen
         name='UpdatePreferences'
         component={UpdatePreferences}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name='Message'
         component={Message}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={defaultOptions("Message", "white", "#cccccc")}
       />
       <Stack.Screen
         name='Notifications'
         component={Notifications}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={defaultOptions("Settings", "white", "#cccccc")}
       />
       <Stack.Screen
         name='About'
         component={About}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={defaultOptions("Settings", "white", "#cccccc")}
       />
       <Stack.Screen
         name='Help'
         component={Help}
-        initialParams={{ socket: socket, loginState: loginState }}
         options={defaultOptions("Settings", "white", "#cccccc")}
       />
     </Stack.Navigator>

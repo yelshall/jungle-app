@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity, ImageBackground, SafeAreaView } from "react-native";
 import { LinearProgress, Icon } from 'react-native-elements';
-import { AuthContext } from '../../utils/context';
+import { AuthContext, GeneralContext } from '../../utils/context';
 
 const Item = ({ item, onPress, selected }) => (
 	<TouchableOpacity onPress={onPress} style={[styles.item]}>
@@ -55,37 +55,18 @@ const formatData = (data) => {
 
 export default function Preferences({ navigation, route }) {
 	const { signUp } = React.useContext(AuthContext);
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+	const { socket, loginState, tags } = React.useContext(GeneralContext);
+	const [tagsArr, setTagsArr] = React.useState([]);
 	const [selectedIds, setSelectedIds] = React.useState([]);
-	const [tags, setTags] = React.useState([]);
 	const [progress, setProgress] = React.useState(0);
 
-	React.useEffect(() => {
-		socket.emit('getTags', {}, (err, res) => {
-			if (err) {
-				Alert.alert(
-					"Host signup",
-					"Server error occurred, try again later",
-					[
-						{
-							text: "OK"
-						}
-					]
-				);
-				navigation.navigate('HomeScreen');
-				return;
-			}
-
-			let tag = [];
-
-			for (let i = 0; i < res.length; i++) {
-				tag.push({ title: res[i].tagName, imageURL: res[i].imageURL, id: res[i]._id });
-			}
-
-			setTags(tag);
-		})
-	}, []);
+	useEffect(() => {
+		let arr = [];
+		for (let i = 0; i < tags.length; i++) {
+			arr.push({ title: tags[i].tagName, imageURL: tags[i].imageURL, id: tags[i]._id });
+		}
+		setTagsArr(arr);
+	}, [])
 
 	const renderItem = ({ item }) => {
 		const selected = selectedIds.some(i => i.id === item.id) ? true : false;
@@ -118,7 +99,7 @@ export default function Preferences({ navigation, route }) {
 		route.params.newStudent.tags = tagsArr;
 		route.params.newStudent.expoPushToken = loginState.expoPushToken;
 
-		socket.emit('studentSignup', route.params.newStudent, (err, response) => {
+		socket.emit('createStudent', route.params.newStudent, (err, response) => {
 			if (err) {
 				Alert.alert(
 					"Host sign up",
@@ -167,7 +148,7 @@ export default function Preferences({ navigation, route }) {
 			<FlatList
 				numColumns={3}
 				style={styles.list}
-				data={formatData(tags)}
+				data={formatData(tagsArr)}
 				renderItem={renderItem}
 				keyExtractor={(item) => item.id}
 				extraData={selectedIds}

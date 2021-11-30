@@ -10,9 +10,10 @@ import {
 } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Input } from 'react-native-elements';
+import { GeneralContext } from "../../utils/context";
 
 export default function Register({ navigation, route }) {
-    const socket = route.params.socket;
+	const {socket} = React.useContext(GeneralContext);
 
     const [name, setName] = React.useState("");
     const [description, setDescription] = React.useState("");

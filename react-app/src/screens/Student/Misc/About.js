@@ -24,9 +24,6 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function About({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
-
   const hostValue = React.useRef([]).current;
   const [isLoading, setIsLoading] = React.useState(true);
   const [, forceUpdate] = React.useReducer((x) => x + 1, 0);

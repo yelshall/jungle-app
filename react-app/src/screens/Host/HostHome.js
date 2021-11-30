@@ -9,12 +9,12 @@ import Chat from "../Chat";
 import HostProfile from "./HostProfile";
 
 import {defaultOptions} from "../../components/Header";
+import { GeneralContext } from "../../utils/context";
 
 const Tabs = createBottomTabNavigator();
 
 export default function HostHome({ navigation, route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
 
 	return (
 		<Tabs.Navigator
@@ -67,19 +67,16 @@ export default function HostHome({ navigation, route }) {
 			<Tabs.Screen
 				name="HostManage"
 				component={HostManage}
-				initialParams={{ socket: socket, loginState: loginState }}
 				options={defaultOptions('Manage', 'white', '#cccccc'), { unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
 				name="Chat"
 				component={Chat}
-				initialParams={{ socket: socket, loginState: loginState }}
 				options={defaultOptions('Chat', 'white', '#cccccc'), { unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
 				name="HostProfile"
 				component={HostProfile}
-				initialParams={{ socket: socket, loginState: loginState }}
 				options={defaultOptions('Profile', 'white', '#cccccc'), { unmountOnBlur: true }}
 			/>
 		</Tabs.Navigator>

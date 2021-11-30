@@ -7,10 +7,10 @@ import {
 	StyleSheet
 } from 'react-native'
 import { Input } from 'react-native-elements';
-import { AuthContext } from '../../utils/context';
+import { AuthContext, GeneralContext } from '../../utils/context';
 
 export default function Login({ navigation, route }) {
-	const socket = route.params.socket;
+	const {socket, loginState} = React.useContext(GeneralContext);
 	const [email, setEmail] = React.useState("");
 	const [password, setPassword] = React.useState("");
 	const [hidePassword, setHidePassword] = React.useState(true);

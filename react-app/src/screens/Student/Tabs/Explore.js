@@ -15,14 +15,15 @@ import { Flex } from 'native-base';
 import { DefaultTheme } from "@react-navigation/native";
 
 import { CardItem, CardRow } from "../../../components/Event";
+import { GeneralContext } from "../../../utils/context";
 var { height, width } = Dimensions.get("window");
 
 const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function Explore({ navigation, route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
+
 	const interestedEvents = React.useRef([]);
 	const confirmedEvents = React.useRef([]);
 	const pastEvents = React.useRef([]);

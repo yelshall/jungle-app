@@ -12,9 +12,6 @@ import React, { useState } from "react";
 import SettingsList from "react-native-settings-list";
 
 export default function AccountInfo({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
-
   const [email, setEmail] = useState("John@purdue.edu");
   const [name, setName] = useState("John");
   const [Gender, setGender] = useState("male");

@@ -19,8 +19,6 @@ import { Animated } from "react-native";
 import { Switch } from "react-native-elements";
 
 export default function Notifications({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
   const { signOut } = React.useContext(AuthContext);
   const [switchValue, setSwitchValue] = useState(false);
   const onSignout = () => {
@@ -36,9 +34,7 @@ export default function Notifications({ navigation, route }) {
   const onFollowing = () => {
     navigation.navigate("FollowedHosts", {
       HostData: HostData[0],
-      eventsData: eventsData,
-      socket: socket,
-      loginState: loginState,
+      eventsData: eventsData
     });
   };
 

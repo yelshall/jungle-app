@@ -1,13 +1,12 @@
 const schemas = require("../schemas/schemas");
-const event_functions = require("./event");
-const tag_functions = require("./tag");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const tag_functions = require('./tag');
 
 //Add functionality to check if an event's time has already
 //passed so it can be moved to archived events
 
-var hostSignup = (newHost, callback) => {
+var createHost = (newHost, callback) => {
     let salt = bcrypt.genSaltSync(10);
     let hash = bcrypt.hashSync(newHost.password, salt);
 
@@ -28,8 +27,8 @@ var hostSignup = (newHost, callback) => {
 
     hostSave.save()
         .then(async data => {
-            for (let i = 0; i < newHost.tags.length; i++) {
-                await tag_functions.addHost(newHost.tags[i], data._id);
+            for(let i = 0; i < newEvent.tags.length; i++) {
+                tag_functions.addHost(newHost.tags[i], res._id);
             }
 
             let token = jwt.sign({ id: data._id, email: data.email, signInType: 'HOST' }, process.env.APP_SECRET, {
@@ -57,7 +56,7 @@ var isHostLogin = async (loginInfo, callback) => {
     }
 };
 
-var hostLogin = (loginInfo, callback) => {
+var loginHost = (loginInfo, callback) => {
     schemas.Host.findOne({ email: loginInfo.email }, (err, res) => {
         if (err) {
             if (callback) { callback(err, null); }
@@ -85,6 +84,7 @@ var deleteHost = (hid, callback) => {
         if (err) {
             if (callback) { callback(err, null); }
         } else {
+            //Students
             res.followers.forEach((follower, index) => {
                 schemas.Student.findByIdAndUpdate(follower, { $pull: { following: hid } }, (err, res) => {
                     return;
@@ -111,8 +111,8 @@ var deleteHost = (hid, callback) => {
     });
 }
 
-var retreiveHostInfo = (hid, callback) => {
-    schemas.Host.findById(hid).populate('tags')
+var getHost = (hid, callback) => {
+    schemas.Host.findById(hid).populate('tags').populate('followers')
         .populate('events').populate('messages').exec(async (err, res) => {
             if (err) {
                 if (callback) { callback(err, null); }
@@ -127,8 +127,8 @@ var retreiveHostInfo = (hid, callback) => {
                     ret.push(await schemas.Event.findById(res.events[i]._id).populate('eventHost').populate('updates').populate('tags').exec());
                 }
                 let messages = [];
-                for(let i = 0; i < res.messages.length; i++) {
-                    messages.push(await schemas.Messages.findById(res.messages[i]._id).populate({path: 'firstId', model: schemas.Student}).populate({path: 'secondId', model: schemas.Host}).exec());
+                for (let i = 0; i < res.messages.length; i++) {
+                    messages.push(await schemas.Messages.findById(res.messages[i]._id).populate({ path: 'firstId', model: schemas.Student }).populate({ path: 'secondId', model: schemas.Host }).exec());
                 }
                 res.events = ret;
                 res.messages = messages;
@@ -137,121 +137,163 @@ var retreiveHostInfo = (hid, callback) => {
         });
 }
 
-var createEventHost = (hid, newEvent, callback) => {
-    event_functions.createEvent(newEvent, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            schemas.Host.findByIdAndUpdate(hid, { $addToSet: { events: res._id } }, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (callback) { callback(null, res); }
-                }
-            });
+var updateHost = (hid, update, callback) => {
+    if (update.type === "CHANGE_FIELD") {
+        switch (update.field) {
+            case "HOST_NAME":
+                updateHostname(hid, update.hostName, callback);
+                break;
+            case "EMAIL":
+                updateHostEmail(hid, update.email, callback);
+                break;
+            case "HOST_EMAIL":
+                updateHostHostEmail(hid, update.hostEmail, callback);
+                break;
+            case "PHONENUMBER":
+                updateHostPhoneNumber(hid, update.phoneNumber, callback);
+                break;
+            case "DESCRIPTION":
+                updateHostDescription(hid, update.description, callback);
+                break;
+            case "WEBSITE":
+                updateHostWebsite(hid, update.website, callback);
+                break;
+            case "IMAGE":
+                updateHostImage(hid, update.image, callback);
+                break;
+            case "EXPO_TOKEN":
+                updateHostExpoToken(hid, update.expoPushToken, callback);
+                break;
+            default:
+                if (callback) { callback({ err: "Incorrect update field" }, null); }
+                break;
         }
-    });
-};
-
-var updateEventHost = (eid, update, callback) => {
-    event_functions.updateEvent(eid, update, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            if (callback) { callback(null, res); }
+    } else if (update.type === "ADD") {
+        switch (update.field) {
+            case "EVENT":
+                addEvent(hid, update.eid, callback);
+                break;
+            case "STUDENT":
+                addFollower(hid, update.eid, callback);
+                break;
+            case "TAG":
+                addTag(hid, update.tid, callback);
+                break;
+            case "MESSAGES":
+                addMessages(hid, update.mid, callback);
+                break;
+            default:
+                if (callback) { callback({ err: "Incorrect update field" }, null); }
+                break;
         }
-    });
-};
-
-//Change this to archived events
-var deleteEventHost = (hid, eid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, { $pull: { events: eid } }, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            event_functions.deleteEvent(eid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null); }
-                } else {
-                    if (callback) { callback(null, res); }
-                }
-            });
+    } else if (update.type === "REMOVE") {
+        switch (update.field) {
+            case "EVENT":
+                removeEvent(hid, update.eid, callback);
+                break;
+            case "STUDENT":
+                removeFollower(hid, update.eid, callback);
+                break;
+            case "TAG":
+                removeTag(hid, update.tid, callback);
+                break;
+            case "MESSAGES":
+                removeMessages(hid, update.mid, callback);
+                break;
+            default:
+                if (callback) { callback({ err: "Incorrect update field" }, null); }
+                break;
         }
-    });
+    } else {
+        if (callback) { callback({ err: "Incorrect update field" }, null); }
+    }
 };
 
 var addFollower = (hid, sid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, { $addToSet: { followers: sid } }, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            if (callback) { callback(null, res); }
-        }
-    });
+    schemas.Host.findByIdAndUpdate(hid, { $addToSet: { followers: sid } }, callback);
 };
 
 var removeFollower = (hid, sid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, { $pull: { followers: sid } }, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            if (callback) { callback(null, res); }
-        }
-    });
+    schemas.Host.findByIdAndUpdate(hid, { $pull: { followers: sid } }, callback);
+};
+
+var addEvent = (hid, eid, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { $addToSet: { events: eid } }, callback);
+};
+
+var removeEvent = (hid, eid, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { $pull: { events: eid } }, callback);
 };
 
 var addTag = (hid, tid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, { $addToSet: { tags: tid } }, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            tag_functions.addHost(tid, hid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null) }
-                } else {
-                    if (callback) { callback(null, res); }
-                }
-            });
-        }
-    });
+    schemas.Host.findByIdAndUpdate(hid, { $addToSet: { tags: tid } }, callback);
 };
 
 var removeTag = (hid, tid, callback) => {
-    schemas.Host.findByIdAndUpdate(hid, { $pull: { tags: tid } }, (err, res) => {
-        if (err) {
-            if (callback) { callback(err, null); }
-        } else {
-            tag_functions.removeHost(tid, hid, (err, res2) => {
-                if (err) {
-                    if (callback) { callback(err, null) }
-                } else {
-                    if (callback) { callback(null, res); }
-                }
-            });
-        }
-    });
+    schemas.Host.findByIdAndUpdate(hid, { $pull: { tags: tid } }, callback);
 };
 
-var cancelEventHost = (eid, callback) => {
-    event_functions.cancelEvent(eid, callback);
-}
+var addMessages = (hid, mid, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { $addToSet: { messages: mid } }, callback);
+};
 
+var removeMessages = (hid, mid, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { $pull: { messages: mid } }, callback);
+};
 
-//Update functions for hostName, hostEmail, phoneNumber, email,
-//password, description, website, imageURL
+var updateHostname = (hid, hostName, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { hostName: hostName }, callback);
+};
+
+var updateHostEmail = (hid, email, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { email: email }, callback);
+};
+
+var updateHostHostEmail = (hid, hostEmail, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { hostEmail: hostEmail }, callback);
+};
+
+var updateHostExpoToken = (hid, expoPushToken, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { expoPushToken: expoPushToken }, callback);
+};
+
+var updateHostDescription = (hid, description, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { description: description }, callback);
+};
+
+var updateHostPhoneNumber = (hid, phoneNumber, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { phoneNumber: phoneNumber }, callback);
+};
+
+var updateHostWebsite = (hid, website, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { website: website }, callback);
+};
+
+var updateHostImage = (hid, image, callback) => {
+    schemas.Host.findByIdAndUpdate(hid, { imageURL: image }, callback);
+};
 
 module.exports = {
-    hostSignup: hostSignup,
+    createHost: createHost,
     isHostLogin: isHostLogin,
-    hostLogin: hostLogin,
+    loginHost: loginHost,
     deleteHost: deleteHost,
-    retreiveHostInfo: retreiveHostInfo,
-    createEventHost: createEventHost,
-    updateEventHost: updateEventHost,
-    deleteEventHost: deleteEventHost,
+    getHost: getHost,
     addFollower: addFollower,
     removeFollower: removeFollower,
     addTag: addTag,
     removeTag: removeTag,
-    cancelEventHost: cancelEventHost
+    addEvent: addEvent,
+    removeEvent: removeEvent,
+    addMessages: addMessages,
+    removeMessages: removeMessages,
+    updateHostDescription: updateHostDescription,
+    updateHostEmail: updateHostEmail,
+    updateHostExpoToken: updateHostExpoToken,
+    updateHostHostEmail: updateHostHostEmail,
+    updateHostPhoneNumber: updateHostPhoneNumber,
+    updateHostname: updateHostname,
+    updateHostWebsite: updateHostWebsite,
+    updateHostImage: updateHostImage,
+    updateHost: updateHost
 };

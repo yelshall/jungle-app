@@ -7,9 +7,11 @@ import {
 } from "react-native";
 import { Input, Icon, LinearProgress } from 'react-native-elements';
 import { passwordStrength } from 'check-password-strength';
+import { GeneralContext } from "../../utils/context";
 
 export default function EmailAndPassword({ navigation, route }) {
-    const socket = route.params.socket;
+	const {socket, loginState} = React.useContext(GeneralContext);
+
     const [email, setEmail] = React.useState("");
     const [errorEmail, setErrorEmail] = React.useState("");
     const [password1, setPassword1] = React.useState("");

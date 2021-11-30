@@ -20,7 +20,6 @@ export default function HomeScreen({ navigation, route }) {
                 resizeMode={Video.RESIZE_MODE_COVER}
             />
 
-
             <View style={styles.container}>
                 <Image
                     source={require("../../../assets/logo/Logo-light.png")}

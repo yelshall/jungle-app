@@ -6,7 +6,7 @@ import {
   Pressable,
   Dimensions,
 } from "react-native";
-
+import { GeneralContext } from "../../../utils/context";
 import React, { useEffect, useRef } from "react";
 
 import { Text } from "react-native-elements";
@@ -20,8 +20,8 @@ const itemWidth = width * 0.67;
 const itemHeight = height / 2 - Constants.statusBarHeight * 2;
 
 export default function ChangePref({ route, navigation }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
+
   const tags = React.useRef([]).current;
   const newStudent = route.params.current;
 

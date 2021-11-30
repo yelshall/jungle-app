@@ -1,5 +1,5 @@
 import { View, StyleSheet, ScrollView, Dimensions, Image, ImageBackground } from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
+import { GeneralContext } from "../../../utils/context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import React from "react";
 
@@ -11,8 +11,7 @@ const KHeight = Dimensions.get("window").height;
 const KWidth = Dimensions.get("window").width;
 
 export default function event_info({ navigation, route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
 	const event = route.params.event;
 
 	const [RSVP, setRSVP] = React.useState(event.type === "INTERESTED");
