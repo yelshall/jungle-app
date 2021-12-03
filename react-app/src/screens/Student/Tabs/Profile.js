@@ -1,241 +1,327 @@
+import React, { useContext, useState, useEffect } from 'react';
 import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  FlatList,
-} from "react-native";
-import React from "react";
-import { ListItem, Avatar } from "react-native-elements";
+	View,
+	Text,
+	TouchableOpacity,
+	ScrollView,
+	ActivityIndicator
+} from 'react-native';
+import {
+	Avatar,
+	Actionsheet,
+	useDisclose
+} from 'native-base';
+import {
+	ListItem
+} from 'react-native-elements';
+import { GeneralContext, AuthContext } from '../../../utils/context';
 
-import { AuthContext } from "../../../utils/context";
-
-import HostData from "../../../../assets/events-data/HostData";
-import eventsData from "../../../../assets/events-data/eventsData";
-import users from "../../../../assets/events-data/users";
-import { List } from "native-base";
-import { Icon } from "react-native-elements";
-
-export default function Profile({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
-  const { signOut } = React.useContext(AuthContext);
-  const onSignout = () => {
-    signOut();
-  };
-
-  const onPref = () => {
-    navigation.navigate("StudentMiscStack", {
-      screen: "ChangePref",
-      params: {
-        users: users[0],
-        socket: socket,
-        loginState: loginState,
-      },
-    });
-  };
-
-  const onFollowing = () => {
-    navigation.navigate("StudentMiscStack", {
-      screen: "FollowedHosts",
-      params: {
-        HostData: HostData[0],
-        eventsData: eventsData,
-        socket: socket,
-        loginState: loginState,
-      },
-    });
-  };
-
-  const list = [
-    {
-      name: "Amy Farha",
-      avatar_url:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
-      subtitle: "Vice President",
-      key: 1,
-    },
-    {
-      name: "Chris Jackson",
-      avatar_url:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-      subtitle: "Vice Chairman",
-      key: 2,
-    },
-  ];
-
-  const pressed = (direction) => {
-    console.log(direction);
-    navigation.navigate("StudentMiscStack", {
-      screen: direction,
-    });
-  };
-  return (
-    <View
-      style={{
-        width: "100%",
-        height: "100%",
-        alignItems: "center",
-      }}
-    >
-      <Avatar
-        rounded
-        size='xlarge'
-        containerStyle={{ marginTop: "3%" }}
-        source={{
-          uri: "https://i.insider.com/5dcc135ce94e86714253af21?width=1000&format=jpeg&auto=webp",
-        }}
-      />
-      <Text style={{ fontWeight: "bold", fontSize: 25 }}>John Doe</Text>
-      <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followed: 0</Text>
-
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%", marginTop: 20 }}
-        onPress={() => pressed("AccountInfo")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"info"}
-          size={20}
-          color='black'
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Account Info</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
-
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("ChangePref")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"favorite"}
-          size={20}
-          color='black'
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Preferences</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
-
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("FollowedHosts")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"bookmark"}
-          size={20}
-          color='black'
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>FollowedHosts</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
-
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("Notifications")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"receipt"}
-          size={20}
-          color='black'
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Notifications</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
-
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("Help")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"help"}
-          size={20}
-          color='black'
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>Help</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
-
-      <ListItem
-        bottomDivider
-        containerStyle={{ width: "100%" }}
-        onPress={() => pressed("About")}
-      >
-        <Icon
-          type={"material-icons"}
-          name={"pending"}
-          size={20}
-          color='black'
-          containerStyle={{
-            marginRight: "1%",
-          }}
-        />
-        <ListItem.Content>
-          <ListItem.Title>About</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron />
-      </ListItem>
-
-      <TouchableOpacity style={styles.signOutBtn} onPress={onSignout}>
-        <Text style={styles.signOutBtnText}>Sign Out</Text>
-      </TouchableOpacity>
-    </View>
-  );
+function getAge(dateString) {
+	var today = new Date();
+	var birthDate = new Date(dateString);
+	var age = today.getFullYear() - birthDate.getFullYear();
+	var m = today.getMonth() - birthDate.getMonth();
+	if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
+	return age;
 }
 
-const styles = StyleSheet.create({
-  signOutBtn: {
-    top: 560,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
-    opacity: 0.8,
-    width: "50%",
-    backgroundColor: "#85ba7f",
-    padding: 15,
-    borderRadius: 10,
-    position: "absolute",
-  },
-  signOutBtnText: {
-    alignSelf: "center",
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    fontSize: 12,
-    color: "#2f402d",
-  },
-});
+export default function Profile({ navigation, route }) {
+	const { socket, loginState } = useContext(GeneralContext);
+	const { signOut } = React.useContext(AuthContext);
+
+	const [student, setStudent] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+
+	const { isOpen, onOpen, onClose } = useDisclose();
+
+	useEffect(() => {
+		socket.emit('getStudent', { sid: loginState.id }, (err, res) => {
+			if (err) {
+				console.log('ERROR');
+				return;
+			}
+
+			setStudent(res);
+			setIsLoading(false);
+		});
+	}, []);
+
+	if (isLoading) {
+		return (
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					alignItems: 'center',
+					justifyContent: 'center'
+				}}
+			>
+				<ActivityIndicator size='large' />
+			</View>
+		)
+	}
+
+	return (
+		<ScrollView
+			contentContainerStyle={{
+				alignItems: "center",
+				justifyContent: 'center'
+			}}
+			style={{
+				width: "100%",
+				height: "100%"
+			}}
+			keyboardShouldPersistTaps={'always'}
+		>
+			<View
+				style={{
+					width: '100%',
+					justifyContent: 'center',
+					alignItems: 'center',
+					flexDirection: 'row',
+					backgroundColor: 'white',
+					paddingVertical: 20,
+					marginBottom: 10,
+					borderBottomWidth: 0.5,
+					borderColor: '#e3e3e3'
+				}}
+			>
+				<Avatar
+					bg={'#e3e3e3'}
+					source={{
+						uri: student.imageURL
+					}}
+					size={'2xl'}
+				>
+					<Text
+						style={{
+							color: 'gray',
+							fontSize: 40,
+							fontWeight: '600'
+						}}
+					>
+						{student.fullName.firstName.charAt(0) + student.fullName.lastName.charAt(0)}
+					</Text>
+				</Avatar>
+				<View
+					style={{
+						flexDirection: 'column'
+					}}
+				>
+					<Text
+						style={{
+							marginLeft: 20,
+							fontSize: 22,
+							fontWeight: '600',
+							marginVertical: 10
+						}}
+					>
+						{student.fullName.firstName + " " + student.fullName.lastName}, {getAge(student.birthDate)}
+					</Text>
+					<TouchableOpacity
+						style={{
+							flexDirection: 'column',
+							alignItems: 'center'
+						}}
+						activeOpacity={1}
+						onPress={() => {
+							navigation.navigate('StudentMiscStack', {
+								screen: 'Following',
+								params: {
+									following: student.following
+								}
+							})
+						}}
+					>
+						<Text style={{ fontWeight: '400' }}>{student.following.length}</Text>
+						<Text style={{ fontWeight: 'bold' }}>Following</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+
+			<View
+				style={{
+					width: '100%',
+					justifyContent: 'center',
+					alignItems: 'center',
+					flexDirection: 'column',
+					backgroundColor: 'white',
+					paddingTop: 20,
+					paddingBottom: 10,
+					marginBottom: 10,
+					borderBottomWidth: 0.5,
+					borderTopWidth: 0.5,
+					borderColor: '#e3e3e3'
+				}}
+			>
+				<Text style={{
+					fontWeight: 'bold',
+					fontSize: 20,
+					textAlign: 'left',
+					width: '100%',
+					marginLeft: 60,
+					marginBottom: 15
+				}}>Account Settings</Text>
+
+				<ListItem
+					bottomDivider
+					style={{
+						width: '90%'
+					}}
+					onPress={() => {
+						navigation.navigate("StudentMiscStack",
+							{
+								screen: 'PersonalInformation',
+								params: {
+									fullName: student.fullName,
+									dateOfBirth: student.birthDate,
+									email: student.email,
+									tags: student.tags
+								}
+							});
+					}}
+					activeOpacity={1}
+				>
+					<ListItem.Content>
+						<ListItem.Title style={{
+							fontSize: 16,
+							fontWeight: '500'
+						}}>Personal Information</ListItem.Title>
+						<Text style={{
+							color: 'gray',
+							fontSize: 12
+						}}>Change your account information</Text>
+					</ListItem.Content>
+					<ListItem.Chevron />
+				</ListItem>
+				<ListItem
+					bottomDivider
+					style={{
+						width: '90%'
+					}}
+					onPress={() => {
+						navigation.navigate("StudentMiscStack",
+						{
+							screen: 'Privacy'
+						});
+					}}
+					activeOpacity={1}
+				>
+					<ListItem.Content>
+						<ListItem.Title style={{
+							fontSize: 16,
+							fontWeight: '500'
+						}}>Privacy</ListItem.Title>
+						<Text style={{
+							color: 'gray',
+							fontSize: 12
+						}}>Manage your privacy settings</Text>
+					</ListItem.Content>
+					<ListItem.Chevron />
+				</ListItem>
+				<ListItem
+					bottomDivider
+					style={{
+						width: '90%'
+					}}
+					onPress={() => {
+						navigation.navigate("StudentMiscStack",
+						{
+							screen: 'Notifications'
+						});
+					}}
+					activeOpacity={1}
+				>
+					<ListItem.Content>
+						<ListItem.Title style={{
+							fontSize: 16,
+							fontWeight: '500'
+						}}>Notifications</ListItem.Title>
+						<Text style={{
+							color: 'gray',
+							fontSize: 12
+						}}>Manage push notifications</Text>
+					</ListItem.Content>
+					<ListItem.Chevron />
+				</ListItem>
+				<ListItem
+					style={{
+						width: '90%',
+						height: 60
+					}}
+					onPress={onOpen}
+					activeOpacity={1}
+				>
+					<ListItem.Content
+						style={{
+							height: 32,
+							justifyContent: 'center'
+						}}
+					>
+						<ListItem.Title style={{
+							fontSize: 16,
+							fontWeight: '500'
+						}}>Log out</ListItem.Title>
+					</ListItem.Content>
+					<ListItem.Chevron />
+				</ListItem>
+			</View>
+			<Actionsheet isOpen={isOpen} onClose={onClose}>
+				<Actionsheet.Content>
+					<Actionsheet.Item>
+						<Text
+							style={{
+								fontWeight: 'bold',
+								fontSize: 22
+							}}
+						>
+							Are you sure?
+						</Text>
+					</Actionsheet.Item>
+					<Actionsheet.Item
+						style={{
+							height: 78
+						}}
+					>
+						<TouchableOpacity
+							activeOpacity={1}
+							style={{
+								width: 343,
+								backgroundColor: '#d1d1d1',
+								paddingHorizontal: 8,
+								paddingVertical: 10,
+								borderRadius: 30,
+								alignItems: 'center'
+							}}
+							onPress={() => {
+								onClose();
+								signOut();
+							}}
+						>
+							<Text style={{ fontWeight: 'bold', fontSize: 20, color: '#474747' }}>Log out</Text>
+						</TouchableOpacity>
+					</Actionsheet.Item>
+					<Actionsheet.Item
+						style={{
+							height: 60
+						}}
+					>
+						<TouchableOpacity
+							activeOpacity={1}
+							style={{
+								width: 343,
+								borderRadius: 30,
+								alignItems: 'center'
+							}}
+							onPress={onClose}
+						>
+							<Text style={{ fontWeight: 'bold', fontSize: 20 }}>Cancel</Text>
+						</TouchableOpacity>
+					</Actionsheet.Item>
+				</Actionsheet.Content>
+			</Actionsheet>
+		</ScrollView>
+	);
+};

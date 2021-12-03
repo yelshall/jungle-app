@@ -1,276 +1,149 @@
 import {
-  LayoutAnimation,
-  Animated,
-  Dimensions,
-  Text,
-  View,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
+	View,
+	ActivityIndicator
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Constants from "expo-constants";
 import { SearchBar, ButtonGroup } from "react-native-elements";
-import { Flex } from "native-base";
-import { DefaultTheme } from "@react-navigation/native";
 
-import { CardItem, CardRow } from "../../../components/Event";
-import { backgroundColor } from "styled-system";
-import { color } from "react-native-elements/dist/helpers";
-var { height, width } = Dimensions.get("window");
+import { GeneralContext } from "../../../utils/context";
 
-const itemWidth = width * 0.67;
-const itemHeight = height / 2 - Constants.statusBarHeight * 2;
+import MyEvents from "../../../components/Explore/ MyEvents";
 
 export default function Explore({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
-  const interestedEvents = React.useRef([]);
-  const confirmedEvents = React.useRef([]);
-  const pastEvents = React.useRef([]);
-  const cancelledEvents = React.useRef([]);
+	const { socket, loginState } = React.useContext(GeneralContext);
 
-  const [isLoading, setIsLoading] = React.useState(true);
+	const interestedEvents = React.useRef([]);
+	const confirmedEvents = React.useRef([]);
+	const pastEvents = React.useRef([]);
+	const cancelledEvents = React.useRef([]);
 
-  useEffect(() => {
-    socket.emit("getStudentEvents", { sid: loginState.id }, (err, res) => {
-      if (err) {
-        return;
-      }
+	const [isLoading, setIsLoading] = React.useState(true);
 
-      for (let i = 0; i < res.confirmedEvents.length; i++) {
-        if (res.confirmedEvents[i].active) {
-          confirmedEvents.current.push(res.confirmedEvents[i]);
-        } else if (res.confirmedEvents[i].cancelled) {
-          cancelledEvents.current.push(res.confirmedEvents[i]);
-        } else {
-          pastEvents.current.push(res.confirmedEvents[i]);
-        }
-      }
+	const [pageIndex, setPageIndex] = React.useState(0);
 
-      for (let i = 0; i < res.interestedEvents.length; i++) {
-        if (res.interestedEvents[i].active) {
-          interestedEvents.current.push(res.interestedEvents[i]);
-        } else if (res.interestedEvents[i].cancelled) {
-          cancelledEvents.current.push(res.interestedEvents[i]);
-        } else {
-          pastEvents.current.push(res.interestedEvents[i]);
-        }
-      }
+	useEffect(() => {
+		if (isLoading) {
+			socket.emit("getStudent", { sid: loginState.id }, (err, res) => {
+				if (err) {
+					return;
+				}
 
-      setIsLoading(false);
-    });
-    LayoutAnimation.spring();
-  }, []);
+				for (let i = 0; i < res.confirmedEvents.length; i++) {
+					if (res.confirmedEvents[i].active) {
+						confirmedEvents.current.push(res.confirmedEvents[i]);
+					} else if (res.confirmedEvents[i].cancelled) {
+						cancelledEvents.current.push(res.confirmedEvents[i]);
+					} else {
+						pastEvents.current.push(res.confirmedEvents[i]);
+					}
+				}
 
-  const [scrollX, setScrollX] = React.useState(new Animated.Value(0));
-  const [search, setSearch] = React.useState("");
+				for (let i = 0; i < res.interestedEvents.length; i++) {
+					if (res.interestedEvents[i].active) {
+						interestedEvents.current.push(res.interestedEvents[i]);
+					} else if (res.interestedEvents[i].cancelled) {
+						cancelledEvents.current.push(res.interestedEvents[i]);
+					} else {
+						pastEvents.current.push(res.interestedEvents[i]);
+					}
+				}
 
-  const onPress = (event, type) => {
-    event.type = type;
-    navigation.navigate("StudentMiscStack", {
-      screen: "EventInfo",
-      params: {
-        event: event,
-      },
-    });
-  };
+				setIsLoading(false);
+			});
+		}
+	}, []);
 
-  const renderRow = (event, i, scrollX) => {
-    let secondRange = [(i - 1) * itemWidth, i * itemWidth, (i + 1) * itemWidth];
+	const [search, setSearch] = React.useState("");
 
-    return (
-      <Animated.View
-        key={i}
-        style={{
-          overflow: "hidden",
-          height: itemHeight,
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          width: itemWidth,
-          backgroundColor: "transparent",
-          opacity: scrollX.interpolate({
-            inputRange: secondRange,
-            outputRange: [0.3, 1, 1],
-          }),
-          height: scrollX.interpolate({
-            inputRange: secondRange,
-            outputRange: [itemHeight * 0.8, itemHeight, itemHeight],
-          }),
-        }}
-      >
-        <CardRow event={event} onPress={() => onPress(event, "CONFIRMED")} />
-      </Animated.View>
-    );
-  };
-  const explore_options = ["Explore", "Trending"];
-  const [selectedIndex, setIndex] = useState(0);
+	if (isLoading) {
+		return (
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}
+			>
+				<ActivityIndicator size="large" />
+			</View>
+		);
+	}
 
-  let onChangeIndex = () => {
-    if (selectedIndex == 0) {
-      setIndex(1);
-    } else if (selectedIndex == 1) {
-      setIndex(0);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      {isLoading ? (
-        <ActivityIndicator size='large' />
-      ) : (
-        <ScrollView
-          contentContainerStyle={{
-            alignItems: "center",
-          }}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-          keyboardShouldPersistTaps={"always"}
-        >
-          <SearchBar
-            placeholder='Search...'
-            onChangeText={(search) => setSearch(search)}
-            value={search}
-            round={DefaultTheme}
-            platform={"ios"}
-            containerStyle={{
-              backgroundColor: "#F3F3F3",
-              width: "95%",
-              height: "1.5%",
-            }}
-            inputContainerStyle={{
-              height: "1%",
-            }}
-          />
-          <ButtonGroup
-            buttons={explore_options}
-            onPress={onChangeIndex}
-            disabledSelectedStyle={{ backgroundColor: "black" }}
-            selectedButtonStyle={{ backgroundColor: "lightgreen" }}
-            selectedIndex={selectedIndex}
-            containerStyle={{
-              height: 30,
-              position: "relative",
-              //selectedIndex=setExploreIndex(selectedIndex),
-            }}
-          />
-
-          <View style={{ height: 20 + height / 2 }}>
-            {selectedIndex == 0 && (
-              <Text style={[styles.heading, { fontSize: 28 }]}>Reserved</Text>
-            )}
-            {selectedIndex == 1 && (
-              <Text style={[styles.heading, { fontSize: 28 }]}>Trending</Text>
-            )}
-            <Animated.ScrollView
-              horizontal={true}
-              style={{ flex: 1 }}
-              contentContainerStyle={{ alignItems: "center", flexGrow: 1 }}
-              decelerationRate={0}
-              snapToInterval={itemWidth}
-              scrollEventThrottle={16}
-              snapToAlignment='start'
-              showsHorizontalScrollIndicator={false}
-              onScroll={Animated.event([
-                { nativeEvent: { contentOffset: { x: scrollX } } },
-              ])}
-            >
-              {confirmedEvents.current.map((event, i) => {
-                {
-                  let search_confirmed = search.toLowerCase();
-                  if (
-                    event.eventName.toLowerCase().includes(search_confirmed)
-                  ) {
-                    return renderRow(event, i, scrollX);
-                  }
-                }
-              })}
-            </Animated.ScrollView>
-          </View>
-
-          <Flex alignItems={"center"} w={"full"}>
-            <Text style={styles.heading}>Liked</Text>
-            {interestedEvents.current.map((event, i) => {
-              let search_text = search.toLowerCase();
-              if (event.eventName.toLowerCase().includes(search_text)) {
-                return (
-                  <CardItem
-                    key={i}
-                    event={event}
-                    onPress={() => onPress(event, "INTERESTED")}
-                    edit={false}
-                  />
-                );
-              }
-            })}
-          </Flex>
-
-          {cancelledEvents.current.length > 0 && (
-            <Flex alignItems={"center"} w={"full"}>
-              <Text style={styles.heading}>Cancelled events</Text>
-              {cancelledEvents.current.map((event, i) => {
-                let search_text = search.toLowerCase();
-                if (event.eventName.toLowerCase().includes(search_text)) {
-                  return (
-                    <CardItem
-                      key={i}
-                      event={event}
-                      onPress={() => onPress(event, "INTERESTED")}
-                      edit={false}
-                    />
-                  );
-                }
-              })}
-            </Flex>
-          )}
-
-          {pastEvents.current.length > 0 && (
-            <Flex alignItems={"center"} w={"full"}>
-              <Text style={styles.heading}>Past events</Text>
-              {pastEvents.current.map((event, i) => {
-                let search_text = search.toLowerCase();
-                if (event.eventName.toLowerCase().includes(search_text)) {
-                  return (
-                    <CardItem
-                      key={i}
-                      event={event}
-                      onPress={() => onPress(event, "INTERESTED")}
-                      edit={false}
-                    />
-                  );
-                }
-              })}
-            </Flex>
-          )}
-        </ScrollView>
-      )}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: Constants.statusBarHeight,
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: "300",
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-  },
-
-  button_group: {
-    backgroundColor: "red",
-    color: "red",
-    tintColor: "red",
-    height: 30,
-  },
-});
+	return (
+		<View
+			style={{
+				width: '100%',
+				height: '100%',
+				alignItems: 'center'
+			}}
+		>
+			<View
+				style={{
+					width: '100%',
+					backgroundColor: 'white',
+					alignItems: 'center',
+					paddingTop: Constants.statusBarHeight,
+					borderBottomWidth: 0.5,
+					borderColor: '#e3e3e3'
+				}}
+			>
+				<SearchBar
+					placeholder="Search..."
+					onChangeText={(search) => setSearch(search)}
+					value={search}
+					platform={"ios"}
+					containerStyle={{
+						width: '95%',
+						height: 35,
+						borderRadius: 5,
+						marginBottom: 10
+					}}
+					inputContainerStyle={{
+						height: '1%'
+					}}
+				/>
+				<ButtonGroup
+					onPress={setPageIndex}
+					selectedIndex={pageIndex}
+					buttons={['My events', 'Trending events']}
+					containerStyle={{
+						borderWidth: 0,
+						width: '100%'
+					}}
+					buttonStyle={{
+						borderRadius: 0
+					}}
+					selectedButtonStyle={{
+						backgroundColor: 'transparent',
+						borderBottomWidth: 2,
+						borderColor: '#6e6e6e'
+					}}
+					textStyle={{
+						fontSize: 14,
+						fontWeight: '600',
+						color: '#6e6e6e'
+					}}
+					selectedTextStyle={{
+						fontSize: 14,
+						fontWeight: '600',
+						color: '#6e6e6e'
+					}}
+				/>
+			</View>
+			{
+				pageIndex == 0 ?
+					<MyEvents
+						interestedEvents={interestedEvents}
+						confirmedEvents={confirmedEvents}
+						pastEvents={pastEvents}
+						cancelledEvents={cancelledEvents}
+						navigation={navigation}
+					/>
+					:
+					null
+			}
+		</View>
+	);
+};

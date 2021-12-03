@@ -84,7 +84,7 @@ describe('Host Tests', () => {
                                         host.deleteHost(res._id, (err, del) => {
                                             if(err) {done(err)}
                                             else {
-                                                event.retreiveEventInfo(res3._id, (err, res) => {
+                                                event.getEvent(res3._id, (err, res) => {
                                                     if(err) {done(err)}
                                                     else {
                                                         assert.equal(res, null, "Make sure the host's event are deleted.");
@@ -234,7 +234,7 @@ describe('Host Tests', () => {
                                 return;
                             }
                             assert.equal(res3.events.length, 0, "Make sure that the event is deleted from the host.");
-                            event.retreiveEventInfo(res2._id, (err, res5) => {
+                            event.getEvent(res2._id, (err, res5) => {
                                 if(err){
                                     done(err);
                                     return;

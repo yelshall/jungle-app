@@ -1,7 +1,16 @@
-import React, { useEffect } from "react";
-import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity, ImageBackground, SafeAreaView, Alert } from "react-native";
+import React, { useEffect } from 'react';
+import {
+	View,
+	FlatList,
+	Dimensions,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	ImageBackground,
+	SafeAreaView
+} from "react-native";
+import { GeneralContext } from '../../../../utils/context';
 import { LinearProgress, Icon } from 'react-native-elements';
-import { AuthContext, GeneralContext } from '../../utils/context';
 
 const Item = ({ item, onPress, selected }) => (
 	<TouchableOpacity onPress={onPress} style={[styles.item]}>
@@ -41,19 +50,18 @@ const formatData = (data) => {
 
 	let numberOfElementsLastRow = data.length - (numberOfFullRows * 3);
 	while (numberOfElementsLastRow !== 3 && numberOfElementsLastRow !== 0) {
-		data.push({ title: `blank-${numberOfElementsLastRow}`, empty: true });
+		data.push({ title: `blank-${numberOfElementsLastRow}`, empty: true, id: numberOfElementsLastRow});
 		numberOfElementsLastRow++;
 	}
 
-	data.push({ title: `blank-${numberOfElementsLastRow + 1}`, empty: true });
-	data.push({ title: `blank-${numberOfElementsLastRow + 2}`, empty: true });
-	data.push({ title: `blank-${numberOfElementsLastRow + 3}`, empty: true });
+	data.push({ title: `blank-${numberOfElementsLastRow + 1}`, empty: true, id: 987 });
+	data.push({ title: `blank-${numberOfElementsLastRow + 2}`, empty: true, id: 988 });
+	data.push({ title: `blank-${numberOfElementsLastRow + 3}`, empty: true, id: 989 });
 
 	return data;
 };
 
-export default function Preferences({ navigation, route }) {
-	const { signUp } = React.useContext(AuthContext);
+export default function UpdateTags({ navigation, route }) {
 	const { socket, loginState, tags } = React.useContext(GeneralContext);
 	const [tagsArr, setTagsArr] = React.useState([]);
 	const [selectedIds, setSelectedIds] = React.useState([]);
@@ -64,7 +72,18 @@ export default function Preferences({ navigation, route }) {
 		for (let i = 0; i < tags.length; i++) {
 			arr.push({ title: tags[i].tagName, imageURL: tags[i].imageURL, id: tags[i]._id });
 		}
+
+		let arr2 = [];
+		for (let i = 0; i < route.params.tags.length; i++) {
+			arr2.push({
+				title: route.params.tags[i].tagName,
+				imageURL: route.params.tags[i].imageURL,
+				id: route.params.tags[i]._id
+			});
+		}
 		setTagsArr(arr);
+		setSelectedIds(arr2);
+		setProgress(route.params.tags.length * 0.2)
 	}, [])
 
 	const renderItem = ({ item }) => {
@@ -77,22 +96,12 @@ export default function Preferences({ navigation, route }) {
 			<Item
 				item={item}
 				onPress={() => {
-
 					if (selectedIds.some(i => i.id === item.id)) {
-						if (route.params.signupType == 'Student') {
-							setProgress(progress - 0.2);
-						} else {
-							setProgress(progress - 1 / 3);
-						}
+						setProgress(progress - 0.2);
 						setSelectedIds(selectedIds.filter(i => i.id !== item.id));
 						return;
 					}
-					if (route.params.signupType == 'Student') {
-						setProgress(progress + 0.2);
-					} else {
-						console.log('here');
-						setProgress(progress + 1 / 3);
-					}
+					setProgress(progress + 0.2);
 					setSelectedIds(oldArr => [...oldArr, item])
 				}}
 				selected={selected}
@@ -101,54 +110,17 @@ export default function Preferences({ navigation, route }) {
 	};
 
 	const onContinue = () => {
-		if (route.params.signupType == 'Student') {
-			let tagsArr = [];
-			for (let i = 0; i < selectedIds.length; i++) {
-				tagsArr.push(selectedIds[i].id);
-			}
-			route.params.newStudent.tags = tagsArr;
-			route.params.newStudent.expoPushToken = loginState.expoPushToken;
-
-			socket.emit('createStudent', route.params.newStudent, (err, response) => {
-				if (err) {
-					Alert.alert(
-						"Host sign up",
-						"Error signing you up",
-						[
-							{
-								text: "OK"
-							}
-						]
-					);
-					return;
+		for(let i = 0; i < selectedIds.length; i++) {
+			socket.emit('updateStudent', {
+				sid: loginState.id,
+				update: {
+					type: 'ADD',
+					field: 'TAG',
+					tid: selectedIds[i].id
 				}
-
-				signUp(response);
-			});
-		} else {
-			let tagsArr = [];
-			for (let i = 0; i < selectedIds.length; i++) {
-				tagsArr.push(selectedIds[i].id);
-			}
-			route.params.newHost.tags = tagsArr;
-			route.params.newHost.expoPushToken = loginState.expoPushToken;
-
-			socket.emit('createHost', { newHost: route.params.newHost }, (err, response) => {
-				if (err) {
-					Alert.alert(
-						"Host sign up",
-						"Error signing you up",
-						[
-							{
-								text: "OK"
-							}
-						]
-					);
-					return
-				}
-				signUp(response);
-			});
+			})
 		}
+		navigation.goBack();
 	};
 
 	return (
@@ -159,13 +131,6 @@ export default function Preferences({ navigation, route }) {
 				marginTop: '5%',
 				marginBottom: '5%'
 			}}>
-				<Text style={styles.text}>
-					{
-						route.params.signupType == 'Student' ?
-							"Please pick 5 or more interests" :
-							"Please pick 3 tags for your organization"
-					}
-				</Text>
 				<LinearProgress
 					style={{
 						borderRadius: 5
@@ -178,9 +143,9 @@ export default function Preferences({ navigation, route }) {
 			</View>
 
 			{
-				((progress >= 1 && route.params.signupType == 'Student') || (progress == 1 && route.params.signupType == 'Host')) &&
+				progress >= 1 &&
 				<TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
-					<Text style={styles.continueBtnText}>Finish sign up</Text>
+					<Text style={styles.continueBtnText}>Submit</Text>
 				</TouchableOpacity>
 			}
 
@@ -196,11 +161,11 @@ export default function Preferences({ navigation, route }) {
 	);
 };
 
+
 const styles = StyleSheet.create({
 	container: {
 		width: "100%",
 		height: "100%",
-		backgroundColor: "#96db8f",
 		alignItems: "center",
 	},
 	text: {
@@ -249,7 +214,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 2
 	},
 	itemInvisible: {
-		backgroundColor: 'transparent'
+		backgroundColor: 'transparent',
 	},
 	itemText: {
 		fontSize: 14,

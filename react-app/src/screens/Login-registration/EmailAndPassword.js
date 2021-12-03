@@ -5,11 +5,13 @@ import {
     TouchableOpacity,
     StyleSheet,
 } from "react-native";
-import { Input, Icon, LinearProgress } from 'react-native-elements';
+import { Input, LinearProgress } from 'react-native-elements';
 import { passwordStrength } from 'check-password-strength';
+import { GeneralContext } from "../../utils/context";
 
 export default function EmailAndPassword({ navigation, route }) {
-    const socket = route.params.socket;
+	const {socket, loginState} = React.useContext(GeneralContext);
+
     const [email, setEmail] = React.useState("");
     const [errorEmail, setErrorEmail] = React.useState("");
     const [password1, setPassword1] = React.useState("");
@@ -61,7 +63,7 @@ export default function EmailAndPassword({ navigation, route }) {
                 return;
             }
 
-            navigation.navigate("PersonalInfo", { email: email, password: password1 });
+            navigation.navigate("RegistrationType", { email: email, password: password1 });
         });
     };
 
