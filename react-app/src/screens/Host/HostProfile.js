@@ -12,7 +12,7 @@ import React,{useState} from "react";
 
 import { ListItem, Avatar, Divider, Icon } from "react-native-elements";
 
-import { AuthContext } from "../../utils/context";
+import { AuthContext, GeneralContext } from "../../utils/context";
 
 import HostData from "../../../assets/events-data/HostData";
 import eventsData from "../../../assets/events-data/eventsData";
@@ -29,45 +29,45 @@ export default function Profile({ navigation, route }) {
     signOut();
   };
 
-  const onPref = () => {
-    navigation.navigate("StudentMiscStack", {
-      screen: "ChangePref",
-      params: {
-        users: users[0],
-        socket: socket,
-        loginState: loginState,
-      },
-    });
-  };
+	const onPref = () => {
+		navigation.navigate("StudentMiscStack", {
+			screen: "ChangePref",
+			params: {
+				users: users[0],
+				socket: socket,
+				loginState: loginState,
+			},
+		});
+	};
 
-  const onFollowing = () => {
-    navigation.navigate("StudentMiscStack", {
-      screen: "FollowedHosts",
-      params: {
-        HostData: HostData[0],
-        eventsData: eventsData,
-        socket: socket,
-        loginState: loginState,
-      },
-    });
-  };
+	const onFollowing = () => {
+		navigation.navigate("StudentMiscStack", {
+			screen: "FollowedHosts",
+			params: {
+				HostData: HostData[0],
+				eventsData: eventsData,
+				socket: socket,
+				loginState: loginState,
+			},
+		});
+	};
 
-  const list = [
-    {
-      name: "Amy Farha",
-      avatar_url:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
-      subtitle: "Vice President",
-      key: 1,
-    },
-    {
-      name: "Chris Jackson",
-      avatar_url:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-      subtitle: "Vice Chairman",
-      key: 2,
-    },
-  ];
+	const list = [
+		{
+			name: "Amy Farha",
+			avatar_url:
+				"https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
+			subtitle: "Vice President",
+			key: 1,
+		},
+		{
+			name: "Chris Jackson",
+			avatar_url:
+				"https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
+			subtitle: "Vice Chairman",
+			key: 2,
+		},
+	];
 
   const pressed = (direction) => {
     console.log(direction);

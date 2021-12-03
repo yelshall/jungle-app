@@ -14,25 +14,91 @@ const messages = require('./Objects/messages');
 const s3 = require('./utils/s3');
 const { Expo } = require('expo-server-sdk');
 let expo = new Expo();
+const bcrypt = require('bcryptjs');
 
 require('dotenv').config({ path: './config/.env' });
 
 mongoose.connect(process.env.DATABASE_ACCESS);
 
-// schemas.Event.deleteMany({}).exec();
-// schemas.Tag.updateMany({events: []}).exec();
-// schemas.Student.deleteMany().exec();
-// schemas.Host.deleteMany().exec();
-// schemas.Update.deleteMany().exec();
-// schemas.Messages.deleteMany().exec();
-// scraper.getEvents(new Date(), new Date('2022-06-01'),async (err, res) => {
-//     for(let i = 0; i < res.length; i++) {
-//         for(let j = 0; j < res[i].events.length; j++) {
-//             await event.createEvent(res[i].events[j]);
-//         }
-//     }
-// });
+let what = 0;
+if (what == 1) {
+    schemas.Event.deleteMany({}).exec();
+    schemas.Tag.updateMany({}, { events: [], hosts: [] }).exec();
+    schemas.Student.deleteMany({}).exec();
+    schemas.Host.deleteMany().exec();
+    schemas.Update.deleteMany().exec();
+    schemas.Messages.deleteMany().exec();
+    scraper.getEvents(new Date(), new Date('2022-06-01'), async (err, res) => {
+        for (let i = 0; i < res.length; i++) {
+            for (let j = 0; j < res[i].events.length; j++) {
+                await event.createEvent(res[i].events[j]);
+            }
+        }
+    });
+} else if (what == 2) {
+    schemas.Tag.find().exec((err, res) => {
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
 
+            // While there remain elements to shuffle...
+            while (currentIndex != 0) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+
+                // And swap it with the current element.
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+
+            let arr = array.slice(0, 5);
+            for(let i = 0; i < 5; i++) {
+                arr[i] = arr[i]._id;
+            }
+            return arr;
+        }
+
+        for(let i = 0; i < 500; i++) {
+            let salt = bcrypt.genSaltSync(10);
+            let hash = bcrypt.hashSync('testPassword', salt);
+
+            let student = new schemas.Student({
+                email: `testsstudent${i}@mail.com`,
+                password: hash,
+                fullName: {
+                    firstName: 'Test',
+                    lastName: `Student ${i}`
+                },
+                birthDate: new Date(),
+                gender: 'Male',
+                tags: shuffle(res),
+                imageURL: 'https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder.png',
+                expoPushToken: ''
+            });
+
+            student.save().then((res) => {});
+        }
+    });
+} else if (what == 3) {
+    schemas.Student.find({}).exec((err, res) => {
+        schemas.Event.find({}).exec((err, res2) => {
+            for(let i = 0; i < res.length; i++) {
+                for(let j = 0; j < res2.length; j++) {
+                    if(res[i].tags.indexOf(res2[j].tags[0]) != -1) {
+                        if(Math.random() < 0.95) {
+                            student.addInterestedEvent(res[i]._id, res2[j]._id);
+                        } else {
+                            student.addUnlikedEvent(res[i]._id, res2[j]._id);
+                        }
+                    } else {
+                        student.addUnlikedEvent(res[i]._id, res2[j]._id);
+                    }
+                }
+            }
+        });
+    });
+}
 const server = app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
 });
@@ -46,6 +112,7 @@ const io = require('socket.io')(server, {
 var connectedUsers = [];
 
 io.on('connection', (socket) => {
+    //Set the socketId and userId
     socket.on('setId', (request) => {
         if (connectedUsers.filter(user => user.userId == request.id).length > 0) {
             connectedUsers = [...connectedUsers.filter(user => user.userId != request.id)];
@@ -58,6 +125,7 @@ io.on('connection', (socket) => {
         connectedUsers.push({ socketId: socket.id, userId: request.id });
     });
 
+    //To check if email exists on signup
     socket.on('verifyEmail', (request, callback) => {
         verify.checkEmailExists(request.email, (check) => {
             if (check) {
@@ -74,21 +142,9 @@ io.on('connection', (socket) => {
         let isHostLogin = await host.isHostLogin(request);
 
         if (isStudentLogin) {
-            student.studentLogin(request, (err, res) => {
-                if (err) {
-                    callback(err, null);
-                    return;
-                }
-                callback(null, res);
-            });
+            student.loginStudent(request, callback);
         } else if (isHostLogin) {
-            host.hostLogin(request, (err, res) => {
-                if (err) {
-                    callback(err, null);
-                    return;
-                }
-                callback(null, res);
-            });
+            host.loginHost(request, callback);
         } else {
             callback({ err: "INCORRECT_EMAIL" }, null);
         }
@@ -100,9 +156,9 @@ io.on('connection', (socket) => {
             decoded.iat = undefined;
             decoded.exp = undefined;
 
-            student.retreiveStudentInfo(decoded.id, (err, res) => {
+            student.getStudent(decoded.id, (err, res) => {
                 if (err) {
-                    host.retreiveHostInfo(decoded.id, (err, res) => {
+                    host.getHost(decoded.id, (err, res) => {
                         if (err) {
                             callback(err, null);
                             return;
@@ -137,19 +193,8 @@ io.on('connection', (socket) => {
         })
     });
 
-    socket.on('getFollowing', (request, callback) => {
-        student.retreiveStudentInfo(request.uid, (err, res) => {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-
-            callback(null, res.following);
-        });
-    });
-
-    socket.on('getEvents', (request, callback) => {
-        student.retreiveStudentInfo(request.sid, (err, res1) => {
+    socket.on('getRecommendedEvents', (request, callback) => {
+        student.getStudent(request.sid, (err, res1) => {
             if (err) {
                 callback(err, null);
                 return;
@@ -222,6 +267,11 @@ io.on('connection', (socket) => {
                     }
                 } else {
                     arr = res;
+                }
+
+                if(arr.length == 0) {
+                    callback({err: 'NO_EVENTS'}, null);
+                    return;
                 }
 
                 callback(null, shuffle(arr).slice(0, arr.length > 20 ? 20 : arr.length));
@@ -355,12 +405,9 @@ io.on('connection', (socket) => {
     hostListeners(socket);
 });
 
-//Possible other events for students:
-//Retreive list of interested and confirmed events
-//Retreive list of hosts
 var studentListeners = (socket) => {
-    socket.on('studentSignup', (request, callback) => {
-        student.studentSignup(request, (err, ret) => {
+    socket.on('createStudent', (request, callback) => {
+        student.createStudent(request, (err, ret) => {
             if (err) {
                 if (callback) { callback(err, null) };
                 return;
@@ -370,21 +417,10 @@ var studentListeners = (socket) => {
         });
     });
 
-    socket.on('retreiveStudentInfo', (request, callback) => {
-        student.retreiveStudentInfo(request.sid, (err, res) => {
+    socket.on('getStudent', (request, callback) => {
+        student.getStudent(request.sid, async (err, res) => {
             if (err) {
                 callback(err, null);
-                return;
-            }
-
-            callback(null, res);
-        })
-    });
-
-    socket.on('getStudentEvents', (request, callback) => {
-        student.retreiveStudentInfo(request.sid, async (err, res) => {
-            if (err) {
-                if (callback) { callback(err, null) };
                 return;
             }
 
@@ -396,94 +432,19 @@ var studentListeners = (socket) => {
                 res.interestedEvents[i] = await schemas.Event.findById(res.interestedEvents[i]._id).populate('eventHost').populate('tags').populate('updates').exec();
             }
 
-            if (callback) { callback(null, { confirmedEvents: res.confirmedEvents, interestedEvents: res.interestedEvents }) }
-        })
-
-    });
-
-    socket.on('addInterestedEvent', (request, callback) => {
-        student.addInterestedEvent(request.uid, request.eid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
+            callback(null, res);
         });
     });
 
-    socket.on('addConfirmedEvent', (request, callback) => {
-        student.addConfirmedEvent(request.uid, request.eid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
-        });
-    });
-
-    socket.on('addUnlikedStudent', (request, callback) => {
-        student.addUnlikedEvent(request.uid, request.eid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
-        });
-    });
-
-    socket.on('removeInterestedEvent', (request, callback) => {
-        student.removeInterestedEvent(request.uid, request.eid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
-        });
-    });
-
-    socket.on('removeConfirmedEvent', (request, callback) => {
-        student.removeConfirmedEvent(request.uid, request.eid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
-        });
-    });
-
-    socket.on('followHost', (request, callback) => {
-        student.followHost(request.uid, request.hid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
-        });
-    });
-
-    socket.on('unfollowHost', (request, callback) => {
-        student.unfollowHost(request.uid, request.hid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
+    socket.on('updateStudent', (request, callback) => {
+        student.updateStudent(request.sid, request.update, (err, res) => {
         });
     });
 };
 
-//Possible events to listen for in hosts:
-//Retreive list of events
 var hostListeners = (socket) => {
-    socket.on('hostSignup', (request, callback) => {
-        host.hostSignup(request.newHost, (err, ret) => {
+    socket.on('createHost', (request, callback) => {
+        host.createHost(request.newHost, (err, ret) => {
             if (err) {
                 if (callback) { callback(err, null) };
                 return;
@@ -493,75 +454,8 @@ var hostListeners = (socket) => {
         });
     });
 
-    socket.on('createEventHost', (request, callback) => {
-        host.createEventHost(request.hid, request.newEvent, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            schemas.Host.findById(request.hid).populate('followers').exec((err, res) => {
-                if (err) {
-                    return;
-                }
-
-                let messages = [];
-                for (let i = 0; i < res.followers.length; i++) {
-                    if (!Expo.isExpoPushToken(res.followers[i].expoPushToken)) {
-                        continue;
-                    }
-
-                    messages.push({
-                        to: res.followers[i].expoPushToken,
-                        sound: 'default',
-                        body: `${res.hostName} has a created a new event!`,
-                        data: { withSome: 'Created a new event!' },
-                    })
-                }
-
-                let chunks = expo.chunkPushNotifications(messages);
-                let tickets = [];
-                (async () => {
-                    for (let chunk of chunks) {
-                        try {
-                            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                            tickets.push(...ticketChunk);
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    }
-                })();
-            });
-
-
-            if (callback) { callback(null, ret) };
-        });
-    });
-
-    socket.on('updateEventHost', (request, callback) => {
-        host.updateEventHost(request.eid, request.update, (err, res) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, res) };
-        });
-    });
-
-    socket.on('deleteEventHost', (request, callback) => {
-        host.deleteEventHost(request.hid, request.eid, (err, ret) => {
-            if (err) {
-                if (callback) { callback(err, null) };
-                return;
-            }
-
-            if (callback) { callback(null, ret) };
-        });
-    });
-
-    socket.on('retreiveHostInfo', (request, callback) => {
-        host.retreiveHostInfo(request.hid, (err, ret) => {
+    socket.on('getHost', (request, callback) => {
+        host.getHost(request.hid, (err, ret) => {
             if (err) {
                 if (callback) { callback(err, null) };
                 return;
@@ -619,49 +513,5 @@ var hostListeners = (socket) => {
 
             callback(null, res);
         })
-    });
-
-    socket.on('cancelEvent', (request, callback) => {
-        host.cancelEventHost(request.eid, (err, res) => {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-
-            schemas.Host.findById(request.hid).populate('followers').exec((err, res) => {
-                if (err) {
-                    return;
-                }
-
-                let messages = [];
-                for (let i = 0; i < res.followers.length; i++) {
-                    if (!Expo.isExpoPushToken(res.followers[i].expoPushToken)) {
-                        continue;
-                    }
-
-                    messages.push({
-                        to: res.followers[i].expoPushToken,
-                        sound: 'default',
-                        body: `${res.hostName} has cancelled one of their events.`,
-                        data: { withSome: 'Cancelled an event' },
-                    })
-                }
-
-                let chunks = expo.chunkPushNotifications(messages);
-                let tickets = [];
-                (async () => {
-                    for (let chunk of chunks) {
-                        try {
-                            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                            tickets.push(...ticketChunk);
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    }
-                })();
-            });
-
-            callback(null, res);
-        });
     });
 };

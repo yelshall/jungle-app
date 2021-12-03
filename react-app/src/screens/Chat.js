@@ -1,10 +1,9 @@
 import { TouchableOpacity, ScrollView, ImageBackground, Text } from "react-native";
 import React, { useEffect, useState, useReducer } from "react";
 import { ListItem, Avatar } from 'react-native-elements'
-
+import { GeneralContext } from "../utils/context";
 export default function Chat({ navigation, route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
 
 	const [messages, setMessages] = useState([]);
 

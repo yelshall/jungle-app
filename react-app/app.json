@@ -19,7 +19,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "jungl"
+      "bundleIdentifier": "jungl",
+      "ios.config.googleMapsApiKey": "AIzaSyAfhWEH1wKq1S05bR84T2X51VWlJqR5mo4"
     },
     "android": {
       "adaptiveIcon": {

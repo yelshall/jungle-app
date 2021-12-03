@@ -10,9 +10,8 @@ import {
 	Dimensions,
 	TouchableOpacity,
 } from "react-native";
-
+import { GeneralContext } from "../../../utils/context";
 import React, { useEffect } from "react";
-import Tags from "react-native-tags";
 import Constants from "expo-constants";
 import { Text } from "react-native-elements";
 
@@ -24,8 +23,7 @@ const smallSize = width / 5;
 
 export default function Host_info({ navigation, route }) {
 	const hostId = route.params.host._id;
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+	const {socket, loginState} = React.useContext(GeneralContext);
 	const host = React.useRef(null);
 	const [isLoading, setIsLoading] = React.useState(true);
 	const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
@@ -185,11 +183,8 @@ export default function Host_info({ navigation, route }) {
 					)}
 
 					{host.current.tags.length > 0 && (
-						<Tags
-							initialTags={tags}
-							readonly={true}
-							deleteTagOnPress={false}
-						/>
+						<>
+						</>
 					)}
 					<View
 						style={{

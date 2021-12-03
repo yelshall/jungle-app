@@ -1,17 +1,14 @@
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, View } from "react-native";
 import React from "react";
 import { defaultOptions } from '../../../components/Header';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Explore from "./Explore";
 import Profile from "./Profile";
-import CardSwipe from "../../../components/CardSwipe/index";
+import Swipe from "./Swipe";
 import Chat from "../../Chat";
 
-const Tabs = createBottomTabNavigator();
-
-export default function Home({ route }) {
-	const socket = route.params.socket;
-	const loginState = route.params.loginState;
+export default function Home({ }) {
+	const Tabs = createBottomTabNavigator();
 
 	return (
 		<Tabs.Navigator
@@ -66,27 +63,23 @@ export default function Home({ route }) {
 		>
 			<Tabs.Screen
 				name="Swipe"
-				component={CardSwipe}
-				initialParams={{ socket: socket, loginState: loginState }}
-				options={{ headerShown: false, unmountOnBlur: true }}
+				component={Swipe}
+				options={{ headerShown: false }}
 			/>
 			<Tabs.Screen
 				name="Explore"
 				component={Explore}
-				initialParams={{ socket: socket, loginState: loginState }}
 				options={{ headerShown: false, unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
 				name="Chat"
 				component={Chat}
-				options={[defaultOptions('Chat', 'white', '#cccccc'), { unmountOnBlur: true }]}
-				initialParams={{ socket: socket, loginState: loginState }}
+				options={{...defaultOptions('Chat', 'white', '#cccccc'), unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
 				name="Profile"
-				options={[defaultOptions('Profile', 'white', '#cccccc'), { unmountOnBlur: true }]}
+				options={{...defaultOptions('Profile', 'white', '#cccccc'), unmountOnBlur: true }}
 				component={Profile}
-				initialParams={{ socket: socket, loginState: loginState }}
 			/>
 		</Tabs.Navigator>
 	);

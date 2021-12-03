@@ -126,7 +126,7 @@ describe('Student Tests', () => {
                                                         if(err) {done(err);}
                                                         else {
                                                             assert.equal(res7.followers.length, 0, "Make sure that the student has been removed from host followers.");
-                                                            event.retreiveEventInfo(res._id, (err, res8) => {
+                                                            event.getEvent(res._id, (err, res8) => {
                                                                 if(err) {done(err);}
                                                                 else {
                                                                     assert.equal(res8.interestedStudents.length, 0, "Make sure that the student has been removed from event interestedStudents.");
@@ -192,7 +192,7 @@ describe('Student Tests', () => {
                                     if(err) done(err);
                                     else {
                                         assert.equal(res4.interestedEvents[0].equals(res._id), true, "Make sure that the event added is equal to the actual event id"); 
-                                        event.retreiveEventInfo(res._id, (err, res5) => {
+                                        event.getEvent(res._id, (err, res5) => {
                                             if(err) done(err);
                                             else {
                                                 assert.equal(res5.interestedStudents[0].equals(res2._id), true, "Make sure that the student added to the event is equal to the actual student id");
@@ -253,7 +253,7 @@ describe('Student Tests', () => {
                                     if(err) done(err);
                                     else {
                                         assert.equal(res4.confirmedEvents[0].equals(res._id), true, "Make sure that the event added is equal to the actual event id"); 
-                                        event.retreiveEventInfo(res._id, (err, res5) => {
+                                        event.getEvent(res._id, (err, res5) => {
                                             if(err) done(err);
                                             else {
                                                 assert.equal(res5.confirmedStudents[0].equals(res2._id), true, "Make sure that the student added to the event is equal to the actual student id");
@@ -317,7 +317,7 @@ describe('Student Tests', () => {
                                             if(err) done(err);
                                             else {
                                                 assert.equal(res4.interestedEvents.length, 0, "Make sure that the event is removed from this student"); 
-                                                event.retreiveEventInfo(res._id, (err, res5) => {
+                                                event.getEvent(res._id, (err, res5) => {
                                                     if(err) done(err);
                                                     else {
                                                         assert.equal(res5.interestedStudents.length, 0, "Make sure that the student is removed the event");
@@ -383,7 +383,7 @@ describe('Student Tests', () => {
                                             if(err) done(err);
                                             else {
                                                 assert.equal(res4.confirmedEvents.length, 0, "Make sure that the event is removed from this student"); 
-                                                event.retreiveEventInfo(res._id, (err, res5) => {
+                                                event.getEvent(res._id, (err, res5) => {
                                                     if(err) done(err);
                                                     else {
                                                         assert.equal(res5.confirmedStudents.length, 0, "Make sure that the student is removed the event");

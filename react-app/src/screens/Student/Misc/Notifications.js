@@ -1,26 +1,16 @@
 import {
   Text,
   View,
-  TouchableOpacity,
-  Alert,
   StyleSheet,
-  Image,
 } from "react-native";
-import { Icon } from "react-native-elements";
 import { AuthContext } from "../../../utils/context";
 import React, { useState } from "react";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import HostData from "../../../../assets/events-data/HostData";
 import eventsData from "../../../../assets/events-data/eventsData";
 import users from "../../../../assets/events-data/users";
-import SettingsList from "react-native-settings-list";
-import { Slider } from "react-native-elements";
-import { Animated } from "react-native";
 import { Switch } from "react-native-elements";
 
 export default function Notifications({ navigation, route }) {
-  const socket = route.params.socket;
-  const loginState = route.params.loginState;
   const { signOut } = React.useContext(AuthContext);
   const [switchValue, setSwitchValue] = useState(false);
   const onSignout = () => {
@@ -36,9 +26,7 @@ export default function Notifications({ navigation, route }) {
   const onFollowing = () => {
     navigation.navigate("FollowedHosts", {
       HostData: HostData[0],
-      eventsData: eventsData,
-      socket: socket,
-      loginState: loginState,
+      eventsData: eventsData
     });
   };
 
@@ -67,6 +55,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Updates
@@ -74,7 +63,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 220,
+            marginLeft: 195,
             marginTop: 10,
           }}
           value={switchValue}
@@ -90,6 +79,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Cancellations
@@ -97,7 +87,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 172,
+            marginLeft: 147,
             marginTop: 10,
           }}
           value={false}
@@ -112,6 +102,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Updates
@@ -119,7 +110,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 220,
+            marginLeft: 195,
             marginTop: 10,
           }}
           value={false}
@@ -134,6 +125,7 @@ export default function Notifications({ navigation, route }) {
             fontWeight: "bold",
             marginTop: 10,
             fontSize: 20,
+            marginLeft: 5
           }}
         >
           Events Updates
@@ -141,7 +133,7 @@ export default function Notifications({ navigation, route }) {
         <Switch
           style={{
             //alignSelf: "flex-end",
-            marginLeft: 220,
+            marginLeft: 195,
             marginTop: 10,
           }}
           value={false}
