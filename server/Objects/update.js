@@ -18,13 +18,7 @@ var createUpdate = (title, message, notifyAll, eid, callback) => {
 };
 
 var deleteUpdate = (uid, callback) => {
-    schemas.Update.findByIdAndDelete(uid, function(err, res) {
-        if(err) {
-            if (callback) {callback(err, null);}
-        } else {
-            if (callback) {callback(null, res);}
-        }
-    });
+    schemas.Update.findByIdAndDelete(uid, callback);
 };
 
 module.exports = {

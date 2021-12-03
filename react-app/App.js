@@ -1,27 +1,25 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/screens/Student/Tabs/Home";
-import HostHome from "./src/screens/Host/HostHome";
+import HostHome from "./src/screens/Host/Tabs/HostHome";
 import Register from "./src/screens/Login-registration/Register";
-import { io } from "socket.io-client";
 import { getData, storeData, removeData } from "./src/utils/asyncStorage";
-import { ActivityIndicator, View, Platform } from "react-native";
-import { AuthContext } from "./src/utils/context";
-import eventsData from "./assets/events-data/eventsData";
-import EditEvents from "./src/screens/Host/EditEvents";
+import { View, Platform, Image, LogBox } from "react-native";
+import { AuthContext, GeneralContext, socket } from "./src/utils/context";
+import editEvents from "./src/screens/Host/editEvents";
+import HostNotifications from "./src/screens/Host/HostNotifications";
+import HostProfileInfo from "./src/screens/Host/Misc/HostProfileInfo";
 import Message from "./src/screens/Message";
-import HostProfileInfo from "./src/screens/Host/HostProfileInfo";
-import Stats from "./src/screens/Host/Stats";
-
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
+import HostMiscStack from "./src/screens/Host/Misc/HostMiscStack";
 import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
-const Stack = createStackNavigator();
 
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
-import HostInfo from "./src/screens/Host/HostProfileInfo";
+
+const Stack = createStackNavigator();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -31,70 +29,59 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function App() {
-  const socket = useRef(
-    io("https://mighty-plateau-63166.herokuapp.com/")
-  ).current;
+const loginReducer = (prevState, action) => {
+  switch (action.type) {
+    case "RETREIVE_TOKEN":
+      return {
+        ...prevState,
+        token: action.token,
+        id: action.id,
+        signInType: action.signInType,
+      };
+    case "LOGIN":
+      return {
+        ...prevState,
+        token: action.token,
+        id: action.id,
+        signInType: action.signInType,
+      };
+    case "LOGOUT":
+      return {
+        ...prevState,
+        token: null,
+        id: null,
+        signInType: null,
+      };
+    case "REGISTER":
+      return {
+        ...prevState,
+        token: action.token,
+        id: action.id,
+        signInType: action.signInType,
+      };
+    case "PUSHTOKEN":
+      return {
+        ...prevState,
+        expoPushToken: action.expoPushToken,
+      };
+  }
+};
 
+export default function App() {
+  LogBox.ignoreAllLogs(true);
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
+  const tags = useRef([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const initialLoginState = {
-    isLoading: true,
+  const [loginState, dispatch] = React.useReducer(loginReducer, {
     token: null,
     signInType: null,
     id: null,
     expoPushToken: null,
-  };
-
-  const loginReducer = (prevState, action) => {
-    switch (action.type) {
-      case "RETREIVE_TOKEN":
-        return {
-          ...prevState,
-          token: action.token,
-          id: action.id,
-          signInType: action.signInType,
-          isLoading: false,
-        };
-      case "LOGIN":
-        return {
-          ...prevState,
-          token: action.token,
-          id: action.id,
-          signInType: action.signInType,
-          isLoading: false,
-        };
-      case "LOGOUT":
-        return {
-          ...prevState,
-          token: null,
-          id: null,
-          signInType: null,
-          isLoading: false,
-        };
-      case "REGISTER":
-        return {
-          ...prevState,
-          token: action.token,
-          id: action.id,
-          signInType: action.signInType,
-          isLoading: false,
-        };
-      case "PUSHTOKEN":
-        return {
-          ...prevState,
-          expoPushToken: action.expoPushToken,
-        };
-    }
-  };
-
-  const [loginState, dispatch] = React.useReducer(
-    loginReducer,
-    initialLoginState
-  );
+  });
 
   const authContext = React.useMemo(
     () => ({
@@ -143,7 +130,6 @@ export default function App() {
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
       dispatch({ type: "PUSHTOKEN", expoPushToken: token });
-      console.log(loginState);
     });
 
     // This listener is fired whenever a notification is received while the app is foregrounded
@@ -163,6 +149,7 @@ export default function App() {
       } catch (err) {
         console.log(err);
       }
+
       socket.emit("verifyToken", token, async (err, response) => {
         if (err) {
           try {
@@ -176,15 +163,35 @@ export default function App() {
             token: null,
             signInType: null,
           });
+          socket.emit("getTags", {}, (err, res) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+
+            tags.current = res;
+            setIsLoading(false);
+          });
           return;
         }
+
         dispatch({
           type: "RETREIVE_TOKEN",
           token: token,
           signInType: response.signInType,
           id: response.id,
         });
+
         socket.emit("setId", { id: response.id });
+
+        socket.emit("getTags", {}, (err, res) => {
+          if (err) {
+            return;
+          }
+
+          tags.current = res;
+          setIsLoading(false);
+        });
       });
     }, 500);
 
@@ -196,58 +203,44 @@ export default function App() {
     };
   }, []);
 
-  if (loginState.isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator size='large' />
-      </View>
-    );
-  }
-
-  if (loginState.token === null) {
-    return (
-      <NativeBaseProvider>
-        <AuthContext.Provider value={authContext}>
+  return (
+    <NativeBaseProvider>
+      <AuthContext.Provider value={authContext}>
+        <GeneralContext.Provider
+          value={{ socket: socket, loginState: loginState, tags: tags.current }}
+        >
           <NavigationContainer>
-            <Stack.Navigator>
-              <Stack.Screen
-                name='Register'
-                options={{ headerShown: false }}
-                component={Register}
-                initialParams={{ socket: socket, loginState: loginState }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </AuthContext.Provider>
-      </NativeBaseProvider>
-    );
-  } else {
-    if (loginState.signInType === "HOST") {
-      return (
-        <NativeBaseProvider>
-          <AuthContext.Provider value={authContext}>
-            <NavigationContainer>
+            {isLoading ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  style={{ height: 150, width: 150 }}
+                  source={require("./assets/logo/Logo-dark.png")}
+                />
+              </View>
+            ) : loginState.token == null ? (
+              <Stack.Navigator>
+                <Stack.Screen
+                  name='Register'
+                  options={{ headerShown: false }}
+                  component={Register}
+                />
+              </Stack.Navigator>
+            ) : loginState.token != null && loginState.signInType == "HOST" ? (
               <Stack.Navigator>
                 <Stack.Screen
                   name='HostHome'
                   component={HostHome}
                   options={{ headerShown: false }}
-                  initialParams={{ socket: socket, loginState: loginState }}
                 />
                 <Stack.Screen
                   name='EditEvents'
                   component={EditEvents}
-                  initialParams={{
-                    event: eventsData[0],
-                    socket: socket,
-                    loginState: loginState,
-                  }}
                   options={defaultOptions(
                     "Event information",
                     "white",
@@ -257,57 +250,33 @@ export default function App() {
                 <Stack.Screen
                   name='Message'
                   component={Message}
-                  initialParams={{ socket: socket, loginState: loginState }}
                   options={defaultOptions("Message", "white", "#cccccc")}
                 />
                 <Stack.Screen
-                  name='HostProfileInfo'
-                  component={HostProfileInfo}
-                  initialParams={{ socket: socket, loginState: loginState }}
-                  options={defaultOptions("Host Info", "white", "#cccccc")}
-                />
-                <Stack.Screen
-                  name='Stats'
-                  component={Stats}
-                  initialParams={{ socket: socket, loginState: loginState }}
-                  options={defaultOptions("Stats", "white", "#cccccc")}
+                  name='HostMiscStack'
+                  component={HostMiscStack}
+                  options={{ headerShown: false }}
                 />
               </Stack.Navigator>
-            </NavigationContainer>
-          </AuthContext.Provider>
-        </NativeBaseProvider>
-      );
-    } else {
-      return (
-        <NativeBaseProvider>
-          <AuthContext.Provider value={authContext}>
-            <NavigationContainer>
+            ) : (
               <Stack.Navigator>
                 <Stack.Screen
                   name='Home'
                   component={Home}
                   options={{ headerShown: false }}
-                  initialParams={{
-                    socket: socket,
-                    loginState: loginState,
-                  }}
                 />
                 <Stack.Screen
                   name='StudentMiscStack'
                   component={StudentMiscStack}
                   options={{ headerShown: false }}
-                  initialParams={{
-                    socket: socket,
-                    loginState: loginState,
-                  }}
                 />
               </Stack.Navigator>
-            </NavigationContainer>
-          </AuthContext.Provider>
-        </NativeBaseProvider>
-      );
-    }
-  }
+            )}
+          </NavigationContainer>
+        </GeneralContext.Provider>
+      </AuthContext.Provider>
+    </NativeBaseProvider>
+  );
 }
 
 async function registerForPushNotificationsAsync() {
@@ -322,13 +291,11 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
       return;
     }
     // get the device push notification token (store this in the database, with the user id)
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
-    alert("Must use physical device for Push Notifications");
   }
 
   if (Platform.OS === "android") {
