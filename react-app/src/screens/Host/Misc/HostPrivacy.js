@@ -8,7 +8,7 @@ import {
 import { ListItem } from 'react-native-elements';
 import * as Linking from 'expo-linking';
 
-export default function Privacy({ navigation, route }) {
+export default function HostPrivacy({ navigation, route }) {
 
 	const locationPress = () => {Linking.openSettings()}
 	const calendarPress = () => {Linking.openSettings()}
@@ -39,33 +39,6 @@ export default function Privacy({ navigation, route }) {
 					<ListItem.Content style={{flexDirection: 'row', alignItems: 'center'}}>
 						<View style={{ left: '-375%'}}>
 							<Text style={{fontSize: 15, fontWeight: '600'}}>Location Access</Text>
-						</View>
-						<View style = {{ left: '400%'}}>
-							<Text>Allowed</Text>
-						</View>
-					</ListItem.Content>
-					<ListItem.Chevron color='black'></ListItem.Chevron>
-				</ListItem>
-			</TouchableOpacity>
-
-			<View style={styles.titleView}>
-				<Text style={{fontSize: 18, fontWeight: 'bold'}}>
-					Calendar Access
-				</Text>
-			</View>
-
-			<ListItem bottomDivider>
-				<View>
-					<Text style={{fontSize: 15, }}>
-						Your calendar information allows us to add your events to your device's calendar
-					</Text>
-				</View>
-			</ListItem>
-			<TouchableOpacity activeOpacity={1} onPress = {calendarPress}>
-				<ListItem bottomDivider>
-					<ListItem.Content style={{flexDirection: 'row', alignItems: 'center'}}>
-						<View style={{ left: '-375%'}}>
-							<Text style={{fontSize: 15}}>Calendar Access</Text>
 						</View>
 						<View style = {{ left: '400%'}}>
 							<Text>Allowed</Text>

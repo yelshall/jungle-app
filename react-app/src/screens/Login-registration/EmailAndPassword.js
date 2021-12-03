@@ -113,6 +113,9 @@ export default function EmailAndPassword({ navigation, route }) {
 				const response = await fetch(
 					`https://graph.facebook.com/me?access_token=${token}`
 				);
+				const email = (await response.json()).email;
+				
+				navigation.navigate("RegistrationType", { email: email, password: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') });
 			}
 		} catch ({ message }) {
 			alert(`Facebook Login Error: ${message}`);

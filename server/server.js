@@ -17,7 +17,7 @@ let expo = new Expo();
 const bcrypt = require('bcryptjs');
 const recommendEvents = require('./utils/recommendations');
 
-require('dotenv').config({ path: './config/.env' });
+// require('dotenv').config({ path: './config/.env' });
 
 mongoose.connect(process.env.DATABASE_ACCESS);
 
@@ -501,5 +501,10 @@ var hostListeners = (socket) => {
 
 			callback(null, res);
 		})
+	});
+
+	socket.on('updateHost', (request, callback) => {
+		host.updateHost(request.hid, request.update, (err, res) => {
+		});
 	});
 };

@@ -105,8 +105,19 @@ export default function Login({ navigation, route }) {
 				if (type === "success") {
 				// Get the user's name using Facebook's Graph API
 				const response = await fetch(
-					`https://graph.facebook.com/me?access_token=${token}`
+					`https://graph.facebook.com/me?access_token=${token}&fields=email`
 				);
+
+				const email = (await response.json()).email;
+
+				socket.emit('login', {email: email, type: 'facebook'}, (err, response) => {
+					if(err) {
+
+						return;
+					}
+
+					signIn(response)
+				});
 			} else {
 				// type === 'cancel'
 			}
