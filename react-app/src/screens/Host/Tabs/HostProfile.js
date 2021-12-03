@@ -128,7 +128,16 @@ export default function Profile({ navigation, route }) {
 					<TouchableOpacity
 						onPress={() => {
 							navigation.navigate("HostMiscStack", {
-								screen: 'HostProfileInfo'
+								screen: 'HostProfileInfo',
+								params: {
+									email: host.email,
+									hostEmail: host.hostEmail,
+									organization: host.hostName,
+									description: host.description,
+									number: host.phoneNumber,
+									website: host.website,
+									tags: host.tags
+								}
 							})
 						}}
 					>
@@ -146,7 +155,7 @@ export default function Profile({ navigation, route }) {
 							>
 								<Text> Account Information</Text>
 								<Text style={{ fontSize: 12, color: "grey", marginBottom: 10, marginLeft: 3.5 }}>
-									Change you account information
+									Change your account information
 								</Text>
 							</View>
 							<View style={{ width: "20%" }}>
@@ -161,7 +170,12 @@ export default function Profile({ navigation, route }) {
 					</TouchableOpacity>
 					<Divider orientation="horizontal" />
 
-					<TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							navigation.navigate("HostMiscStack", {
+								screen: 'HostNotifications'
+							})
+						}}>
 						<View style={{ flexDirection: "row", marginTop: 15 }}>
 							<View style={{ width: "20%", padding: 5 }}>
 								<Icon name="bell" type="font-awesome" size={20} color="black" />
@@ -185,7 +199,12 @@ export default function Profile({ navigation, route }) {
 						</View>
 					</TouchableOpacity>
 					<Divider orientation="horizontal" />
-					<TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							navigation.navigate("HostMiscStack", {
+								screen: 'HostPrivacy'
+							})
+						}}>
 						<View style={{ flexDirection: "row", marginTop: 15 }}>
 							<View style={{ width: "20%", padding: 5 }}>
 								<Icon name="finger-print-outline" type="ionicon" size={20} color="black" />
@@ -336,7 +355,7 @@ export default function Profile({ navigation, route }) {
 
 				</View>
 			</Modal>
-		</SafeAreaView>
+		</SafeAreaView >
 	);
 }
 

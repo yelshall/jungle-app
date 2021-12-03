@@ -22,11 +22,11 @@ import React, { useState, useEffect, useRef } from "react";
 const Stack = createStackNavigator();
 
 Notifications.setNotificationHandler({
-	handleNotification: async () => ({
-		shouldShowAlert: true,
-		shouldPlaySound: false,
-		shouldSetBadge: false,
-	}),
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
 });
 
 const loginReducer = (prevState, action) => {
@@ -83,48 +83,48 @@ export default function App() {
     expoPushToken: null,
   });
 
-	const authContext = React.useMemo(
-		() => ({
-			signIn: async (response) => {
-				try {
-					let token = response.token;
-					await storeData("token", response);
-					dispatch({
-						type: "LOGIN",
-						token: token,
-						signInType: response.signInType,
-						id: response.id,
-					});
-					socket.emit("setId", { id: response.id });
-				} catch (err) {
-					console.log(err);
-				}
-			},
-			signUp: async (response) => {
-				try {
-					let token = response.token;
-					await storeData("token", response);
-					dispatch({
-						type: "REGISTER",
-						token: token,
-						signInType: response.signInType,
-						id: response.id,
-					});
-				} catch (err) {
-					console.log(err);
-				}
-			},
-			signOut: async () => {
-				try {
-					await removeData("token");
-				} catch (err) {
-					console.log(err);
-				}
-				dispatch({ type: "LOGOUT" });
-			},
-		}),
-		[]
-	);
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (response) => {
+        try {
+          let token = response.token;
+          await storeData("token", response);
+          dispatch({
+            type: "LOGIN",
+            token: token,
+            signInType: response.signInType,
+            id: response.id,
+          });
+          socket.emit("setId", { id: response.id });
+        } catch (err) {
+          console.log(err);
+        }
+      },
+      signUp: async (response) => {
+        try {
+          let token = response.token;
+          await storeData("token", response);
+          dispatch({
+            type: "REGISTER",
+            token: token,
+            signInType: response.signInType,
+            id: response.id,
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      },
+      signOut: async () => {
+        try {
+          await removeData("token");
+        } catch (err) {
+          console.log(err);
+        }
+        dispatch({ type: "LOGOUT" });
+      },
+    }),
+    []
+  );
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
@@ -132,62 +132,62 @@ export default function App() {
       dispatch({ type: "PUSHTOKEN", expoPushToken: token });
     });
 
-		// This listener is fired whenever a notification is received while the app is foregrounded
-		notificationListener.current =
-			Notifications.addNotificationReceivedListener((notification) => {
-				setNotification(notification);
-			});
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
 
-		// This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-		responseListener.current =
-			Notifications.addNotificationResponseReceivedListener((response) => { });
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {});
 
-		setTimeout(async () => {
-			let token = null;
-			try {
-				token = await getData("token");
-			} catch (err) {
-				console.log(err);
-			}
+    setTimeout(async () => {
+      let token = null;
+      try {
+        token = await getData("token");
+      } catch (err) {
+        console.log(err);
+      }
 
-			socket.emit("verifyToken", token, async (err, response) => {
-				if (err) {
-					try {
-						await removeData("token");
-					} catch (err) {
-						console.log(err);
-					}
-					dispatch({
-						type: "RETREIVE_TOKEN",
-						id: null,
-						token: null,
-						signInType: null
-					});
-					socket.emit('getTags', {}, (err, res) => {
-						if (err) {
-							console.log(err);
-							return;
-						}
+      socket.emit("verifyToken", token, async (err, response) => {
+        if (err) {
+          try {
+            await removeData("token");
+          } catch (err) {
+            console.log(err);
+          }
+          dispatch({
+            type: "RETREIVE_TOKEN",
+            id: null,
+            token: null,
+            signInType: null,
+          });
+          socket.emit("getTags", {}, (err, res) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
 
-						tags.current = res;
-						setIsLoading(false);
-					});
-					return;
-				}
+            tags.current = res;
+            setIsLoading(false);
+          });
+          return;
+        }
 
-				dispatch({
-					type: "RETREIVE_TOKEN",
-					token: token,
-					signInType: response.signInType,
-					id: response.id,
-				});
+        dispatch({
+          type: "RETREIVE_TOKEN",
+          token: token,
+          signInType: response.signInType,
+          id: response.id,
+        });
 
         socket.emit("setId", { id: response.id });
 
-				socket.emit('getTags', {}, (err, res) => {
-					if (err) {
-						return;
-					}
+        socket.emit("getTags", {}, (err, res) => {
+          if (err) {
+            return;
+          }
 
           tags.current = res;
           setIsLoading(false);
@@ -195,13 +195,13 @@ export default function App() {
       });
     }, 500);
 
-		return () => {
-			Notifications.removeNotificationSubscription(
-				notificationListener.current
-			);
-			Notifications.removeNotificationSubscription(responseListener.current);
-		};
-	}, []);
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   return (
     <NativeBaseProvider>
@@ -226,7 +226,7 @@ export default function App() {
             ) : loginState.token == null ? (
               <Stack.Navigator>
                 <Stack.Screen
-                  name="Register"
+                  name='Register'
                   options={{ headerShown: false }}
                   component={Register}
                 />
@@ -234,13 +234,13 @@ export default function App() {
             ) : loginState.token != null && loginState.signInType == "HOST" ? (
               <Stack.Navigator>
                 <Stack.Screen
-                  name="HostHome"
+                  name='HostHome'
                   component={HostHome}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                  name="EditEvents"
-                  component={editEvents}
+                  name='EditEvents'
+                  component={EditEvents}
                   options={defaultOptions(
                     "Event information",
                     "white",
@@ -248,12 +248,12 @@ export default function App() {
                   )}
                 />
                 <Stack.Screen
-                  name="Message"
+                  name='Message'
                   component={Message}
                   options={defaultOptions("Message", "white", "#cccccc")}
                 />
                 <Stack.Screen
-                  name="HostMiscStack"
+                  name='HostMiscStack'
                   component={HostMiscStack}
                   options={{ headerShown: false }}
                 />
@@ -261,16 +261,15 @@ export default function App() {
             ) : (
               <Stack.Navigator>
                 <Stack.Screen
-                  name="Home"
+                  name='Home'
                   component={Home}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                  name="StudentMiscStack"
+                  name='StudentMiscStack'
                   component={StudentMiscStack}
                   options={{ headerShown: false }}
                 />
-
               </Stack.Navigator>
             )}
           </NavigationContainer>
@@ -299,14 +298,14 @@ async function registerForPushNotificationsAsync() {
   } else {
   }
 
-	if (Platform.OS === "android") {
-		Notifications.setNotificationChannelAsync("default", {
-			name: "default",
-			importance: Notifications.AndroidImportance.MAX,
-			vibrationPattern: [0, 250, 250, 250],
-			lightColor: "#FF231F7C",
-		});
-	}
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
 
-	return token;
+  return token;
 }
