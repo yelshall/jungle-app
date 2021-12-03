@@ -6,7 +6,7 @@ import Register from "./src/screens/Login-registration/Register";
 import { getData, storeData, removeData } from "./src/utils/asyncStorage";
 import { View, Platform, Image, LogBox } from "react-native";
 import { AuthContext, GeneralContext, socket } from "./src/utils/context";
-import editEvents from "./src/screens/Host/editEvents";
+import EditEvents from "./src/screens/Host/EditEvents";
 import HostNotifications from "./src/screens/Host/HostNotifications";
 import HostProfileInfo from "./src/screens/Host/Misc/HostProfileInfo";
 import Message from "./src/screens/Message";

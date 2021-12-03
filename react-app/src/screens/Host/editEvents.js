@@ -18,7 +18,7 @@ import { GeneralContext } from "../../utils/context";
 const KHeight = Dimensions.get("window").height;
 const KWidth = Dimensions.get("window").width;
 
-export default function editEvents({ navigation, route }) {
+export default function EditEvents({ navigation, route }) {
   const { socket, loginState } = React.useContext(GeneralContext);
   const event = route.params.event;
 

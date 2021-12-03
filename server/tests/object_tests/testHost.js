@@ -4,7 +4,7 @@ const student = require('../../Objects/student');
 const event = require('../../Objects/event');
 const host = require('../../Objects/host');
 const tag = require('../../Objects/tag');
-require('dotenv').config({path: '../../config/.env'});
+// require('dotenv').config({path: '../../config/.env'});
 
 mongoose.connect(process.env.DATABASE_ACCESS)
 
