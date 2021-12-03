@@ -5,11 +5,11 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import HostManage from "./HostManage";
-import Chat from "../Chat";
+import Chat from "../../Chat";
 import HostProfile from "./HostProfile";
 import HostCreate from './HostCreate';
-import { defaultOptions } from "../../components/Header";
-import { GeneralContext } from "../../utils/context";
+import { defaultOptions } from "../../../components/Header";
+import { GeneralContext } from "../../../utils/context";
 
 export default function HostHome({ navigation, route }) {
 	const { socket, loginState } = React.useContext(GeneralContext);
@@ -37,16 +37,16 @@ export default function HostHome({ navigation, route }) {
 					let filePath;
 					switch (route.name) {
 						case "HostManage":
-							filePath = require("../../../assets/menu.png");
+							filePath = require("../../../../assets/menu.png");
 							break;
 						case "Chat":
-							filePath = require("../../../assets/chat.png");
+							filePath = require("../../../../assets/chat.png");
 							break;
 						case "HostProfile":
-							filePath = require("../../../assets/user.png");
+							filePath = require("../../../../assets/user.png");
 							break;
 						case "HostCreate":
-							filePath = require("../../../assets/add.png");
+							filePath = require("../../../../assets/add.png");
 							break;
 						default:
 							iconName = focused

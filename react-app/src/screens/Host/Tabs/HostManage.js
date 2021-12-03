@@ -4,12 +4,12 @@ import {
 	ScrollView,
 	View
 } from 'react-native';
-import { CardItem } from "../../components/Event";
+import { CardItem } from "../../../components/Event";
 
-import { GeneralContext } from "../../utils/context";
+import { GeneralContext } from "../../../utils/context";
 
 export default function HostManage({ navigation, route }) {
-	const { socket, loginState, tags } = React.useContext(GeneralContext);
+	const { socket, loginState } = React.useContext(GeneralContext);
 
 	const [loading, setLoading] = useState(true);
 	const [host, setHost] = useState(null);
