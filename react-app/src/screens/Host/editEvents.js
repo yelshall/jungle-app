@@ -14,7 +14,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Overlay, Text, Icon, Input } from "react-native-elements";
 import { Flex } from "native-base";
 import { GeneralContext } from "../../utils/context";
-
 const KHeight = Dimensions.get("window").height;
 const KWidth = Dimensions.get("window").width;
 
