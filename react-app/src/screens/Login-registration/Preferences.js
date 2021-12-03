@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity, ImageBackground, SafeAreaView } from "react-native";
+import { View, FlatList, Dimensions, StyleSheet, Text, TouchableOpacity, ImageBackground, SafeAreaView, Alert } from "react-native";
 import { LinearProgress, Icon } from 'react-native-elements';
 import { AuthContext, GeneralContext } from '../../utils/context';
 
@@ -49,7 +49,6 @@ const formatData = (data) => {
 	data.push({ title: `blank-${numberOfElementsLastRow + 2}`, empty: true });
 	data.push({ title: `blank-${numberOfElementsLastRow + 3}`, empty: true });
 
-
 	return data;
 };
 
@@ -78,12 +77,22 @@ export default function Preferences({ navigation, route }) {
 			<Item
 				item={item}
 				onPress={() => {
+
 					if (selectedIds.some(i => i.id === item.id)) {
-						setProgress(progress - 0.2);
+						if (route.params.signupType == 'Student') {
+							setProgress(progress - 0.2);
+						} else {
+							setProgress(progress - 1 / 3);
+						}
 						setSelectedIds(selectedIds.filter(i => i.id !== item.id));
 						return;
 					}
-					setProgress(progress + 0.2);
+					if (route.params.signupType == 'Student') {
+						setProgress(progress + 0.2);
+					} else {
+						console.log('here');
+						setProgress(progress + 1 / 3);
+					}
 					setSelectedIds(oldArr => [...oldArr, item])
 				}}
 				selected={selected}
@@ -92,33 +101,57 @@ export default function Preferences({ navigation, route }) {
 	};
 
 	const onContinue = () => {
-		let tagsArr = [];
-		for (let i = 0; i < selectedIds.length; i++) {
-			tagsArr.push(selectedIds[i].id);
-		}
-		route.params.newStudent.tags = tagsArr;
-		route.params.newStudent.expoPushToken = loginState.expoPushToken;
-
-		socket.emit('createStudent', route.params.newStudent, (err, response) => {
-			if (err) {
-				Alert.alert(
-					"Host sign up",
-					"Error signing you up",
-					[
-						{
-							text: "OK"
-						}
-					]
-				);
-				return;
+		if (route.params.signupType == 'Student') {
+			let tagsArr = [];
+			for (let i = 0; i < selectedIds.length; i++) {
+				tagsArr.push(selectedIds[i].id);
 			}
+			route.params.newStudent.tags = tagsArr;
+			route.params.newStudent.expoPushToken = loginState.expoPushToken;
 
-			signUp(response);
-		});
+			socket.emit('createStudent', route.params.newStudent, (err, response) => {
+				if (err) {
+					Alert.alert(
+						"Host sign up",
+						"Error signing you up",
+						[
+							{
+								text: "OK"
+							}
+						]
+					);
+					return;
+				}
+
+				signUp(response);
+			});
+		} else {
+			let tagsArr = [];
+			for (let i = 0; i < selectedIds.length; i++) {
+				tagsArr.push(selectedIds[i].id);
+			}
+			route.params.newHost.tags = tagsArr;
+			route.params.newHost.expoPushToken = loginState.expoPushToken;
+
+			socket.emit('createHost', { newHost: route.params.newHost }, (err, response) => {
+				if (err) {
+					Alert.alert(
+						"Host sign up",
+						"Error signing you up",
+						[
+							{
+								text: "OK"
+							}
+						]
+					);
+					return
+				}
+				signUp(response);
+			});
+		}
 	};
 
 	return (
-
 		<SafeAreaView style={styles.container}>
 			<View style={{
 				width: '88%',
@@ -126,7 +159,13 @@ export default function Preferences({ navigation, route }) {
 				marginTop: '5%',
 				marginBottom: '5%'
 			}}>
-				<Text style={styles.text}>Please pick 5 or more interests</Text>
+				<Text style={styles.text}>
+					{
+						route.params.signupType == 'Student' ?
+							"Please pick 5 or more interests" :
+							"Please pick 3 tags for your organization"
+					}
+				</Text>
 				<LinearProgress
 					style={{
 						borderRadius: 5
@@ -139,7 +178,7 @@ export default function Preferences({ navigation, route }) {
 			</View>
 
 			{
-				progress >= 1 &&
+				((progress >= 1 && route.params.signupType == 'Student') || (progress == 1 && route.params.signupType == 'Host')) &&
 				<TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
 					<Text style={styles.continueBtnText}>Finish sign up</Text>
 				</TouchableOpacity>
@@ -210,8 +249,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 2
 	},
 	itemInvisible: {
-		backgroundColor: 'transparent',
-
+		backgroundColor: 'transparent'
 	},
 	itemText: {
 		fontSize: 14,

@@ -27,8 +27,8 @@ var createHost = (newHost, callback) => {
 
     hostSave.save()
         .then(async data => {
-            for(let i = 0; i < newEvent.tags.length; i++) {
-                tag_functions.addHost(newHost.tags[i], res._id);
+            for(let i = 0; i < newHost.tags.length; i++) {
+                tag_functions.addHost(newHost.tags[i], data._id);
             }
 
             let token = jwt.sign({ id: data._id, email: data.email, signInType: 'HOST' }, process.env.APP_SECRET, {

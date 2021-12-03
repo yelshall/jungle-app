@@ -19,44 +19,12 @@ export default function Register({ navigation, route }) {
     const [description, setDescription] = React.useState("");
     const [email, setEmail] = React.useState("");
 
-    //Add validation for these fields
     const [phoneNumber, setPhoneNumber] = React.useState("");
     const [website, setWebsite] = React.useState("");
-
-    const [tags, setTags] = React.useState([]);
-    const [openTags, setOpenTags] = React.useState(false);
-    const [tagTypes, setTagTypes] = React.useState([]);
 
     const [errorName, setErrorName] = React.useState("");
     const [errorEmail, setErrorEmail] = React.useState("");
     const [errorDescription, setErrorDescription] = React.useState("");
-    const [errorTags, setErrorTags] = React.useState("");
-
-    useEffect(() => {
-        socket.emit('getTags', {}, (err, res) => {
-            if (err) {
-                Alert.alert(
-                    "Host signup",
-                    "Server error occurred, try again later",
-                    [
-                        {
-                            text: "OK"
-                        }
-                    ]
-                );
-                navigation.navigate('HomeScreen');
-                return;
-            }
-
-            let tags = [];
-
-            for (let i = 0; i < res.length; i++) {
-                tags.push({ label: res[i].tagName, value: res[i]._id });
-            }
-
-            setTagTypes(tags);
-        })
-    }, []);
 
     const verifyValidEmail = () => {
         let re =
@@ -92,20 +60,12 @@ export default function Register({ navigation, route }) {
             setErrorDescription("");
         }
 
-        if (tags.length === 0) {
-            setErrorTags("Choose at least one tag for your organization");
-            err = true;
-        } else {
-            setErrorTags("");
-        }
-
         if (err) {
             return;
         }
 
         route.params.newHost.hostName = name;
         route.params.newHost.hostEmail = email;
-        route.params.newHost.tags = tags;
         route.params.newHost.description = description;
         route.params.newHost.phoneNumber = phoneNumber;
         route.params.newHost.website = website;
@@ -284,48 +244,6 @@ export default function Register({ navigation, route }) {
                     >{errorDescription}</Text>
                 }
             </View>
-
-            < View style={{ width: '80%', margin: '2.5%', alignItems: 'center' }}>
-                <Text style={styles.secondaryText}>Your tags are...</Text>
-                <DropDownPicker
-                    style={{
-                        backgroundColor: "#51b375",
-                        borderWidth: 0,
-                    }}
-                    containerStyle={{
-                        margin: '2.5%',
-                        zIndex: 1
-                    }}
-                    dropDownContainerStyle={{
-                        backgroundColor: "#51b375",
-                        borderWidth: 0,
-                    }}
-                    dropDownDirection="AUTO"
-                    multiple={true}
-                    min={0}
-                    max={3}
-                    placeholder="Choose an option"
-                    open={openTags}
-                    value={tags}
-                    items={tagTypes}
-                    setOpen={setOpenTags}
-                    setValue={setTags}
-                    setItems={setTagTypes}
-                    bottomOffset={50}
-                />
-                {
-                    errorTags.length !== 0 &&
-                    <Text
-                        style={{
-                            fontSize: 13,
-                            fontWeight: '500',
-                            color: 'red',
-                            marginLeft: '2.5%'
-                        }}
-                    >{errorTags}</Text>
-                }
-            </View>
-
             <TouchableOpacity style={styles.continueBtn} onPress={onContinue}>
                 <Text style={styles.continueBtnText}>Continue</Text>
             </TouchableOpacity>

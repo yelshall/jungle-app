@@ -9,6 +9,8 @@ import HostSignup from './HostSignup';
 import HomeScreen from "./HomeScreen";
 import Login from "./Login";
 import ProfilePic from "./ProfilePic";
+import RegistrationType from "./RegistrationType";
+
 import { defaultOptions } from "../../components/Header";
 
 export default function Register({ navigation, route }) {
@@ -23,6 +25,7 @@ export default function Register({ navigation, route }) {
 			<Stack.Screen name="Preferences" component={Preferences} options={defaultOptions('Preferences', '#96db8f', '#6ec28c')} />
 			<Stack.Screen name="HostSignup" component={HostSignup} options={defaultOptions('Host information', '#96db8f', '#6ec28c')} />
 			<Stack.Screen name="ProfilePic" component={ProfilePic} options={defaultOptions('Profile picture', '#96db8f', '#6ec28c')} />
+			<Stack.Screen name="RegistrationType" component={RegistrationType} options={defaultOptions('Registration Type', '#96db8f', '#6ec28c')} />
 		</Stack.Navigator>
 	);
 };

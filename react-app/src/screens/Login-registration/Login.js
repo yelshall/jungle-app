@@ -1,16 +1,19 @@
-import React from 'react'
+import React, { Profiler } from "react";
 import {
 	Text,
 	View,
 	Image,
 	TouchableOpacity,
-	StyleSheet
-} from 'react-native'
-import { Input } from 'react-native-elements';
-import { AuthContext, GeneralContext } from '../../utils/context';
+	StyleSheet,
+	Alert,
+} from "react-native";
+import { Input, SocialIcon } from "react-native-elements";
+import { AuthContext, GeneralContext } from "../../utils/context";
+import * as Google from "expo-google-app-auth";
+import * as Facebook from "expo-facebook";
 
 export default function Login({ navigation, route }) {
-	const {socket, loginState} = React.useContext(GeneralContext);
+	const { socket } = React.useContext(GeneralContext);
 	const [email, setEmail] = React.useState("");
 	const [password, setPassword] = React.useState("");
 	const [hidePassword, setHidePassword] = React.useState(true);
@@ -21,38 +24,135 @@ export default function Login({ navigation, route }) {
 	const { signIn } = React.useContext(AuthContext);
 
 	const verifyValidEmail = () => {
-		let re = /^(([^<>()[\]\ \.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		let re =
+			/^(([^<>()[\]\ \.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		if (!re.test(String(email).toLowerCase())) {
 			setErrorEmail("Please enter a valid email");
 			return;
 		}
 		setErrorEmail("");
-	}
+	};
 
 	const onLogin = () => {
 		//Add loading animation while verifying login info with server
 		//Use the lottie library
-		socket.emit("login", { email: email, password: password }, (err, response) => {
-			if (err) {
-				if (err.err === 'INCORRECT_EMAIL' || err.err === 'INCORRECT_PASSWORD') {
-					setErrorPassword("Your email or password was incorrect");
-				} else {
-					setErrorPassword("Error logging you in");
+		socket.emit(
+			"login",
+			{ email: email, password: password },
+			(err, response) => {
+				if (err) {
+					if (
+						err.err === "INCORRECT_EMAIL" ||
+						err.err === "INCORRECT_PASSWORD"
+					) {
+						setErrorPassword("Your email or password was incorrect");
+					} else {
+						setErrorPassword("Error logging you in");
+					}
+					return;
 				}
-				return;
-			}
 
-			setErrorPassword("");
-			signIn(response);
-		});
-	}
+				setErrorPassword("");
+				signIn(response);
+			}
+		);
+	};
 
 	const onForgotPassword = () => {
 		return;
-	}
+	};
 
 	const onSignUp = () => {
-		navigation.navigate('Register')
+		navigation.navigate("Register");
+	};
+
+	const onLoginGoogle = () => {
+		const config = {
+			iosClientId:
+				"656324476633-teao9cp5k5q7lhs1m7hq6fe1k8s2evu4.apps.googleusercontent.com",
+			androidClientId:
+				"656324476633-bk7aektgqqksbu0q1nnasir3jq09545k.apps.googleusercontent.com",
+			scopes: ["profile", "email"],
+		};
+		Google.logInAsync(config)
+			.then((result) => {
+				const { type, user } = result;
+				if (type == "success") {
+					const { email, name, photoUrl } = user;
+					setTimeout(
+						() =>
+							socket.emit(
+								"login",
+								{ email: "test@mail.net", password: "testPassword" },
+								(err, response) => {
+									if (err) {
+										if (
+											err.err === "INCORRECT_EMAIL" ||
+											err.err === "INCORRECT_PASSWORD"
+										) {
+											setErrorPassword("Your email or password was incorrect");
+										} else {
+											setErrorPassword("Error logging you in");
+										}
+										return;
+									}
+									setErrorPassword("");
+									signIn(response);
+								}
+							),
+						1000
+					);
+				} else {
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	async function onLoginFacebook() {
+		try {
+			await Facebook.initializeAsync({
+				appId: "197006039272073",
+			});
+			const { type, token, expirationDate, permissions, declinedPermissions } =
+				await Facebook.logInWithReadPermissionsAsync({
+					permissions: ["public_profile"],
+				});
+			if (type === "success") {
+				// Get the user's name using Facebook's Graph API
+				const response = await fetch(
+					`https://graph.facebook.com/me?access_token=${token}`
+				);
+				setTimeout(
+					() =>
+						socket.emit(
+							"login",
+							{ email: "test@mail.net", password: "testPassword" },
+							(err, response) => {
+								if (err) {
+									if (
+										err.err === "INCORRECT_EMAIL" ||
+										err.err === "INCORRECT_PASSWORD"
+									) {
+										setErrorPassword("Your email or password was incorrect");
+									} else {
+										setErrorPassword("Error logging you in");
+									}
+									return;
+								}
+								setErrorPassword("");
+								signIn(response);
+							}
+						),
+					1000
+				);
+			} else {
+				// type === 'cancel'
+			}
+		} catch ({ message }) {
+			alert(`Facebook Login Error: ${message}`);
+		}
 	}
 
 	return (
@@ -70,16 +170,16 @@ export default function Login({ navigation, route }) {
 					autoCapitalize='none'
 					placeholder='Email'
 					placeholderTextColor='#3d3d3d'
-					leftIcon={{ type: 'font-awesome', name: 'envelope-o', size: 20 }}
+					leftIcon={{ type: "font-awesome", name: "envelope-o", size: 20 }}
 					containerStyle={{
-						margin: 5
+						margin: 5,
 					}}
 					inputStyle={{
-						fontSize: 14
+						fontSize: 14,
 					}}
 					inputContainerStyle={{
-						borderColor: 'white',
-						borderBottomWidth: 1.5
+						borderColor: "white",
+						borderBottomWidth: 1.5,
 					}}
 					label={"Email"}
 					labelStyle={{
@@ -94,7 +194,7 @@ export default function Login({ navigation, route }) {
 					errorMessage={errorEmail}
 					errorStyle={{
 						fontSize: 13,
-						fontWeight: '500'
+						fontWeight: "500",
 					}}
 				/>
 
@@ -104,16 +204,16 @@ export default function Login({ navigation, route }) {
 					autoCapitalize='none'
 					placeholderTextColor='#3d3d3d'
 					secureTextEntry={hidePassword}
-					leftIcon={{ type: 'font-awesome', name: 'lock', size: 20 }}
+					leftIcon={{ type: "font-awesome", name: "lock", size: 20 }}
 					containerStyle={{
-						margin: 5
+						margin: 5,
 					}}
 					inputStyle={{
-						fontSize: 14
+						fontSize: 14,
 					}}
 					inputContainerStyle={{
-						borderColor: 'white',
-						borderBottomWidth: 1.5
+						borderColor: "white",
+						borderBottomWidth: 1.5,
 					}}
 					label={"Password"}
 					labelStyle={{
@@ -136,14 +236,16 @@ export default function Login({ navigation, route }) {
 						name: icon,
 						size: 20,
 						onPress: () => {
-							setHidePassword(x => !x);
-							setIcon(icon => icon === "eye-outline" ? "eye-off-outline" : "eye-outline")
-						}
+							setHidePassword((x) => !x);
+							setIcon((icon) =>
+								icon === "eye-outline" ? "eye-off-outline" : "eye-outline"
+							);
+						},
 					}}
 					errorMessage={errorPassword}
 					errorStyle={{
 						fontSize: 13,
-						fontWeight: '500'
+						fontWeight: "500",
 					}}
 				/>
 			</View>
@@ -153,35 +255,70 @@ export default function Login({ navigation, route }) {
 					<Text style={styles.signInButtonText}>Sign In</Text>
 				</TouchableOpacity>
 
+				<Text style={{ fontWeight: "bold", paddingTop: 10, color: "white" }}>
+					{" "}
+					OR{" "}
+				</Text>
+
+				<View style={{ flexDirection: "row" }}>
+					<TouchableOpacity>
+						<SocialIcon
+							style={styles.socialButton}
+							title='GOOGLE'
+							button
+							onPress={onLoginGoogle}
+							type='google'
+						/>
+					</TouchableOpacity>
+
+					<TouchableOpacity>
+						<SocialIcon
+							style={styles.socialButton}
+							title='FACEBOOK'
+							button
+							onPress={onLoginFacebook}
+							type='facebook'
+						/>
+					</TouchableOpacity>
+				</View>
+
 				<View style={styles.align}>
 					<TouchableOpacity
 						style={{
-							height: 20
+							height: 20,
 						}}
 						onPress={onForgotPassword}
 					>
-						<Text style={{
-							fontWeight: 'bold',
-							color: 'black'
-						}}>Forgot Password?</Text>
+						<Text
+							style={{
+								fontWeight: "bold",
+								color: "black",
+							}}
+						>
+							Forgot Password?
+						</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
 						style={{
 							height: 20,
-							fontWeight: 'bold'
+							fontWeight: "bold",
 						}}
 						onPress={onSignUp}
 					>
-						<Text style={{
-							fontWeight: 'bold',
-							color: 'white'
-						}}>Sign up</Text>
+						<Text
+							style={{
+								fontWeight: "bold",
+								color: "white",
+							}}
+						>
+							Sign up
+						</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
 		</View>
-	)
+	);
 }
 
 const styles = StyleSheet.create({
@@ -192,48 +329,59 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	inputs: {
-		width: '77%',
+		width: "77%",
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	image: {
 		width: 125,
 		height: 125,
-		margin: 20
+		margin: 20,
 	},
 	signInText: {
 		fontSize: 30,
-		fontWeight: 'bold',
-		alignSelf: 'flex-start',
-		marginBottom: 15
+		fontWeight: "bold",
+		alignSelf: "flex-start",
+		marginBottom: 15,
 	},
 	buttons: {
-		width: '75%',
+		width: "75%",
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	loginBtn: {
-		width: '100%',
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.4,
-        shadowRadius: 5,
-        opacity: 0.8,
-        backgroundColor: '#51b375',
-        padding: 15,
-        borderRadius: 10,
+		width: 320,
+		shadowColor: "black",
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.4,
+		shadowRadius: 5,
+		opacity: 0.8,
+		backgroundColor: "#51b375",
+		marginBottom: 5,
+		padding: 15,
+		borderRadius: 10,
 	},
 	signInButtonText: {
-		alignSelf: 'center',
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        fontSize: 14,
-        color: "black"
+		alignSelf: "center",
+		textTransform: "uppercase",
+		fontWeight: "bold",
+		fontSize: 14,
+		color: "white",
 	},
 	align: {
-		width: '100%',
-		justifyContent: 'space-between',
-		flexDirection: 'row',
-		marginTop: 10
-	}
-})
+		width: "100%",
+		justifyContent: "space-between",
+		flexDirection: "row",
+		marginTop: 10,
+	},
+	socialButton: {
+		width: 150,
+		shadowColor: "black",
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.4,
+		shadowRadius: 5,
+		opacity: 0.8,
+		padding: 15,
+		borderRadius: 10,
+	},
+});

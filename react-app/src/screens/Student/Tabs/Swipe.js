@@ -7,7 +7,7 @@ import {
 	View,
 } from "react-native";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useReducer } from "react";
 import EventCard from "../../../components/swipe/EventCard";
 import { GeneralContext } from "../../../utils/context";
 
@@ -18,7 +18,7 @@ export default function Swipe({ route }) {
 	const { socket, loginState } = React.useContext(GeneralContext);
 	const recommendedEvents = useRef([]);
 	const eventErr = useRef('');
-	const [currEvent, setCurrEvent] = useState(null);
+	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
 	useEffect(() => {
 		socket.emit("getRecommendedEvents", { sid: loginState.id, filter: { type: 'noFilter' } }, (err, res) => {
@@ -27,7 +27,7 @@ export default function Swipe({ route }) {
 				return;
 			}
 			recommendedEvents.current = [...recommendedEvents.current, ...res];
-			setCurrEvent(recommendedEvents.current.shift());
+			forceUpdate();
 		});
 	}, []);
 
@@ -83,16 +83,26 @@ export default function Swipe({ route }) {
 						toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
 						useNativeDriver: true
 					}).start(() => {
-						setCurrEvent(recommendedEvents.current.shift());
+						socket.emit('updateStudent', {
+							sid: loginState.id,
+							update: {
+								type: "ADD",
+								field: "INTERESTED_EVENT",
+								eid: recommendedEvents.current[0]._id
+							}
+						});
+						recommendedEvents.current.shift();
+						forceUpdate();
 						position.setValue({ x: 0, y: 0 });
-						if (recommendedEvents.current.length === 5) {
-							// socket.emit("getEvents", { sid: loginState.id, filter: { type: 'nofilter' } }, (err, res) => {
-							// 	if (err) {
-							// 		return;
-							// 	}
+						if (recommendedEvents.current.length == 5) {
+							socket.emit("getRecommendedEvents", { sid: loginState.id, filter: { type: 'noFilter' } }, (err, res) => {
+								if (err) {
+									eventErr.current = err.err;
+									return;
+								}
 
-							// 	events.current = [...events.current, ...res];
-							// });
+								recommendedEvents.current = [...recommendedEvents.current, ...res];
+							});
 						}
 					});
 				}
@@ -102,17 +112,28 @@ export default function Swipe({ route }) {
 						toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
 						useNativeDriver: true
 					}).start(() => {
-						setCurrEvent(recommendedEvents.current.shift());
+						socket.emit('updateStudent', {
+							sid: loginState.id,
+							update: {
+								type: "ADD",
+								field: "UNLIKED_EVENT",
+								eid: recommendedEvents.current[0]._id
+							}
+						});
+						recommendedEvents.current.shift();
+						forceUpdate();
 						position.setValue({ x: 0, y: 0 });
 						if (recommendedEvents.current.length === 5) {
-							// socket.emit("getEvents", { sid: loginState.id, filter: { type: 'nofilter' } }, (err, res) => {
-							// 	if (err) {
-							// 		return;
-							// 	}
+							socket.emit("getRecommendedEvents", { sid: loginState.id, filter: { type: 'noFilter' } }, (err, res) => {
+								if (err) {
+									eventErr.current = err.err;
+									return;
+								}
 
-							// 	events.current = [...events.current, ...res];
-							// });
+								recommendedEvents.current = [...recommendedEvents.current, ...res];
+							});
 						}
+						forceUpdate();
 					});
 				} else {
 					Animated.spring(position, {
@@ -125,7 +146,8 @@ export default function Swipe({ route }) {
 		})
 	).current;
 
-	if (recommendedEvents.current.length == 0 && eventErr.current != "NO_EVENTS") {
+	if (recommendedEvents.current.length == 0) {
+		//Show that there are no more events
 		return (
 			<View
 				style={{
@@ -152,7 +174,7 @@ export default function Swipe({ route }) {
 			{
 				recommendedEvents.current
 					.map((item, i) => {
-						if (i < 2) {
+						if (i < 2 && i != 0) {
 							return (
 								<Animated.View
 									key={item._id}
@@ -171,24 +193,21 @@ export default function Swipe({ route }) {
 						}
 					}).reverse()
 			}
-			{
-				currEvent != undefined &&
-				<Animated.View
-					{...panResponder.panHandlers}
-					style={[
-						rotateAndTranslate,
-						{
-							height: SCREEN_HEIGHT * 0.8,
-							width: SCREEN_WIDTH * 0.9,
-							position: 'absolute',
-							zIndex: 1,
-							alignItems: 'center'
-						}
-					]}
-				>
-					<EventCard event={currEvent} />
-				</Animated.View>
-			}
+			<Animated.View
+				{...panResponder.panHandlers}
+				style={[
+					rotateAndTranslate,
+					{
+						height: SCREEN_HEIGHT * 0.8,
+						width: SCREEN_WIDTH * 0.9,
+						position: 'absolute',
+						zIndex: 1,
+						alignItems: 'center'
+					}
+				]}
+			>
+				<EventCard event={recommendedEvents.current[0]} />
+			</Animated.View>
 		</SafeAreaView>
 	);
 }

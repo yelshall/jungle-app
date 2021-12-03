@@ -7,14 +7,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HostManage from "./HostManage";
 import Chat from "../Chat";
 import HostProfile from "./HostProfile";
-
-import {defaultOptions} from "../../components/Header";
+import HostCreate from './HostCreate';
+import { defaultOptions } from "../../components/Header";
 import { GeneralContext } from "../../utils/context";
 
-const Tabs = createBottomTabNavigator();
-
 export default function HostHome({ navigation, route }) {
-	const {socket, loginState} = React.useContext(GeneralContext);
+	const { socket, loginState } = React.useContext(GeneralContext);
+
+	const Tabs = createBottomTabNavigator();
 
 	return (
 		<Tabs.Navigator
@@ -45,6 +45,9 @@ export default function HostHome({ navigation, route }) {
 						case "HostProfile":
 							filePath = require("../../../assets/user.png");
 							break;
+						case "HostCreate":
+							filePath = require("../../../assets/add.png");
+							break;
 						default:
 							iconName = focused
 								? "ios-information-circle"
@@ -67,17 +70,22 @@ export default function HostHome({ navigation, route }) {
 			<Tabs.Screen
 				name="HostManage"
 				component={HostManage}
-				options={defaultOptions('Manage', 'white', '#cccccc'), { unmountOnBlur: true }}
+				options={{...defaultOptions('Manage', 'white', '#cccccc'), unmountOnBlur: true }}
+			/>
+			<Tabs.Screen
+				name="HostCreate"
+				component={HostCreate}
+				options={{...defaultOptions('Create event', 'white', '#cccccc'), unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
 				name="Chat"
 				component={Chat}
-				options={defaultOptions('Chat', 'white', '#cccccc'), { unmountOnBlur: true }}
+				options={{...defaultOptions('Chat', 'white', '#cccccc'), unmountOnBlur: true }}
 			/>
 			<Tabs.Screen
 				name="HostProfile"
 				component={HostProfile}
-				options={defaultOptions('Profile', 'white', '#cccccc'), { unmountOnBlur: true }}
+				options={{...defaultOptions('Profile', 'white', '#cccccc'), unmountOnBlur: true }}
 			/>
 		</Tabs.Navigator>
 	);

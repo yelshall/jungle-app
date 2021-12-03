@@ -59,12 +59,12 @@ if (what == 1) {
             return arr;
         }
 
-        for(let i = 0; i < 100; i++) {
+        for(let i = 0; i < 500; i++) {
             let salt = bcrypt.genSaltSync(10);
             let hash = bcrypt.hashSync('testPassword', salt);
 
             let student = new schemas.Student({
-                email: `teststudent${i}@mail.com`,
+                email: `testsstudent${i}@mail.com`,
                 password: hash,
                 fullName: {
                     firstName: 'Test',
@@ -514,5 +514,4 @@ var hostListeners = (socket) => {
             callback(null, res);
         })
     });
- 
 };
