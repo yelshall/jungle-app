@@ -142,45 +142,6 @@ export default function App() {
 		responseListener.current =
 			Notifications.addNotificationResponseReceivedListener((response) => { });
 
-<<<<<<< HEAD
-    setTimeout(async () => {
-      let token = null;
-      try {
-        token = await getData("token");
-      } catch (err) {
-        console.log(err);
-      }
-      socket.emit("verifyToken", token, async (err, response) => {
-        if (err) {
-          try {
-            await removeData("token");
-          } catch (err) {
-            console.log(err);
-          }
-          dispatch({
-            type: "RETREIVE_TOKEN",
-            id: null,
-            token: null,
-            signInType: null,
-          });
-          socket.emit("getTags", {}, (err, res) => {
-            if (err) {
-              console.log(err);
-              return;
-            }
-
-            tags.current = res;
-            setIsLoading(false);
-          });
-          return;
-        }
-        dispatch({
-          type: "RETREIVE_TOKEN",
-          token: token,
-          signInType: response.signInType,
-          id: response.id,
-        });
-=======
 		setTimeout(async () => {
 			let token = null;
 			try {
@@ -220,22 +181,13 @@ export default function App() {
 					signInType: response.signInType,
 					id: response.id,
 				});
->>>>>>> e8aebe23d8f69eb14986886bb5ed29993dcf78f5
 
         socket.emit("setId", { id: response.id });
 
-<<<<<<< HEAD
-        socket.emit("getTags", {}, (err, res) => {
-          if (err) {
-            console.log(err);
-            return;
-          }
-=======
 				socket.emit('getTags', {}, (err, res) => {
 					if (err) {
 						return;
 					}
->>>>>>> e8aebe23d8f69eb14986886bb5ed29993dcf78f5
 
           tags.current = res;
           setIsLoading(false);
