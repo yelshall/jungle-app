@@ -69,7 +69,10 @@ export const CardItem = ({ event, onPress }) => (
 								marginRight: '1%'
 							}}
 						/>
-						<Text>{event.location.length > 30 ? event.location.substring(0, 30) + '...' : event.location}</Text>
+						{
+							event.location &&
+							<Text>{event.location.length > 30 ? event.location.substring(0, 30) + '...' : event.location}</Text>
+						}
 					</Flex>
 					<Flex
 						style={{
@@ -136,7 +139,10 @@ export const CardRow = ({ event, onPress }) => (
 								}}
 								color={"white"}
 							/>
-							<Text style={{ fontSize: 16, color: 'white' }}>{event.location.length > 25 ? event.location.substring(0, 25) + '...' : event.location}</Text>
+							{
+								event.location &&
+								<Text style={{ fontSize: 16, color: 'white' }}>{event.location.length > 25 ? event.location.substring(0, 25) + '...' : event.location}</Text>
+							}
 						</Flex>
 						<Flex
 							style={{
@@ -161,7 +167,7 @@ export const CardRow = ({ event, onPress }) => (
 	</TouchableOpacity>
 );
 
-export const EventsRow = ({title, data, renderItem, onMore}) => {
+export const EventsRow = ({ title, data, renderItem, onMore }) => {
 	return (
 		<View style={{
 			flex: 1,

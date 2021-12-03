@@ -70,4 +70,6 @@ buck-out/
 .expo/
 web-build/
 
+package-lock.json
+
 # @end expo-cli

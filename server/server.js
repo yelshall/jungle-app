@@ -105,11 +105,7 @@ function shuffle(array) {
 			array[randomIndex], array[currentIndex]];
 	}
 
-	let arr = array.slice(0, 5);
-	for (let i = 0; i < 5; i++) {
-		arr[i] = arr[i]._id;
-	}
-	return arr;
+	return array;
 }
 
 io.on('connection', (socket) => {
@@ -214,7 +210,6 @@ io.on('connection', (socket) => {
 			for (let i = 0; i < res1.unlikedEvents.length; i++) {
 				eventIds.push(res1.unlikedEvents[i]._id);
 			}
-
 			event.getEvents(eventIds, (err, res) => {
 				if (err) {
 					callback(err, null);
@@ -251,7 +246,7 @@ io.on('connection', (socket) => {
 				} else {
 					arr = res;
 				}
-
+				
 				if (arr.length == 0) {
 					callback({ err: 'NO_EVENTS' }, null);
 					return;
