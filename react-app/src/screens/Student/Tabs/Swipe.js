@@ -21,7 +21,7 @@ export default function Swipe({ route }) {
 	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
 	useEffect(() => {
-		socket.emit("getRecommendedEvents", { sid: loginState.id, filter: { type: 'noFilter' } }, (err, res) => {
+		socket.emit("getRecommendations", { sid: loginState.id, filter: { type: 'noFilter' } }, (err, res) => {
 			if (err) {
 				eventErr.current = err.err;
 				return;
