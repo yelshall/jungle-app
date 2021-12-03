@@ -6,41 +6,35 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import * as Linking from 'expo-linking';
 
-export default function HostPrivacy({ navigation, route }) {
+export default function HostHelp({ navigation, route }) {
 
-	const locationPress = () => {Linking.openSettings()}
-
-	return (
+    return (
 		<View style={styles.container}>
 			<View style={styles.titleView}>
 				<Text style={styles.titleText}>
-					Jungle values your privacy and protects your personal information
+					Have any questions? Contact us for help
 				</Text>
 			</View>
 
 			<View style={styles.titleView}>
 				<Text style={{fontSize: 18, fontWeight: 'bold'}}>
-					Location Access
+					Email Address
 				</Text>
 			</View>
 
 			<ListItem bottomDivider>
 				<View>
 					<Text style={{fontSize: 15, }}>
-						Your location information allows to show you how close you are to events you're interested in
+						Reach out to us through our email listed below
 					</Text>
 				</View>
 			</ListItem>
-			<TouchableOpacity activeOpacity={1} onPress = {locationPress}>
+			<TouchableOpacity>
 				<ListItem bottomDivider>
 					<ListItem.Content style={{flexDirection: 'row', alignItems: 'center'}}>
-						<View style={{ left: '-375%'}}>
-							<Text style={{fontSize: 15, fontWeight: '600'}}>Location Access</Text>
-						</View>
-						<View style = {{ left: '400%'}}>
-							<Text>Allowed</Text>
+						<View style={{ left: '-315%'}}>
+							<Text style={{fontSize: 15, fontWeight: '600'}}>team17-cs307@purdue.edu</Text>
 						</View>
 					</ListItem.Content>
 					<ListItem.Chevron color='black'></ListItem.Chevron>
