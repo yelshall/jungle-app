@@ -7,7 +7,7 @@ import {
 import { Switch } from 'native-base';
 import { ListItem } from 'react-native-elements';
 
-export default function Notifications({ navigation, route }) {
+export default function HostNotifications({ navigation, route }) {
 	const [event, setEvent] = useState(false);
 	const [messages, setMessages] = useState(false);
 	const [algo, setAlgo] = useState(false);
@@ -33,17 +33,6 @@ export default function Notifications({ navigation, route }) {
 							<Text style={styles.subtitle}>All message notifications are sent to this device</Text>
 						</View>
 						<Switch style={styles.switchStyle} value={messages} onValueChange={() => setMessages(!messages)} size="md" />
-					</View>
-				</ListItem.Content>
-			</ListItem>
-			<ListItem>
-				<ListItem.Content style={{ width: '100%' }}>
-					<View style={styles.listInfo}>
-						<View style={{ flexDirection: 'column' }}>
-							<ListItem.Title style={styles.title}>Recommendation Notifications</ListItem.Title>
-							<Text style={styles.subtitle}>All recommendation notifications are sent to this device</Text>
-						</View>
-						<Switch style={styles.switchStyle} size="md" value={algo} onValueChange={() => setAlgo(!algo)} />
 					</View>
 				</ListItem.Content>
 			</ListItem>
