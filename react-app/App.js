@@ -10,7 +10,7 @@ import EditEvents from "./src/screens/Host/EditEvents";
 import Message from "./src/screens/Message";
 import HostProfileInfo from "./src/screens/Host/HostProfileInfo";
 import Stats from "./src/screens/Host/Stats";
-
+import HostNotifications from "./src/screens/Host/HostNotifications";
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
@@ -19,6 +19,7 @@ import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
 import HostInfo from "./src/screens/Host/HostProfileInfo";
+import ChangePref from "./src/screens/Student/Misc/ChangePref";
 
 const Stack = createStackNavigator();
 
