@@ -9,7 +9,7 @@ import HostNotifications from "./HostNotifications";
 import HostPrivacy from "./HostPrivacy";
 
 export default function HostMiscStack({ navigation, route }) {
-	const Stack = createStackNavigator();
+  const Stack = createStackNavigator();
 
 	return (
 		<Stack.Navigator>
