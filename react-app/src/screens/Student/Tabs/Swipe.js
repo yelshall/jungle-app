@@ -27,7 +27,6 @@ export default function Swipe({ route }) {
 				return;
 			}
 			recommendedEvents.current = [...recommendedEvents.current, ...res];
-			console.log(recommendedEvents.current);
 			forceUpdate();
 		});
 	}, []);
