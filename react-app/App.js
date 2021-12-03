@@ -20,11 +20,11 @@ import React, { useState, useEffect, useRef } from "react";
 const Stack = createStackNavigator();
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
 });
 
 const loginReducer = (prevState, action) => {
@@ -85,48 +85,48 @@ export default function App() {
 		}
 	);
 
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async (response) => {
-        try {
-          let token = response.token;
-          await storeData("token", response);
-          dispatch({
-            type: "LOGIN",
-            token: token,
-            signInType: response.signInType,
-            id: response.id,
-          });
-          socket.emit("setId", { id: response.id });
-        } catch (err) {
-          console.log(err);
-        }
-      },
-      signUp: async (response) => {
-        try {
-          let token = response.token;
-          await storeData("token", response);
-          dispatch({
-            type: "REGISTER",
-            token: token,
-            signInType: response.signInType,
-            id: response.id,
-          });
-        } catch (err) {
-          console.log(err);
-        }
-      },
-      signOut: async () => {
-        try {
-          await removeData("token");
-        } catch (err) {
-          console.log(err);
-        }
-        dispatch({ type: "LOGOUT" });
-      },
-    }),
-    []
-  );
+	const authContext = React.useMemo(
+		() => ({
+			signIn: async (response) => {
+				try {
+					let token = response.token;
+					await storeData("token", response);
+					dispatch({
+						type: "LOGIN",
+						token: token,
+						signInType: response.signInType,
+						id: response.id,
+					});
+					socket.emit("setId", { id: response.id });
+				} catch (err) {
+					console.log(err);
+				}
+			},
+			signUp: async (response) => {
+				try {
+					let token = response.token;
+					await storeData("token", response);
+					dispatch({
+						type: "REGISTER",
+						token: token,
+						signInType: response.signInType,
+						id: response.id,
+					});
+				} catch (err) {
+					console.log(err);
+				}
+			},
+			signOut: async () => {
+				try {
+					await removeData("token");
+				} catch (err) {
+					console.log(err);
+				}
+				dispatch({ type: "LOGOUT" });
+			},
+		}),
+		[]
+	);
 
 	useEffect(() => {
 		registerForPushNotificationsAsync().then((token) => {
@@ -134,15 +134,15 @@ export default function App() {
 			dispatch({ type: "PUSHTOKEN", expoPushToken: token });
 		});
 
-    // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+		// This listener is fired whenever a notification is received while the app is foregrounded
+		notificationListener.current =
+			Notifications.addNotificationReceivedListener((notification) => {
+				setNotification(notification);
+			});
 
-    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {});
+		// This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+		responseListener.current =
+			Notifications.addNotificationResponseReceivedListener((response) => { });
 
 		setTimeout(async () => {
 			let token = null;
@@ -151,6 +151,7 @@ export default function App() {
 			} catch (err) {
 				console.log(err);
 			}
+
 			socket.emit("verifyToken", token, async (err, response) => {
 				if (err) {
 					try {
@@ -175,6 +176,7 @@ export default function App() {
 					});
 					return;
 				}
+
 				dispatch({
 					type: "RETREIVE_TOKEN",
 					token: token,
@@ -186,7 +188,6 @@ export default function App() {
 
 				socket.emit('getTags', {}, (err, res) => {
 					if (err) {
-						console.log(err);
 						return;
 					}
 
@@ -196,13 +197,13 @@ export default function App() {
 			});
 		}, 500);
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+		return () => {
+			Notifications.removeNotificationSubscription(
+				notificationListener.current
+			);
+			Notifications.removeNotificationSubscription(responseListener.current);
+		};
+	}, []);
 
 	return (
 		<NativeBaseProvider>
@@ -299,14 +300,14 @@ async function registerForPushNotificationsAsync() {
 	} else {
 	}
 
-  if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("default", {
-      name: "default",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
-    });
-  }
+	if (Platform.OS === "android") {
+		Notifications.setNotificationChannelAsync("default", {
+			name: "default",
+			importance: Notifications.AndroidImportance.MAX,
+			vibrationPattern: [0, 250, 250, 250],
+			lightColor: "#FF231F7C",
+		});
+	}
 
-  return token;
+	return token;
 }
