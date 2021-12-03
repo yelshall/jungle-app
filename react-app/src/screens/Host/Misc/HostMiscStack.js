@@ -7,6 +7,8 @@ import HostProfileInfo from './HostProfileInfo';
 import HostChangePassword from "./HostChangePassword";
 import HostNotifications from "./HostNotifications";
 import HostPrivacy from "./HostPrivacy";
+import HostHelp from "./HostHelp";
+import HostAbout from "./HostAbout";
 
 export default function HostMiscStack({ navigation, route }) {
 	const Stack = createStackNavigator();
@@ -32,6 +34,16 @@ export default function HostMiscStack({ navigation, route }) {
 				name={'HostPrivacy'}
 				component={HostPrivacy}
 				options={defaultOptions("Privacy", "white", "#cccccc")}
+			/>
+			<Stack.Screen 
+				name={'HostHelp'}
+				component={HostHelp}
+				options={defaultOptions("Host Help", "white", "#cccccc")}
+			/>
+			<Stack.Screen
+				name={'HostAbout'}
+				component={HostAbout}
+				options={defaultOptions("About", "white", "#cccccc")}
 			/>
 		</Stack.Navigator>
 	);
