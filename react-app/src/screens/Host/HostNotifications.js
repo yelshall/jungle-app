@@ -14,7 +14,7 @@ import {
   import HostData from "../../../assets/events-data/HostData";
   import eventsData from "../../../assets/events-data/eventsData";
   import users from "../../../assets/events-data/users";
-  import SettingsList from "react-native-settings-list";
+
   import { Slider } from "react-native-elements";
   import { Animated } from "react-native";
   import { Switch } from "react-native-elements";
