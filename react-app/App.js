@@ -1,25 +1,21 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/screens/Student/Tabs/Home";
-import HostHome from "./src/screens/Host/HostHome";
+import HostHome from "./src/screens/Host/Tabs/HostHome";
 import Register from "./src/screens/Login-registration/Register";
 import { getData, storeData, removeData } from "./src/utils/asyncStorage";
 import { View, Platform, Image, LogBox } from "react-native";
 import { AuthContext, GeneralContext, socket } from "./src/utils/context";
 import EditEvents from "./src/screens/Host/EditEvents";
 import Message from "./src/screens/Message";
-import HostProfileInfo from "./src/screens/Host/HostProfileInfo";
-import Stats from "./src/screens/Host/Stats";
-import HostNotifications from "./src/screens/Host/HostNotifications";
 import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
+import HostMiscStack from "./src/screens/Host/Misc/HostMiscStack";
 import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
 
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
-import HostInfo from "./src/screens/Host/HostProfileInfo";
-import ChangePref from "./src/screens/Student/Misc/ChangePref";
 
 const Stack = createStackNavigator();
 
@@ -256,6 +252,11 @@ export default function App() {
 											name="Message"
 											component={Message}
 											options={defaultOptions('Message', 'white', '#cccccc')}
+										/>
+										<Stack.Screen
+											name='HostMiscStack'
+											component={HostMiscStack}
+											options={{ headerShown: false }}
 										/>
 									</Stack.Navigator>
 									:

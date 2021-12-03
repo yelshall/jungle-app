@@ -322,6 +322,26 @@ const notificationSchema = new mongoose.Schema({
     }
 });
 
+//Recommendation algorithm schemas
+const user_factors = mongoose.model('user_factors', (new mongoose.Schema({
+	user_id: mongoose.Schema.Types.ObjectId,
+	e1: mongoose.Schema.Types.Number,
+	e2: mongoose.Schema.Types.Number,
+	e3: mongoose.Schema.Types.Number,
+	e4: mongoose.Schema.Types.Number,
+	e5: mongoose.Schema.Types.Number
+})));
+
+const event_factors = mongoose.model('event_factors', (new mongoose.Schema({
+	event_id: mongoose.Schema.Types.ObjectId,
+	e1: mongoose.Schema.Types.Number,
+	e2: mongoose.Schema.Types.Number,
+	e3: mongoose.Schema.Types.Number,
+	e4: mongoose.Schema.Types.Number,
+	e5: mongoose.Schema.Types.Number
+})));
+
+
 module.exports = {
     Student: mongoose.model('Student', studentSchema),
     Host: mongoose.model('Host', hostSchema),
@@ -329,5 +349,7 @@ module.exports = {
     Tag: mongoose.model('Tag', TagSchema),
     Update: mongoose.model('Update', updateSchema),
     Notification: mongoose.model('Notification', notificationSchema),
-    Messages: mongoose.model('Messages', messagesSchema)
+    Messages: mongoose.model('Messages', messagesSchema),
+	user_factors: user_factors,
+	event_factors: event_factors
 };

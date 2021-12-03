@@ -1,45 +1,47 @@
 {
-  "expo": {
-    "name": "junglejungle",
-    "slug": "junglejungle",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "userInterfaceStyle": "automatic",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "jungl",
-      "ios.config.googleMapsApiKey": "AIzaSyAfhWEH1wKq1S05bR84T2X51VWlJqR5mo4"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  },
-  "plugins": [
-    [
-      "expo-image-picker",
-      {
-        "photosPermission": "Allow Jungle to access all your photos",
-        "cameraPermission": "Allow Jungle to access your camera",
-        "microphonePermission": "Allow Jungle to access your microphone"
-      }
-    ]
-  ]
+	"expo": {
+		"name": "junglejungle",
+		"slug": "junglejungle",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"userInterfaceStyle": "automatic",
+		"icon": "./assets/icon.png",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": [
+			"**/*"
+		],
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "jungl",
+			"config": {
+				"googleMapsApiKey": "AIzaSyAfhWEH1wKq1S05bR84T2X51VWlJqR5mo4"
+			}
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#FFFFFF"
+			}
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		}
+	},
+	"plugins": [
+		[
+			"expo-image-picker",
+			{
+				"photosPermission": "Allow Jungle to access all your photos",
+				"cameraPermission": "Allow Jungle to access your camera",
+				"microphonePermission": "Allow Jungle to access your microphone"
+			}
+		]
+	]
 }

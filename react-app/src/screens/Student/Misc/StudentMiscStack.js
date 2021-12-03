@@ -69,4 +69,4 @@ export default function StudentMiscStack({ navigation, route }) {
 			/>
 		</Stack.Navigator>
 	);
-}
+};

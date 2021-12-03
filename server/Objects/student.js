@@ -385,10 +385,6 @@ var updateStudentPassword = (sid, password, callback) => {
 	schemas.Student.findByIdAndUpdate(sid, { password: hash }, callback);
 };
 
-var getRecommendations = (sid, callback) => {
-	//Call recommendation algorithm to get recommendations for events
-};
-
 module.exports = {
 	createStudent: createStudent,
 	isStudentLogin: isStudentLogin,
@@ -411,7 +407,6 @@ module.exports = {
 	addMessages: addMessages,
 	addNotification: addNotification,
 	addTag: addTag,
-	getRecommendations: getRecommendations,
 	updateStudentBirthDate: updateStudentBirthDate,
 	updateStudentEmail: updateStudentEmail,
 	updateStudentExpoToken: updateStudentExpoToken,
