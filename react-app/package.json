@@ -92,6 +92,9 @@
     "jest-expo": "^43.0.1",
     "jest-environment-jsdom": "^27.0.6"
   },
+  "resolutions": {
+    "react-native/@jest/create-cache-key-function": "^27.0.2"
+  },
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
