@@ -89,7 +89,8 @@
     "@testing-library/jest-dom": "^5.16.0",
     "@testing-library/react": "^12.1.2",
     "jest": "^27.4.3",
-    "jest-expo": "^43.0.1"
+    "jest-expo": "^43.0.1",
+    "jest-environment-jsdom": "^27.0.6"
   },
   "jest": {
     "preset": "jest-expo",
