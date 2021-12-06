@@ -90,6 +90,7 @@ export default function EmailAndPassword({ navigation, route }) {
 				const { type, user } = result;
 				if (type == "success") {
 					const { email, name, photoUrl } = user;
+					console.log(email);
 					navigation.navigate("RegistrationType", { email: email, password: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') });
 				}
 			})
@@ -104,18 +105,20 @@ export default function EmailAndPassword({ navigation, route }) {
 				appId: "197006039272073",
 			});
 			const { type, token, expirationDate, permissions, declinedPermissions } =
-				await Facebook.logInWithReadPermissionsAsync({
-					permissions: ["public_profile"],
-				});
+				await Facebook.logInWithReadPermissionsAsync();
 
 			if (type === "success") {
 				// Get the user's name using Facebook's Graph API
 				const response = await fetch(
-					`https://graph.facebook.com/me?access_token=${token}`
+					`https://graph.facebook.com/me?access_token=${token}&fields=email`
 				);
-				const email = (await response.json()).email;
-				
-				navigation.navigate("RegistrationType", { email: email, password: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') });
+
+				const email = await response.json();
+
+				navigation.navigate("RegistrationType", { email: email.email, password: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') });
+
+			} else {
+				// type === 'cancel'
 			}
 		} catch ({ message }) {
 			alert(`Facebook Login Error: ${message}`);

@@ -425,8 +425,7 @@ var studentListeners = (socket) => {
 	});
 
 	socket.on('updateStudent', (request, callback) => {
-		student.updateStudent(request.sid, request.update, (err, res) => {
-		});
+		student.updateStudent(request.sid, request.update, (err, res) => {});
 	});
 };
 
@@ -504,7 +503,16 @@ var hostListeners = (socket) => {
 	});
 
 	socket.on('updateHost', (request, callback) => {
-		host.updateHost(request.hid, request.update, (err, res) => {
+		host.updateHost(request.hid, request.update, (err, res) => {});
+	});
+
+	socket.on('createEvent', (request, callback) => {
+		event.createEvent(request.newEvent, (err, res) => {
+			if(err) {
+				return;
+			}
+
+			host.addEvent(request.hid, res._id, (err, res) => {});
 		});
 	});
 };
