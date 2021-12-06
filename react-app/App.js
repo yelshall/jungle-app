@@ -1,3 +1,5 @@
+/* global __DEV__ */
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/screens/Student/Tabs/Home";

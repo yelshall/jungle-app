@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { defaultOptions } from "../../../components/Header";
 
-import HostProfileInfo from './HostProfileInfo';
+import HostProfileInfo from "./HostProfileInfo";
 import HostChangePassword from "./HostChangePassword";
 import HostNotifications from "./HostNotifications";
 import HostPrivacy from "./HostPrivacy";
