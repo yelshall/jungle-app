@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "devstart": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+	"testDatabase": "cd ./tests/database_tests && mocha",
+    "test": "cd  && mocha",
 	"matrixtest": "cd utils && node recommendations.js"
   },
   "author": "",

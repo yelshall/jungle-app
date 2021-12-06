@@ -1,11 +1,10 @@
-import React, { Profiler } from "react";
+import React from "react";
 import {
 	Text,
 	View,
 	Image,
 	TouchableOpacity,
 	StyleSheet,
-	Alert,
 } from "react-native";
 import { Input, SocialIcon } from "react-native-elements";
 import { AuthContext, GeneralContext } from "../../utils/context";
@@ -79,8 +78,8 @@ export default function Login({ navigation, route }) {
 				const { type, user } = result;
 				if (type == "success") {
 					const { email } = user;
-					socket.emit('login', {email: email, type: 'google'}, (err, response) => {
-						if(err) {
+					socket.emit('login', { email: email, type: 'google' }, (err, response) => {
+						if (err) {
 
 							return;
 						}
@@ -102,16 +101,17 @@ export default function Login({ navigation, route }) {
 			const { type, token, expirationDate, permissions, declinedPermissions } =
 				await Facebook.logInWithReadPermissionsAsync();
 
-				if (type === "success") {
+			if (type === "success") {
 				// Get the user's name using Facebook's Graph API
 				const response = await fetch(
 					`https://graph.facebook.com/me?access_token=${token}&fields=email`
 				);
 
-				const email = (await response.json()).email;
+				const email = await response.json();
+				console.log(email);
 
-				socket.emit('login', {email: email, type: 'facebook'}, (err, response) => {
-					if(err) {
+				socket.emit('login', { email: email.email, type: 'facebook' }, (err, response) => {
+					if (err) {
 
 						return;
 					}

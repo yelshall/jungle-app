@@ -108,12 +108,12 @@ export default function Profile({ navigation, route }) {
 						<View
 							style={{ height: 50, backgroundColor: "#cccccc", width: 1 }}
 						></View>
-						<ColmWidget topText="90" bottomText="Event Views" />
+						<ColmWidget topText="0" bottomText="Event Views" />
 						<View
 							style={{ height: 50, backgroundColor: "#cccccc", width: 1,}}
 						></View>
 						<ColmWidget
-							topText="90"
+							topText="0"
 							bottomText="Average Attendees"
 						/>
 					</View>
