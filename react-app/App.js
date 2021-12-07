@@ -16,6 +16,7 @@ import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import HostMiscStack from "./src/screens/Host/Misc/HostMiscStack";
 import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
+import "setimmediate";
 
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
