@@ -17,7 +17,7 @@ let expo = new Expo();
 const bcrypt = require('bcryptjs');
 const recommendEvents = require('./utils/recommendations');
 
-require('dotenv').config({ path: './config/.env' });
+// require('dotenv').config({ path: './config/.env' });
 
 mongoose.connect(process.env.DATABASE_ACCESS);
 
@@ -93,23 +93,17 @@ var connectedUsers = [];
 function shuffle(array) {
 	let currentIndex = array.length, randomIndex;
 
-	// While there remain elements to shuffle...
 	while (currentIndex != 0) {
-
-		// Pick a remaining element...
 		randomIndex = Math.floor(Math.random() * currentIndex);
 		currentIndex--;
 
-		// And swap it with the current element.
-		[array[currentIndex], array[randomIndex]] = [
-			array[randomIndex], array[currentIndex]];
+		[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
 	}
 
 	return array;
 }
 
 io.on('connection', (socket) => {
-	//Set the socketId and userId
 	socket.on('setId', (request) => {
 		if (connectedUsers.filter(user => user.userId == request.id).length > 0) {
 			connectedUsers = [...connectedUsers.filter(user => user.userId != request.id)];
@@ -122,7 +116,6 @@ io.on('connection', (socket) => {
 		connectedUsers.push({ socketId: socket.id, userId: request.id });
 	});
 
-	//To check if email exists on signup
 	socket.on('verifyEmail', (request, callback) => {
 		verify.checkEmailExists(request.email, (check) => {
 			if (check) {
@@ -246,7 +239,7 @@ io.on('connection', (socket) => {
 				} else {
 					arr = res;
 				}
-				
+
 				if (arr.length == 0) {
 					callback({ err: 'NO_EVENTS' }, null);
 					return;
@@ -432,8 +425,7 @@ var studentListeners = (socket) => {
 	});
 
 	socket.on('updateStudent', (request, callback) => {
-		student.updateStudent(request.sid, request.update, (err, res) => {
-		});
+		student.updateStudent(request.sid, request.update, (err, res) => {});
 	});
 };
 
@@ -508,5 +500,19 @@ var hostListeners = (socket) => {
 
 			callback(null, res);
 		})
+	});
+
+	socket.on('updateHost', (request, callback) => {
+		host.updateHost(request.hid, request.update, (err, res) => {});
+	});
+
+	socket.on('createEvent', (request, callback) => {
+		event.createEvent(request.newEvent, (err, res) => {
+			if(err) {
+				return;
+			}
+
+			host.addEvent(request.hid, res._id, (err, res) => {});
+		});
 	});
 };

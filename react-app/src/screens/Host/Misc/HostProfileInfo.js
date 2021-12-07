@@ -31,19 +31,63 @@ export default function HostProfileInfo({ navigation, route }) {
 	const [tags, setTags] = React.useState(route.params.tags);
 
 	const onSave = () => {
-		/*if (route.params.fullName.firstName != firstName || route.params.fullName.lastName != lastName) {
-			socket.emit('updateStudent', {
-				sid: loginState.id,
+		if (route.params.organization != organization) {
+			socket.emit('updateHost', {
+				hid: loginState.id,
 				update: {
 					type: 'CHANGE_FIELD',
-					field: 'NAME',
-					firstName: firstName,
-					lastName: lastName
+					field: 'HOST_NAME',
+					hostName: organization
 				}
 			});
 		}
+	
+		if(route.params.hostEmail != organizationEmail) {
+			socket.emit('updateHost', {
+				hid: loginState.id,
+				update: {
+					type: 'CHANGE_FIELD',
+					field: 'HOST_EMAIL',
+					hostName: organizationEmail
+				}
+			});
+		}
+
+		if(route.params.number != number) {
+			socket.emit('updateHost', {
+				hid: loginState.id,
+				update: {
+					type: 'CHANGE_FIELD',
+					field: 'PHONENUMBER',
+					hostName: number
+				}
+			});
+		}
+	
+		if(route.params.website != website) {
+			socket.emit('updateHost', {
+				hid: loginState.id,
+				update: {
+					type: 'CHANGE_FIELD',
+					field: 'WEBSITE',
+					website: website
+				}
+			});
+		}
+	
+		if(route.params.description != description) {
+			socket.emit('updateHost', {
+				hid: loginState.id,
+				update: {
+					type: 'CHANGE_FIELD',
+					field: 'DESCRIPTION',
+					description: description
+				}
+			});
+		}
+	
 		if (route.params.email != email) {
-			socket.emit('updateStudent', {
+			socket.emit('updateHost', {
 				sid: loginState.id,
 				update: {
 					type: 'CHANGE_FIELD',
@@ -52,16 +96,6 @@ export default function HostProfileInfo({ navigation, route }) {
 				}
 			});
 		}
-		if (date != dateOfBirth) {
-			socket.emit('updateStudent', {
-				sid: loginState.id,
-				update: {
-					type: 'CHANGE_FIELD',
-					field: 'BIRTHDATE',
-					birthDate: (new Date(dateOfBirth))
-				}
-			});
-		} */
 	};
 
 	return (
@@ -135,39 +169,6 @@ export default function HostProfileInfo({ navigation, route }) {
 				marginLeft: 10,
 				marginVertical: 10
 			}}>Your organization</Text>
-			<View
-				style={{
-					padding: 10
-				}}
-			>
-				<Text
-					style={{
-						fontWeight: '600',
-						fontSize: 18,
-						marginVertical: 5
-					}}
-				>Organization name</Text>
-				<Input
-					value={organization}
-					onChangeText={(text) => setOrganizationName(text)}
-					variant={'filled'}
-					width={'100%'}
-					height={39}
-					placeholder={'Email'}
-					_focus={{
-						style: {
-							borderColor: 'transparent',
-							fontSize: 16,
-							fontWeight: '500'
-						}
-					}}
-					style={{
-						fontSize: 16,
-						fontWeight: '500'
-					}}
-				/>
-			</View>
-
 			<View
 				style={{
 					padding: 10
@@ -320,7 +321,7 @@ export default function HostProfileInfo({ navigation, route }) {
 					onChangeText={(text) => setDescription(text)}
 					variant={'filled'}
 					width={'100%'}
-					height={39}
+					height={100}
 					placeholder={'Optional'}
 					_focus={{
 						style: {
@@ -404,8 +405,8 @@ export default function HostProfileInfo({ navigation, route }) {
 					}}
 					activeOpacity={1}
 					onPress={() => {
-						navigation.navigate('StudentMiscStack', {
-							screen: 'UpdateTags',
+						navigation.navigate('HostMiscStack', {
+							screen: 'HostUpdateTags',
 							params: {
 								tags: tags
 							}
@@ -434,7 +435,8 @@ export default function HostProfileInfo({ navigation, route }) {
 					marginBottom: 5,
 					padding: 15,
 					borderRadius: 10,
-					alignSelf: 'center'
+					alignSelf: 'center',
+					marginBottom: 40
 				}}
 				onPress={onSave}
 			>

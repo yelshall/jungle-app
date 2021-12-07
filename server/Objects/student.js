@@ -56,6 +56,14 @@ var loginStudent = (loginInfo, callback) => {
 			return;
 		}
 
+		if (loginInfo.type == 'facebook' || loginInfo.type == 'google') {
+			let token = jwt.sign({ id: res._id, email: res.email, signInType: 'STUDENT' }, process.env.APP_SECRET, {
+				expiresIn: 2592000 // 1 month
+			});
+			if (callback) { callback(null, { id: res._id, email: res.email, token: token, signInType: 'STUDENT' }); }
+			return;
+		}
+
 		if (res === null) {
 			if (callback) { callback({ err: 'INCORRECT_EMAIL' }, null); }
 			return;

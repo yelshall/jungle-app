@@ -1,3 +1,5 @@
+/* global __DEV__ */
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/screens/Student/Tabs/Home";
@@ -6,7 +8,7 @@ import Register from "./src/screens/Login-registration/Register";
 import { getData, storeData, removeData } from "./src/utils/asyncStorage";
 import { View, Platform, Image, LogBox } from "react-native";
 import { AuthContext, GeneralContext, socket } from "./src/utils/context";
-import editEvents from "./src/screens/Host/editEvents";
+import EditEvents from "./src/screens/Host/EditEvents";
 import HostNotifications from "./src/screens/Host/HostNotifications";
 import HostProfileInfo from "./src/screens/Host/Misc/HostProfileInfo";
 import Message from "./src/screens/Message";
@@ -14,6 +16,7 @@ import StudentMiscStack from "./src/screens/Student/Misc/StudentMiscStack";
 import HostMiscStack from "./src/screens/Host/Misc/HostMiscStack";
 import { NativeBaseProvider } from "native-base";
 import { defaultOptions } from "./src/components/Header";
+import "setimmediate";
 
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";

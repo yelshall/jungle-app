@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const schemas = require('../../schemas/schemas');
-require('dotenv').config({path: '../../config/.env'});
+// require('dotenv').config({path: '../../config/.env'});
 
 describe('MongoDB Connection', () => {
     it('Connect to MongoDB Database', (done) => {

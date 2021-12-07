@@ -94,20 +94,26 @@ export default function Profile({ navigation, route }) {
 							{host.hostName.toUpperCase().charAt(0) + host.hostName.toUpperCase().charAt(1)}
 						</Text>
 					</Avatar>
+					<View style={{flexDirection: 'row', alignItems: 'center'}}>
+						<Text style={{ fontWeight: "bold", fontSize: 25 }}>{host.hostName}</Text>
+						<Icon
+							name='verified'
+							size={18}
+							color='dodgerblue'
+							style={{ marginLeft: 5}} />
+					</View>
 
-					<Text style={{ fontWeight: "bold", fontSize: 25 }}>{host.hostName}</Text>
-
-					<View style={{ flexDirection: "row", backgroundColor: "white", margin: 15 }}>
+					<View style={{ flexDirection: "row", backgroundColor: "white", margin: 15,  }}>
 						<ColmWidget topText={host.followers.length} bottomText="Followers" />
 						<View
 							style={{ height: 50, backgroundColor: "#cccccc", width: 1 }}
 						></View>
-						<ColmWidget topText="90" bottomText="Event Views" />
+						<ColmWidget topText="0" bottomText="Event Views" />
 						<View
-							style={{ height: 50, backgroundColor: "#cccccc", width: 1 }}
+							style={{ height: 50, backgroundColor: "#cccccc", width: 1,}}
 						></View>
 						<ColmWidget
-							topText="90"
+							topText="0"
 							bottomText="Average Attendees"
 						/>
 					</View>
@@ -242,7 +248,11 @@ export default function Profile({ navigation, route }) {
 						More
 					</Text>
 					<TouchableOpacity
-						onPress={() => navigation.navigate("Help")}
+						onPress={() => {
+							navigation.navigate("HostMiscStack", {
+								screen: 'HostHelp'
+							})
+						}}
 					>
 						<View style={{ flexDirection: "row" }}>
 							<View style={{ width: "20%", padding: 5 }}>
@@ -274,8 +284,11 @@ export default function Profile({ navigation, route }) {
 					<Divider orientation="horizontal" />
 
 					<TouchableOpacity
-						onPress={() => navigation.navigate("About")}
-					>
+						onPress={() => {
+							navigation.navigate("HostMiscStack", {
+								screen: 'HostAbout'
+							})
+						}}>
 						<View style={{ flexDirection: "row", marginTop: 15 }}>
 							<View style={{ width: "20%", padding: 5 }}>
 								<Icon name="cloud" type="entypo" size={20} color="black" />

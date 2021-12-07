@@ -1,15 +1,24 @@
-import { TouchableOpacity, ScrollView, ImageBackground, Text } from "react-native";
+import { TouchableOpacity, ScrollView, ImageBackground, Text, View } from "react-native";
 import React, { useEffect, useState, useReducer } from "react";
-import { ListItem, Avatar } from 'react-native-elements'
+import { ListItem, Avatar, ButtonGroup } from 'react-native-elements';
+import Constants from "expo-constants";
 import { GeneralContext } from "../utils/context";
-export default function Chat({ navigation, route }) {
-	const {socket, loginState} = React.useContext(GeneralContext);
+import { GiftedChat } from 'react-native-gifted-chat';
 
+export default function Chat({ navigation, route }) {
+	const { socket, loginState } = React.useContext(GeneralContext);
+
+	function handleSend(newMessage = []) {
+		setMessages(GiftedChat.append(messages, newMessage));
+	}
+
+	
 	const [messages, setMessages] = useState([]);
+	const [pageIndex, setPageIndex] = React.useState(0);
 
 	socket.on('newMessage', (response) => {
-		for(let i = 0; i < messages.length; i++) {
-			if(messages[i]._id == response.mid) {
+		for (let i = 0; i < messages.length; i++) {
+			if (messages[i]._id == response.mid) {
 				let msgs = messages;
 				msgs[i].messages.push(response.message);
 				setMessages(msgs);
@@ -37,8 +46,51 @@ export default function Chat({ navigation, route }) {
 		}
 	}, []);
 
+		function handleSend(newMessage = []) {
+			setMessages(GiftedChat.append(messages, newMessage));
+		}
+	
+
 	return (
 		<ScrollView style={{ width: '100%', height: '100%' }}>
+			<View
+				style={{
+					width: '100%',
+					backgroundColor: 'white',
+					alignItems: 'center',
+					//paddingTop: Constants.statusBarHeight,
+					borderBottomWidth: 0.5,
+					borderColor: '#e3e3e3'
+				}}
+			>
+				<ButtonGroup
+					onPress={setPageIndex}
+					selectedIndex={pageIndex}
+					buttons={['User Messages', 'General Messages']}
+					containerStyle={{
+						borderWidth: 0,
+						width: '100%'
+					}}
+					buttonStyle={{
+						borderRadius: 0
+					}}
+					selectedButtonStyle={{
+						backgroundColor: 'transparent',
+						borderBottomWidth: 2,
+						borderColor: '#6e6e6e'
+					}}
+					textStyle={{
+						fontSize: 14,
+						fontWeight: '600',
+						color: '#6e6e6e'
+					}}
+					selectedTextStyle={{
+						fontSize: 14,
+						fontWeight: '600',
+						color: '#6e6e6e'
+					}}
+				/>
+			</View>
 			{
 				messages.map((item, index) => {
 					return (
@@ -60,7 +112,7 @@ export default function Chat({ navigation, route }) {
 											rid: item.firstId._id == loginState.id ? item.secondId._id : item.firstId._id,
 											createChat: false
 										});
-										return;
+									return;
 								}
 								navigation.navigate('StudentMiscStack',
 									{

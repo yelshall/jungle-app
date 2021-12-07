@@ -1,11 +1,10 @@
-import React, { Profiler } from "react";
+import React from "react";
 import {
 	Text,
 	View,
 	Image,
 	TouchableOpacity,
 	StyleSheet,
-	Alert,
 } from "react-native";
 import { Input, SocialIcon } from "react-native-elements";
 import { AuthContext, GeneralContext } from "../../utils/context";
@@ -38,7 +37,7 @@ export default function Login({ navigation, route }) {
 		//Use the lottie library
 		socket.emit(
 			"login",
-			{ email: email, password: password },
+			{ email: email, password: password, type: 'normal' },
 			(err, response) => {
 				if (err) {
 					if (
@@ -78,31 +77,15 @@ export default function Login({ navigation, route }) {
 			.then((result) => {
 				const { type, user } = result;
 				if (type == "success") {
-					const { email, name, photoUrl } = user;
-					setTimeout(
-						() =>
-							socket.emit(
-								"login",
-								{ email: "test@mail.net", password: "testPassword" },
-								(err, response) => {
-									if (err) {
-										if (
-											err.err === "INCORRECT_EMAIL" ||
-											err.err === "INCORRECT_PASSWORD"
-										) {
-											setErrorPassword("Your email or password was incorrect");
-										} else {
-											setErrorPassword("Error logging you in");
-										}
-										return;
-									}
-									setErrorPassword("");
-									signIn(response);
-								}
-							),
-						1000
-					);
-				} else {
+					const { email } = user;
+					socket.emit('login', { email: email, type: 'google' }, (err, response) => {
+						if (err) {
+
+							return;
+						}
+
+						signIn(response)
+					});
 				}
 			})
 			.catch((error) => {
@@ -116,37 +99,25 @@ export default function Login({ navigation, route }) {
 				appId: "197006039272073",
 			});
 			const { type, token, expirationDate, permissions, declinedPermissions } =
-				await Facebook.logInWithReadPermissionsAsync({
-					permissions: ["public_profile"],
-				});
+				await Facebook.logInWithReadPermissionsAsync();
+
 			if (type === "success") {
 				// Get the user's name using Facebook's Graph API
 				const response = await fetch(
-					`https://graph.facebook.com/me?access_token=${token}`
+					`https://graph.facebook.com/me?access_token=${token}&fields=email`
 				);
-				setTimeout(
-					() =>
-						socket.emit(
-							"login",
-							{ email: "test@mail.net", password: "testPassword" },
-							(err, response) => {
-								if (err) {
-									if (
-										err.err === "INCORRECT_EMAIL" ||
-										err.err === "INCORRECT_PASSWORD"
-									) {
-										setErrorPassword("Your email or password was incorrect");
-									} else {
-										setErrorPassword("Error logging you in");
-									}
-									return;
-								}
-								setErrorPassword("");
-								signIn(response);
-							}
-						),
-					1000
-				);
+
+				const email = await response.json();
+				console.log(email);
+
+				socket.emit('login', { email: email.email, type: 'facebook' }, (err, response) => {
+					if (err) {
+
+						return;
+					}
+
+					signIn(response)
+				});
 			} else {
 				// type === 'cancel'
 			}
