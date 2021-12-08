@@ -6,6 +6,6 @@ import HostAbout from "../screens/Host/Misc/HostAbout";
 describe("<HostAbout />", () => {
   it("has 4 components", () => {
     const tree = renderer.create(<HostAbout />).toJSON();
-    expect(tree.children.length).toBe(4);
+    expect(tree.children.length).toBe(3);
   });
 });
